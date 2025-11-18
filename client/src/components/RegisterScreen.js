@@ -35,7 +35,7 @@ export default function RegisterScreen() {
 
     const [avatarErr, setAvatarErr] = useState(null);
 
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    const MAX_DIMENSIONS = 250;
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -58,13 +58,26 @@ export default function RegisterScreen() {
             return;
         }
 
-        if (file.size > MAX_FILE_SIZE) {
-            setAvatarErr("Image larger than max size");
-            return;
+        //Create Image Object
+        const img = new Image();
+
+        // Find the specific dimensions.
+        img.onload = function(){
+            const width = img.width;
+            const height = img.height;
+
+            if ((width > MAX_DIMENSIONS) || (height > MAX_DIMENSIONS)){
+                setAvatarErr("Image larger than max dimensions");
+                return;
+            }
+            // If image valid, set local avatar state.
+            setAvatarSrc(img.src);
+
         }
 
-        const imageUrl = URL.createObjectURL(file);
-        setAvatarSrc(imageUrl);
+        img.src = URL.createObjectURL(file);
+
+
     }
 
     let modalJSX = ""

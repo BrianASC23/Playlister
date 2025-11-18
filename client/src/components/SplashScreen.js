@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -51,7 +52,7 @@ export default function SplashScreen() {
                                 bgcolor: "black",
                             }}
                         >
-                            Continue As Guest
+                            <Link to="/guest/">Continue As Guest</Link>
                         </Button>
                     </Grid>
                     <Grid item>
@@ -64,7 +65,7 @@ export default function SplashScreen() {
                                 bgcolor: "black"
                             }}
                         >
-                            Login
+                            <Link to="/login/">Login</Link>
                         </Button>
 
                     </Grid>
@@ -78,7 +79,7 @@ export default function SplashScreen() {
                                 bgcolor: "black"
                             }}
                         >
-                            Create Account
+                            <Link to='/register/'>Create Account</Link>
                         </Button>
 
                     </Grid>
