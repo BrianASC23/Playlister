@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import AuthContext from '../auth'
 import MUIErrorModal from './MUIErrorModal'
 import Copyright from './Copyright'
@@ -13,9 +13,29 @@ import Link from '@mui/material/Link';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
+
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
+
+    const [avatarSrc, setAvatarSrc] = useState(null);
+
+    const [avatarErr, setAvatarErr] = useState(null);
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -28,6 +48,24 @@ export default function RegisterScreen() {
             formData.get('passwordVerify')
         );
     };
+
+    const handleAvatarChange = (event) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')){
+            setAvatarErr("Avatar is not an image!");
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            setAvatarErr("Image larger than max size");
+            return;
+        }
+
+        const imageUrl = URL.createObjectURL(file);
+        setAvatarSrc(imageUrl);
+    }
 
     let modalJSX = ""
     console.log(auth);
@@ -58,10 +96,12 @@ export default function RegisterScreen() {
                             <Box>
                                 <Avatar
                                     sx={{ width: 72, height: 72, mb: 1 }}
-                                    src='/images/uploaded_image.png'
+                                    src={avatarSrc || '/images/uploaded_image.png'}
                                 />
                                 <Button
                                     variant='contained'
+                                    component="label"
+                                    role={undefined}
                                     size='small'
                                     sx={{
                                         textTransform: 'none',
@@ -70,7 +110,21 @@ export default function RegisterScreen() {
                                     }}
                                 >
                                     Select
+                                    <VisuallyHiddenInput
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleAvatarChange}
+                                    />
                                 </Button>
+                                {avatarErr && (
+                                    <Typography
+                                        variant='caption'
+                                        color='error'
+                                        sx={{mt: 1, textAlign: 'center'}}
+                                    >
+                                        {avatarErr}
+                                    </Typography>
+                                )}
                             </Box>
 
                         </Grid>
