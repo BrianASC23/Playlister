@@ -43,7 +43,6 @@ export default function LoginScreen() {
                 alignItems: 'center',
                 height: "90%",
                 width: "100%",
-                bgcolor: "#f6f5dcff",
             }}
         >
             <Avatar sx={{ m: 1, my:8, bgcolor: 'secondary.main' }}>

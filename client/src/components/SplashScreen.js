@@ -9,11 +9,9 @@ export default function SplashScreen() {
     return (
         <Box id="splash-screen"
             sx={{
-                minHeight: "calc(100vh - 64px)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                bgcolor: "#f6f5dcff",
                 px: 2
             }}
         >
@@ -24,7 +22,8 @@ export default function SplashScreen() {
                     sx={{
                         mb: 4,
                         fontWeight: 500,
-                        color: "black"
+                        color: "black",
+                        pt: 8
                     }}
                 >
                     The Playlister
