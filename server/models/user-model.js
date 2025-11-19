@@ -8,6 +8,7 @@ const UserSchema = new Schema(
         lastName: { type: String, required: true },
         email: { type: String, required: true },
         passwordHash: { type: String, required: true },
+        avatar: { type: String, required: false },
         playlists: [{type: ObjectId, ref: 'Playlist'}]
     },
     { timestamps: true },

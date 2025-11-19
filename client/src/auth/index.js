@@ -74,10 +74,10 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
+    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify, avatar) {
         console.log("REGISTERING USER");
-        try{   
-            const response = await authRequestSender.registerUser(firstName, lastName, email, password, passwordVerify);   
+        try{
+            const response = await authRequestSender.registerUser(firstName, lastName, email, password, passwordVerify, avatar);
             if (response.status === 200) {
                 console.log("Registered Sucessfully");
                 authReducer({
@@ -150,6 +150,14 @@ function AuthContextProvider(props) {
         }
         console.log("user initials: " + initials);
         return initials;
+    }
+
+    auth.getUserAvatar = function(){
+        let avatar;
+        if(auth.user){
+            avatar = auth.user.avatar;
+        }
+        return avatar;
     }
 
     return (

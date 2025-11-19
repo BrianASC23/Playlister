@@ -45,7 +45,8 @@ export default function RegisterScreen() {
             formData.get('lastName'),
             formData.get('email'),
             formData.get('password'),
-            formData.get('passwordVerify')
+            formData.get('passwordVerify'),
+            avatarSrc
         );
     };
 
@@ -68,16 +69,22 @@ export default function RegisterScreen() {
 
             if ((width > MAX_DIMENSIONS) || (height > MAX_DIMENSIONS)){
                 setAvatarErr("Image larger than max dimensions");
+                URL.revokeObjectURL(img.src);
                 return;
             }
-            // If image valid, set local avatar state.
-            setAvatarSrc(img.src);
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatarSrc(reader.result);
+                setAvatarErr(null);
+            };
+            reader.readAsDataURL(file);
+
+            URL.revokeObjectURL(img.src);
 
         }
 
         img.src = URL.createObjectURL(file);
-
-
     }
 
     let modalJSX = ""

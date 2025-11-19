@@ -13,6 +13,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { Avatar } from '@mui/material';
 
 export default function AppBanner() {
     const { auth } = useContext(AuthContext);
@@ -58,7 +59,7 @@ export default function AppBanner() {
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
         </Menu>
     );
-    const loggedInMenu = 
+    const loggedInMenu =
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -75,7 +76,7 @@ export default function AppBanner() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>        
+        </Menu>
 
     let editToolbar = "";
     let menu = loggedOutMenu;
@@ -85,12 +86,19 @@ export default function AppBanner() {
             editToolbar = <EditToolbar />;
         }
     }
-    
+
     function getAccountMenu(loggedIn) {
-        let userInitials = auth.getUserInitials();
-        console.log("userInitials: " + userInitials);
-        if (loggedIn) 
-            return <div>{userInitials}</div>;
+        if (loggedIn) {
+            const avatar = auth.getUserAvatar();
+            console.log("avatar: " + avatar);
+            if (avatar) {
+                return <Avatar src={avatar} alt="User Avatar" sx={{ width: 72, height: 72, mb: 1 }} />
+            
+            } else {
+                const userInitials = auth.getUserInitials();
+                return <div>{userInitials}</div>;
+            }
+        }
         else
             return <AccountCircle />;
     }
@@ -99,11 +107,11 @@ export default function AppBanner() {
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography                        
+                    <Typography
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
                         <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
                     </Typography>
