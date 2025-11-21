@@ -1,0 +1,109 @@
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { styled } from '@mui/material/styles';
+
+export default function SearchFilters({filters, setFilters, onSearch}){
+    const updateField = (field) => (e) => {
+        setFilters({
+            ...filters,
+            [field]: e.target.value
+        });
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onSearch();
+    };
+
+    const onClear = () => {
+        const empty ={
+            listName: "",
+            userName: "",
+            songTitle: "",
+            songArtist: "",
+            songYear: ""
+        }
+        setFilters(empty);
+    }
+
+    return(
+        <Container component="section" maxWidth="sm">
+            <CssBaseline />
+            <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
+                <Typography component="h1" variant="h6" sx={{ mb: 2 }}>
+                Search Playlists
+                </Typography>
+
+                <Box component="form" noValidate onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Playlist Name"
+                                fullWidth
+                                value={filters.playlistName}
+                                onChange={updateField('playlistName')}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                label="User Name"
+                                fullWidth
+                                value={filters.userName}
+                                onChange={updateField('userName')}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Song Title"
+                                fullWidth
+                                value={filters.songTitle}
+                                onChange={updateField('songTitle')}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Song Artist"
+                                fullWidth
+                                value={filters.songArtist}
+                                onChange={updateField('songArtist')}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Song Year"
+                                fullWidth
+                                value={filters.songYear}
+                                onChange={updateField('songYear')}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                        <Button type="submit" variant="contained">
+                            Search
+                        </Button>
+                        <Button
+                        variant="outlined"
+                        onClick={onClear}
+                        >
+                            Clear
+                        </Button>
+                    </Box>
+                </Box>
+            </Paper>
+        </Container>
+    );
+}

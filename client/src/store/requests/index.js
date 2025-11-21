@@ -6,7 +6,7 @@
     is a native (to browsers) standard, but Axios is easier
     to use when sending JSON back and forth and it`s a Promise-
     based API which helps a lot with asynchronous communication.
-    
+
     @author McKilla Gorilla
 */
 
@@ -40,12 +40,16 @@ export const updatePlaylistById = (id, playlist) => {
     })
 }
 
+// I think this should be fine because I alr converted filters to a Param String
+export const findPlaylistsByFilter = (filters) => api.get(`/playlist/search?${filters.toString()}`)
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
-    updatePlaylistById
+    updatePlaylistById,
+    findPlaylistsByFilter
 }
 
 export default apis

@@ -10,8 +10,8 @@ import AuthContext from '../auth'
 
 /*
     This is our global data store. Note that it uses the Flux design pattern,
-    which makes use of things like actions and reducers. 
-    
+    which makes use of things like actions and reducers.
+
     @author McKilla Gorilla
 */
 
@@ -101,7 +101,7 @@ function GlobalStoreContextProvider(props) {
                 })
             }
             // CREATE A NEW LIST
-            case GlobalStoreActionType.CREATE_NEW_LIST: {                
+            case GlobalStoreActionType.CREATE_NEW_LIST: {
                 return setStore({
                     currentModal : CurrentModal.NONE,
                     idNamePairs: store.idNamePairs,
@@ -170,7 +170,7 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null
                 });
             }
-            // 
+            //
             case GlobalStoreActionType.EDIT_SONG: {
                 return setStore({
                     currentModal : CurrentModal.EDIT_SONG,
@@ -232,7 +232,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
-    // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
+    // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
@@ -350,7 +350,7 @@ function GlobalStoreContextProvider(props) {
     store.deleteMarkedList = function() {
         store.deleteList(store.listIdMarkedForDeletion);
         store.hideModals();
-        
+
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -359,14 +359,14 @@ function GlobalStoreContextProvider(props) {
         storeReducer({
             type: GlobalStoreActionType.EDIT_SONG,
             payload: {currentSongIndex: songIndex, currentSong: songToEdit}
-        });        
+        });
     }
     store.hideModals = () => {
         auth.errorMessage = null;
         storeReducer({
             type: GlobalStoreActionType.HIDE_MODALS,
             payload: {}
-        });    
+        });
     }
     store.isDeleteListModalOpen = () => {
         return store.currentModal === CurrentModal.DELETE_LIST;
@@ -411,7 +411,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
     // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
     store.createSong = function(index, song) {
-        let list = store.currentList;      
+        let list = store.currentList;
         list.songs.splice(index, 0, song);
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
@@ -443,8 +443,8 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION REMOVES THE SONG AT THE index LOCATION
     // FROM THE CURRENT LIST
     store.removeSong = function(index) {
-        let list = store.currentList;      
-        list.songs.splice(index, 1); 
+        let list = store.currentList;
+        list.songs.splice(index, 1);
 
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
@@ -477,7 +477,7 @@ function GlobalStoreContextProvider(props) {
         };
         let transaction = new CreateSong_Transaction(store, index, song);
         tps.processTransaction(transaction);
-    }    
+    }
     store.addMoveSongTransaction = function (start, end) {
         let transaction = new MoveSong_Transaction(store, start, end);
         tps.processTransaction(transaction);
@@ -497,7 +497,7 @@ function GlobalStoreContextProvider(props) {
             year: song.year,
             youTubeId: song.youTubeId
         };
-        let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);        
+        let transaction = new UpdateSong_Transaction(this, index, oldSongData, newSongData);
         tps.processTransaction(transaction);
     }
     store.updateCurrentList = function() {
@@ -539,18 +539,36 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+
+    // FUNCTION to FIND ALL PLAYLISTS based on the FILTERS
+    store.findPlaylistsByFilter = async function (filters) {
+        // Sanitize and use only filters that are nonempty
+        const params = new URLSearchParams(filters);
+        let response = await storeRequestSender.findPlaylistsByFilter(params);
+
+        if(response.data.success){
+            
+        }
+    }
+
+
     function KeyPress(event) {
         if (!store.modalOpen && event.ctrlKey){
             if(event.key === 'z'){
                 store.undo();
-            } 
+            }
             if(event.key === 'y'){
                 store.redo();
             }
         }
     }
-  
+
     document.onkeydown = (event) => KeyPress(event);
+
+
+
+
+
 
     return (
         <GlobalStoreContext.Provider value={{
