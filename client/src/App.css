@@ -16,9 +16,6 @@
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
 }
 
-body {
-  background-image: url('https://thumbs.dreamstime.com/b/music-notes-symbols-seamless-pattern-design-fully-editable-fill-background-color-music-notes-symbols-seamless-pattern-118273669.jpg')
-}
 
 a {
   text-decoration: none;
@@ -124,7 +121,7 @@ a {
   top: 90%;
   width: 100%;
   height: 10%;
-  background-color: rgb(0, 127, 255);
+  background-color: rgb(212, 119, 241);
   display: flex;
   align-items: center;
   justify-content: center;

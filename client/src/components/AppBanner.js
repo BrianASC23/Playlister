@@ -93,7 +93,7 @@ export default function AppBanner() {
             console.log("avatar: " + avatar);
             if (avatar) {
                 return <Avatar src={avatar} alt="User Avatar" sx={{ width: 72, height: 72, mb: 1 }} />
-            
+
             } else {
                 const userInitials = auth.getUserInitials();
                 return <div>{userInitials}</div>;
@@ -105,7 +105,7 @@ export default function AppBanner() {
 
     return (
         <Box sx={{flexGrow: 1}}>
-            <AppBar position="static">
+            <AppBar position="static" style={{ backgroundColor: "rgba(187, 106, 211, 1)" }}>
                 <Toolbar>
                     <Typography
                         variant="h4"
