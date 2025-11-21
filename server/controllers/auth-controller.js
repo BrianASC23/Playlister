@@ -169,9 +169,100 @@ registerUser = async (req, res) => {
     }
 }
 
+editUser = async (req, res) => {
+    console.log("EDITING USER IN BACKEND");
+    try {
+
+        // Get user ID from the JWT token
+        let userId = auth.verifyUser(req);
+        if (!userId){
+            return res.status(401).json({
+                errorMessage: "User not logged in?"
+            });
+        }
+        const { firstName, lastName, password, passwordVerify, avatar } = req.body;
+        console.log("Edit user: " + firstName + " " + lastName);
+        if (!firstName || !lastName || !password || !passwordVerify) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        console.log("all fields provided");
+        if (password.length < 8) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter a password of at least 8 characters."
+                });
+        }
+        console.log("password long enough");
+        if (password !== passwordVerify) {
+            return res
+                .status(400)
+                .json({
+                    errorMessage: "Please enter the same password twice."
+                })
+        }
+        console.log("password and password verify match");
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(password, salt);
+        console.log("passwordHash: " + passwordHash);
+
+        // Update fields to set
+
+        const updateFields = {
+            firstName: firstName,
+            lastName: lastName,
+            password: passwordHash
+        };
+
+        // If avatar is also updated
+        if (avatar){
+            updateFields.avatar = avatar;
+        }
+        console.log(`User ID: ${userId}`);
+
+        //Find the user in the database via the userID from JWT token
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $set: updateFields},
+            { new: true }
+        );
+
+        if (!updatedUser){
+            return res.status(404).json({
+                errorMessage: "User's not found in the database"
+            });
+        }
+
+        console.log("user updated: " + updatedUser._id);
+
+        // If everything is good, it means a success
+
+        await res.status(200).json({
+            success: true,
+            user: {
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                avatar: updatedUser.avatar
+            }
+        })
+
+        console.log("Update Sent");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+
+}
+
 module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    editUser
 }

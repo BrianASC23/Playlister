@@ -10,7 +10,8 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
-    REGISTER_USER: "REGISTER_USER"
+    REGISTER_USER: "REGISTER_USER",
+    EDIT_USER: "EDIT_USER"
 }
 
 function AuthContextProvider(props) {
@@ -50,6 +51,13 @@ function AuthContextProvider(props) {
                 })
             }
             case AuthActionType.REGISTER_USER: {
+                return setAuth({
+                    user: payload.user,
+                    loggedIn: payload.loggedIn,
+                    errorMessage: payload.errorMessage
+                })
+            }
+            case AuthActionType.EDIT_USER: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
@@ -99,6 +107,35 @@ function AuthContextProvider(props) {
                 payload: {
                     user: auth.user,
                     loggedIn: false,
+                    errorMessage: error.response.data.errorMessage
+                }
+            })
+        }
+    }
+
+    auth.editUser = async function(firstName, lastName, password, passwordVerify, avatar){
+        console.log("Editing User Account");
+        try{
+            const response = await authRequestSender.editUser(firstName, lastName, password, passwordVerify, avatar);
+            if (response.status === 200){
+                console.log("User Account Edited Successfully");
+                authReducer({
+                    type: AuthActionType.EDIT_USER,
+                    payload: {
+                        user: response.data.user,
+                        loggedIn: true,
+                        errorMessage: null
+                    }
+                })
+                console.log("Going back to HOME SCREEN");
+                history.push('/');
+            }
+        } catch(error){
+            authReducer({
+                type: AuthActionType.EDIT_USER,
+                payload:{
+                    user: auth.user,
+                    loggedIn: true,
                     errorMessage: error.response.data.errorMessage
                 }
             })

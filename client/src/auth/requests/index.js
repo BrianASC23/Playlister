@@ -1,12 +1,12 @@
 /*
-    This is our http api for all things auth, which we use to 
-    send authorization requests to our back-end API. Note we`re 
-    using the Axios library for doing this, which is an easy to 
-    use AJAX-based library. We could (and maybe should) use Fetch, 
+    This is our http api for all things auth, which we use to
+    send authorization requests to our back-end API. Note we`re
+    using the Axios library for doing this, which is an easy to
+    use AJAX-based library. We could (and maybe should) use Fetch,
     which is a native (to browsers) standard, but Axios is easier
     to use when sending JSON back and forth and it`s a Promise-
     based API which helps a lot with asynchronous communication.
-    
+
     @author McKilla Gorilla
 */
 
@@ -41,9 +41,19 @@ export const registerUser = (firstName, lastName, email, password, passwordVerif
         avatar : avatar
     })
 }
+export const editUser = (firstName, lastName, password, passwordVerify, avatar) => {
+    return api.put(`/editUser/`, {
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        passwordVerify: passwordVerify,
+        avatar: avatar
+    })
+}
 const apis = {
     getLoggedIn,
     registerUser,
+    editUser,
     loginUser,
     logoutUser
 }

@@ -11,22 +11,24 @@ import {
     Statusbar,
     WorkspaceScreen
 } from './components'
+import EditAccountScreen from './components/EditAccountScreen';
 /*
   This is the entry-point for our application. Notice that we
   inject our store into all the components in our application.
-  
+
   @author McKilla Gorilla
 */
-const App = () => {   
+const App = () => {
     return (
         <BrowserRouter>
             <AuthContextProvider>
-                <GlobalStoreContextProvider>              
+                <GlobalStoreContextProvider>
                     <AppBanner />
                     <Switch>
                         <Route path="/" exact component={HomeWrapper} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
+                        <Route path="/editaccount/" exact component={EditAccountScreen} />
                         <Route path="/playlist/:id" exact component={WorkspaceScreen} />
                     </Switch>
                     <Statusbar />
