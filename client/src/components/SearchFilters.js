@@ -1,4 +1,4 @@
-import Avatar from '@mui/material/Avatar';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -11,7 +11,15 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
-export default function SearchFilters({filters, setFilters, onSearch}){
+export default function SearchFilters({ onSearch }) {
+    const [filters, setFilters] = React.useState({
+        playlistName: '',
+        userName: '',
+        songTitle: '',
+        songArtist: '',
+        songYear: ''
+    });
+
     const updateField = (field) => (e) => {
         setFilters({
             ...filters,
@@ -21,18 +29,19 @@ export default function SearchFilters({filters, setFilters, onSearch}){
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSearch();
+        onSearch(filters);
     };
 
     const onClear = () => {
-        const empty ={
-            listName: "",
-            userName: "",
-            songTitle: "",
-            songArtist: "",
-            songYear: ""
-        }
+        const empty = {
+            playlistName: '',
+            userName: '',
+            songTitle: '',
+            songArtist: '',
+            songYear: ''
+        };
         setFilters(empty);
+        onSearch(empty);
     }
 
     return(

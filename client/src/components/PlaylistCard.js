@@ -9,11 +9,16 @@ import TextField from '@mui/material/TextField';
 
 /*
     This is a card in our list of top 5 lists. It lets select
-    a list for editing and it has controls for changing its 
+    a list for editing and it has controls for changing its
     name or deleting it.
-    
+
     @author McKilla Gorilla
 */
+
+// THERE SHOULD BE DELETE, EDIT, COPY & PLAY
+// DELETE AND EDIT SHOULD BE ONLY IF THE PLAYLIST BELONGS TO USER
+
+
 function PlaylistCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);

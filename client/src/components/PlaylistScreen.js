@@ -1,5 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { GlobalStoreContext } from '../store'
+import SearchFilters from './SearchFilters';
+import PlaylistsList from './PlaylistsList';
 import MUIErrorModal from './MUIErrorModal'
 import Copyright from './Copyright'
 

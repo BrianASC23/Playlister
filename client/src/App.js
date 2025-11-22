@@ -12,6 +12,7 @@ import {
     WorkspaceScreen
 } from './components'
 import EditAccountScreen from './components/EditAccountScreen';
+import PlaylistScreen from './components/PlaylistScreen';
 /*
   This is the entry-point for our application. Notice that we
   inject our store into all the components in our application.
@@ -25,7 +26,7 @@ const App = () => {
                 <GlobalStoreContextProvider>
                     <AppBanner />
                     <Switch>
-                        <Route path="/" exact component={HomeWrapper} />
+                        <Route path="/" exact component={PlaylistScreen} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
                         <Route path="/editaccount/" exact component={EditAccountScreen} />
