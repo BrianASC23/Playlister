@@ -47,9 +47,9 @@ export default function SearchFilters({ onSearch }) {
     return(
         <Container component="section" maxWidth="sm">
             <CssBaseline />
-            <Paper elevation={3} sx={{ p: 3, mt: 4 }}>
-                <Typography component="h1" variant="h6" sx={{ mb: 2 }}>
-                Search Playlists
+            <Box elevation={3} sx={{ p: 3, mt: 4 }}>
+                <Typography variant="h3" gutterBottom sx={{ mb: 2, color: "#c20cb9", fontWeight: "bold" }}>
+                    Playlists
                 </Typography>
 
                 <Box component="form" noValidate onSubmit={handleSubmit}>
@@ -58,6 +58,7 @@ export default function SearchFilters({ onSearch }) {
                             <TextField
                                 label="Playlist Name"
                                 fullWidth
+                                sx={{ backgroundColor: "#e6e0e9"}}
                                 value={filters.playlistName}
                                 onChange={updateField('playlistName')}
                             />
@@ -66,6 +67,7 @@ export default function SearchFilters({ onSearch }) {
                         <Grid item xs={12}>
                             <TextField
                                 label="User Name"
+                                sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
                                 value={filters.userName}
                                 onChange={updateField('userName')}
@@ -75,6 +77,7 @@ export default function SearchFilters({ onSearch }) {
                         <Grid item xs={12}>
                             <TextField
                                 label="Song Title"
+                                sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
                                 value={filters.songTitle}
                                 onChange={updateField('songTitle')}
@@ -84,6 +87,7 @@ export default function SearchFilters({ onSearch }) {
                         <Grid item xs={12}>
                             <TextField
                                 label="Song Artist"
+                                sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
                                 value={filters.songArtist}
                                 onChange={updateField('songArtist')}
@@ -93,6 +97,7 @@ export default function SearchFilters({ onSearch }) {
                         <Grid item xs={12}>
                             <TextField
                                 label="Song Year"
+                                sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
                                 value={filters.songYear}
                                 onChange={updateField('songYear')}
@@ -112,7 +117,7 @@ export default function SearchFilters({ onSearch }) {
                         </Button>
                     </Box>
                 </Box>
-            </Paper>
+            </Box>
         </Container>
     );
 }
