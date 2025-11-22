@@ -543,11 +543,18 @@ function GlobalStoreContextProvider(props) {
     // FUNCTION to FIND ALL PLAYLISTS based on the FILTERS
     store.findPlaylistsByFilter = async function (filters) {
         // Sanitize and use only filters that are nonempty
+        console.log("Filters:", filters);
+
         const params = new URLSearchParams(filters);
+        console.log("Params:", params);
         let response = await storeRequestSender.findPlaylistsByFilter(params);
 
         if(response.data.success){
-            
+            console.log("Success! Found playlists:", response.data.playlists);
+            return response.data.playlists;
+        } else {
+            console.log("No playlists found");
+            return [];
         }
     }
 

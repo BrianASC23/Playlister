@@ -1,11 +1,11 @@
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
-const auth = require('../auth')
+const auth = require('../auth');
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
     functions for each endpoint.
-    
+
     @author McKilla Gorilla
 */
 createPlaylist = (req, res) => {
@@ -22,7 +22,7 @@ createPlaylist = (req, res) => {
             error: 'You must provide a Playlist',
         })
     }
-    
+
     const playlist = new Playlist(body);
     console.log("playlist: " + playlist.toString());
     if (!playlist) {
@@ -79,8 +79,8 @@ deletePlaylist = async (req, res) => {
                 }
                 else {
                     console.log("incorrect user!");
-                    return res.status(400).json({ 
-                        errorMessage: "authentication error" 
+                    return res.status(400).json({
+                        errorMessage: "authentication error"
                     });
                 }
             });
@@ -179,6 +179,48 @@ getPlaylists = async (req, res) => {
         return res.status(200).json({ success: true, data: playlists })
     }).catch(err => console.log(err))
 }
+
+findPlaylistsByFilter = async (req, res) => {
+    try{
+        const { playlistName, userName, songTitle, songArtist, songYear } = req.query;
+
+        let query = {}
+
+        if (playlistName){
+            query.name = { $regex: playlistName, $options: "i" };
+        }
+
+        if (userName){
+            query.ownerEmail = { $regex: userName, $options: "i" };
+        }
+
+        if (songTitle){
+            query['songs.title'] =  { $regex: songTitle, $options: "i" };
+        }
+
+        if (songArtist) {
+            query['songs.artist'] = { $regex: songArtist, $options: 'i' };
+        }
+
+        if (songYear) {
+            query['songs.year'] = parseInt(songYear);
+        }
+
+        const playlists = await Playlist.find(query);
+
+        return res.status(200).json({
+            success: true,
+            playlists: playlists
+        });
+    } catch(error){
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        })
+    }
+
+}
 updatePlaylist = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -249,5 +291,6 @@ module.exports = {
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
+    findPlaylistsByFilter,
     updatePlaylist
 }
