@@ -24,12 +24,18 @@ export default function PlaylistScreen(){
     const [filters, setFilters] = useState({});
     const [playlists, setPlaylists] = useState([]); // Will load user's playlist later
 
+    console.log("Hi");
     // load the lists to the store
     // get the lists from the store and setPlaylist to it
     useEffect(() => {
         store.loadIdNamePairs();
-        setPlaylists(store.idNamePairs)
     }, []);
+
+    // Update local playlists when store.idNamePairs changes
+    useEffect(() => {
+        console.log("Store updated:", store.idNamePairs);
+        setPlaylists(store.idNamePairs);
+    }, [store.idNamePairs]);
 
     const handleSearch = async () => {
         const res = await store.findPlaylistsByFilter(filters);
@@ -38,10 +44,16 @@ export default function PlaylistScreen(){
     }
 
     return(
-        <div id="playlist-screen">
-            <SearchFilters filters={filters} setFilters={setFilters} onSearch={handleSearch}></SearchFilters>
-            <PlaylistsList></PlaylistsList>
-        </div>
+        <Box id="playlist-screen">
+            <Grid container>
+                <Grid item xs={6}>
+                    <SearchFilters filters={filters} setFilters={setFilters} onSearch={handleSearch}></SearchFilters>
+                </Grid>
+                <Grid item xs={6}>
+                    <PlaylistsList playlists={playlists}></PlaylistsList>
+                </Grid>
+            </Grid>
+        </Box>
     )
 
 }

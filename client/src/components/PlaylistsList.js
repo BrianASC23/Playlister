@@ -29,10 +29,8 @@ export default function PlaylistsList({playlists}){
                     <Grid item xs={12} key={playlist._id}>
                         <PlaylistCard
                             playlist={playlist}
-                            onDelete={() => onDelete(playlist._id)}
-                            onEdit={() => onEdit(playlist._id)}
-                            onCopy={() => onCopy(playlist._id)}
-                            onPlay={() => onPlay(playlist._id)}
+                            selected={false}
+
                         />
                     </Grid>
                 ))

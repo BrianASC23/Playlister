@@ -19,11 +19,10 @@ import TextField from '@mui/material/TextField';
 // DELETE AND EDIT SHOULD BE ONLY IF THE PLAYLIST BELONGS TO USER
 
 
-function PlaylistCard(props) {
+function PlaylistCard({ playlist }) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair } = props;
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -52,12 +51,14 @@ function PlaylistCard(props) {
         setEditActive(newActive);
     }
 
+    // For OnDelete
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         //let _id = event.target.id;
         //_id = ("" + _id).substring("delete-list-".length);
         store.markListForDeletion(id);
     }
+
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
@@ -66,22 +67,23 @@ function PlaylistCard(props) {
             toggleEdit();
         }
     }
+
     function handleUpdateText(event) {
         setText(event.target.value);
     }
 
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={playlist._id}
+            key={playlist._id}
             sx={{borderRadius:"25px", p: "10px", bgcolor: '#8000F00F', marginTop: '15px', display: 'flex', /*p: 1*/ }}
             style={{transform:"translate(1%,0%)", width: '98%', fontSize: '48pt' }}
             button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
+            // onClick={(event) => {
+            //     handleLoadList(event, idNamePair._id)
+            // }}
         >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+            <Box sx={{ p: 1, flexGrow: 1 }}>{playlist.name}</Box>
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
                     <EditIcon style={{fontSize:'48pt'}} />
@@ -89,7 +91,7 @@ function PlaylistCard(props) {
             </Box>
             <Box sx={{ p: 1 }}>
                 <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
+                        handleDeleteList(event, playlist._id)
                     }} aria-label='delete'>
                     <DeleteIcon style={{fontSize:'48pt'}} />
                 </IconButton>
@@ -102,14 +104,12 @@ function PlaylistCard(props) {
                 margin="normal"
                 required
                 fullWidth
-                id={"list-" + idNamePair._id}
+                id={"list-" + playlist._id}
                 label="Playlist Name"
                 name="name"
                 autoComplete="Playlist Name"
                 className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
+                defaultValue={playlist.name}
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}
                 autoFocus
