@@ -11,18 +11,29 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
-export default function SongSearchFilter(){
+export default function SongSearchFilter({ filters, setFilters, onSearch }){
 
-    const updateField = () => {
-        
+    const updateField = (field) => (e) => {
+        setFilters({
+            ...filters,
+            [field]: e.target.value
+        })
     }
 
-    const handleSubmit = () => {
-
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onSearch(filters);
     }
+
 
     const onClear = () => {
+        const empty = {
+            title: '',
+            artist: '',
+            year: ''
+        };
 
+        setFilters(empty);
     }
 
     return(
@@ -40,8 +51,8 @@ export default function SongSearchFilter(){
                                 label="by Title"
                                 fullWidth
                                 sx={{ backgroundColor: "#e6e0e9"}}
-                                value={filters.playlistName}
-                                onChange={updateField('playlistName')}
+                                value={filters.title}
+                                onChange={updateField('title')}
                             />
                         </Grid>
 
@@ -50,8 +61,8 @@ export default function SongSearchFilter(){
                                 label="by Artist"
                                 sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
-                                value={filters.userName}
-                                onChange={updateField('userName')}
+                                value={filters.artist}
+                                onChange={updateField('artist')}
                             />
                         </Grid>
 
@@ -60,8 +71,8 @@ export default function SongSearchFilter(){
                                 label="by Year"
                                 sx={{ backgroundColor: "#e6e0e9"}}
                                 fullWidth
-                                value={filters.songTitle}
-                                onChange={updateField('songTitle')}
+                                value={filters.year}
+                                onChange={updateField('year')}
                             />
                         </Grid>
                     </Grid>

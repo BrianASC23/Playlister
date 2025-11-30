@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { GlobalStoreContext } from "../store";
-import SearchFilters from "./PlaylistSearchFilters";
+import SongSearchFilters from "./SongSearchFilters";
 import PlaylistsList from "./PlaylistsList";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -14,32 +14,37 @@ export default function CatalogScreen() {
   // load the lists to the store
   // get the lists from the store and setPlaylist to it
   useEffect(() => {
-    store.loadIdNamePairs();
+
+    // Should use user's email to find it > req.user_id > email
+    // Should load into a Global variable that stores the songs owned by User
+    store.getSongByUser();
   }, []);
 
-  // Update local playlists when store.idNamePairs changes
+  // Update local songs in Catalog when there are song changes
   useEffect(() => {
     setSongs();
   }, []);
 
-  // Handle searching for playlists by filter
+  // Handle searching for songs by filter
   const handleSearch = async () => {
     console.log("filters:", filters);
-    const playlists = await store.findPlaylistsByFilter(filters);
-    console.log("Playlists from search:", playlists);
-    setSongs(playlists);
+    const songs = await store.findSongsByFilter(filters);
+    console.log("Songs from search:", songs);
+    setSongs(songs);
   };
 
   return (
     <Box id="playlist-screen">
       <Grid container>
         <Grid item xs={6}>
-          <SearchFilters
+          <SongSearchFilters
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
           />
         </Grid>
+
+        
         <Grid item xs={6}>
           <PlaylistsList playlists={playlists} />
         </Grid>
