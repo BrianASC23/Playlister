@@ -11,7 +11,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 
-export default function SearchFilters({ onSearch, filters, setFilters }) {
+export default function PlaylistSearchFilters({ onSearch, filters, setFilters }) {
 
     const updateField = (field) => (e) => {
         setFilters({
