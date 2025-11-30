@@ -34,7 +34,6 @@ export default function SearchFilters({ onSearch, filters, setFilters }) {
             songYear: ''
         };
         setFilters(empty);
-        onSearch(empty);
     }
 
     return(

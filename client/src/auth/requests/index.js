@@ -50,12 +50,14 @@ export const editUser = (firstName, lastName, password, passwordVerify, avatar) 
         avatar: avatar
     })
 }
+
+
 const apis = {
     getLoggedIn,
     registerUser,
     editUser,
     loginUser,
-    logoutUser
+    logoutUser,
 }
 
 export default apis

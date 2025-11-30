@@ -9,6 +9,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
@@ -79,12 +80,10 @@ export default function AppBanner() {
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
 
-    let editToolbar = "";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
         if (store.currentList) {
-            editToolbar = <EditToolbar />;
         }
     }
 
@@ -104,31 +103,70 @@ export default function AppBanner() {
             return <AccountCircle />;
     }
 
+
+
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static" style={{ backgroundColor: "#ee06ff" }}>
                 <Toolbar>
-                    <Typography
-                        variant="h4"
-                        noWrap
-                        component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
-                    >
-                        <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
-                    </Typography>
-                    <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-                    <Box sx={{ height: "90px", display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            { getAccountMenu(auth.loggedIn) }
-                        </IconButton>
+                    <Box sx={{ display: "flex", width: "100%", alignItems: "center" }}>
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2, minWidth: "250px" }}>
+
+                            <Typography
+                                variant="h4"
+                                noWrap
+                                component="div"
+                                align='center'
+                                sx={{ display: { xs: 'none', sm: 'block', background: 'white', borderRadius: '99px', width: '2.5rem', height: 'auto'} }}
+                            >
+                                <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'black' }} to='/'>⌂</Link>
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                sx={{
+                                    textTransform: "none",
+                                    bgcolor: "#1e1e1e",
+                                    "&:hover": { bgcolor: "#1e1e1e" },
+                                }}
+                            >
+                                <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/'>Playlists</Link>
+                            </Button>
+                            <Button
+                                variant="contained"
+                                size="small"
+                                sx={{
+                                    textTransform: "none",
+                                    bgcolor: "#3a64c4",
+                                    "&:hover": { bgcolor: "#3a64c4" },
+                                }}
+                            >
+                                <Link onClick={handleHouseClick} style={{ textDecoration: 'none', color: 'white' }} to='/catalog'>Song Catalogue</Link>
+                            </Button>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center"}}>
+                            <Typography variant="h4"
+                                component="div"
+                                align='center'
+                                sx={{ display: { sm: 'block', justifyContent: 'center'} }}
+                            >
+                                Playlister
+                            </Typography>
+                        </Box>
+
+                        <Box sx={{ height: "90px", minWidth: "250px", display: "flex", justifyContent: "right", alignItems: "center" }}>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                            >
+                                { getAccountMenu(auth.loggedIn) }
+                            </IconButton>
+                        </Box>
                     </Box>
                 </Toolbar>
             </AppBar>
