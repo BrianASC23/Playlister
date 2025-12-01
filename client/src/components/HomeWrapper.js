@@ -1,8 +1,8 @@
 import { useContext } from 'react'
-import HomeScreen from './HomeScreen'
-import SplashScreen from './SplashScreen'
+import HomeScreen from './screens/HomeScreen'
+import SplashScreen from './screens/SplashScreen'
 import AuthContext from '../auth'
-import PlaylistScreen from './PlaylistScreen';
+import PlaylistScreen from './screens/PlaylistScreen';
 
 export default function HomeWrapper() {
     const { auth } = useContext(AuthContext);

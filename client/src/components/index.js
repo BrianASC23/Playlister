@@ -1,37 +1,52 @@
-import AppBanner from './AppBanner'
-import EditToolbar from './EditToolbar'
-import HomeScreen from './HomeScreen'
-import HomeWrapper from './HomeWrapper'
-import ListCard from './PlaylistCard'
-import LoginScreen from './LoginScreen'
-import MUIDeleteModal from './MUIDeleteModal'
-import MUIEditSongModal from './MUIEditSongModal'
-import MUIErrorModal from './MUIErrorModal'
-//import MUIRemoveSongModal from './MUIRemoveSongModal'
-import RegisterScreen from './RegisterScreen'
-import SongCard from './SongCard'
-import SplashScreen from './SplashScreen'
-import Statusbar from './Statusbar'
-import WorkspaceScreen from './WorkspaceScreen'
+import AppBanner from "./layout/AppBanner";
+import EditToolbar from "./layout/EditToolbar";
+import Statusbar from "./layout/Statusbar";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScreen";
+import RegisterScreen from "./screens/RegisterScreen";
+import SplashScreen from "./screens/SplashScreen";
+import WorkspaceScreen from "./screens/WorkspaceScreen";
+import PlaylistScreen from "./screens/PlaylistScreen";
+import CatalogScreen from "./screens/CatalogScreen";
+import EditAccountScreen from "./screens/EditAccountScreen";
+import HomeWrapper from "./HomeWrapper";
+import ListCard from "./cards/PlaylistCard";
+import SongCard from "./cards/SongCard";
+import CatalogCard from "./cards/CatalogCard";
+import MUIDeleteModal from "./modals/MUIDeleteModal";
+import MUIEditSongModal from "./modals/MUIEditSongModal";
+import MUIErrorModal from "./modals/MUIErrorModal";
+import PlaylistsList from "./lists/PlaylistsList";
+import PlaylistSearchFilters from "./lists/PlaylistSearchFilters";
+import CatalogList from "./lists/CatalogList";
+import SongSearchFilter from "./lists/SongSearchFilter";
 /*
     This serves as a module so that we can import
     all the other components as we wish.
-    
+
     @author McKilla Gorilla
 */
-export { 
-    AppBanner,  
-    EditToolbar, 
-    HomeScreen,
-    HomeWrapper,
-    ListCard, 
-    LoginScreen,
-    MUIDeleteModal,
-    MUIEditSongModal,
-    MUIErrorModal,
-    //MUIRemoveSongModal,
-    SongCard,
-    RegisterScreen,
-    SplashScreen,
-    Statusbar, 
-    WorkspaceScreen }
+export {
+  AppBanner,
+  EditToolbar,
+  Statusbar,
+  HomeScreen,
+  HomeWrapper,
+  ListCard,
+  SongCard,
+  CatalogCard,
+  LoginScreen,
+  RegisterScreen,
+  SplashScreen,
+  WorkspaceScreen,
+  PlaylistScreen,
+  CatalogScreen,
+  EditAccountScreen,
+  MUIDeleteModal,
+  MUIEditSongModal,
+  MUIErrorModal,
+  PlaylistsList,
+  PlaylistSearchFilters,
+  CatalogList,
+  SongSearchFilter,
+};

@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import { GlobalStoreContext } from "../../store";
-import PlaylistSearchFilters from "../PlaylistSearchFilters";
-import PlaylistsList from "../PlaylistsList";
+import PlaylistSearchFilters from "../lists/PlaylistSearchFilters";
+import PlaylistsList from "../lists/PlaylistsList";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 

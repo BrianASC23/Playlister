@@ -9,11 +9,11 @@ import {
     LoginScreen,
     RegisterScreen,
     Statusbar,
-    WorkspaceScreen
+    WorkspaceScreen,
+    EditAccountScreen,
+    PlaylistScreen,
+    CatalogScreen
 } from './components'
-import EditAccountScreen from './components/EditAccountScreen';
-import PlaylistScreen from './components/PlaylistScreen';
-import CatalogScreen from './components/CatalogScreen';
 /*
   This is the entry-point for our application. Notice that we
   inject our store into all the components in our application.
