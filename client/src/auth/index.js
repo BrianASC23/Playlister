@@ -11,18 +11,13 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
-    EDIT_USER: "EDIT_USER",
-
-    ENTER_GUEST: "ENTER_GUEST"
+    EDIT_USER: "EDIT_USER"
 }
-
-
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
-        guest: false,
         errorMessage: null
     });
     const history = useHistory();
@@ -38,7 +33,6 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    guest: false,
                     errorMessage: null
                 });
             }
@@ -46,7 +40,6 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    guest: false,
                     errorMessage: payload.errorMessage
                 })
             }
@@ -54,7 +47,6 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: null,
                     loggedIn: false,
-                    guest: false,
                     errorMessage: null
                 })
             }
@@ -62,7 +54,6 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    guest: false,
                     errorMessage: payload.errorMessage
                 })
             }
@@ -70,31 +61,12 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    guest: false,
                     errorMessage: payload.errorMessage
-                })
-            }
-            case AuthActionType.ENTER_GUEST: {
-                return setAuth({
-                    user: null,
-                    loggedIn: false,
-                    guest: true,
-                    errorMessage: null
                 })
             }
             default:
                 return auth;
         }
-    }
-
-    // Entering as Guest is purely local cuz I only do GETs
-    auth.enterGuest = function () {
-        authReducer({
-            type: AuthActionType.ENTER_GUEST,
-            payload: {}
-        });
-
-        history.push('/');
     }
 
     auth.getLoggedIn = async function () {

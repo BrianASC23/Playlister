@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import AuthContext from '../auth'
-import MUIErrorModal from './MUIErrorModal'
-import Copyright from './Copyright'
+import AuthContext from '../../auth'
+import MUIErrorModal from '../MUIErrorModal'
+import Copyright from '../layout/Copyright'
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';

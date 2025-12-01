@@ -43,13 +43,19 @@ export const updatePlaylistById = (id, playlist) => {
 // I think this should be fine because I alr converted filters to a Param String
 export const findPlaylistsByFilter = (filters) => api.get(`/playlist/search?${filters.toString()}`)
 
+
+// For Song Catalog
+export const getSongPairs = () => api.get(`/songpairs/`)
+
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    findPlaylistsByFilter
+    findPlaylistsByFilter,
+    getSongPairs
 }
 
 export default apis

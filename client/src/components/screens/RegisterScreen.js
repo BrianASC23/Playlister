@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
-import AuthContext from '../auth'
-import MUIErrorModal from './MUIErrorModal'
-import Copyright from './Copyright'
+import AuthContext from '../../auth'
+import MUIErrorModal from '../MUIErrorModal'
+import Copyright from '../Copyright'
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -28,7 +28,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-export default function EditAccountScreen() {
+export default function RegisterScreen() {
     const { auth } = useContext(AuthContext);
 
     const [avatarSrc, setAvatarSrc] = useState(null);
@@ -40,9 +40,10 @@ export default function EditAccountScreen() {
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        auth.editUser(
+        auth.registerUser(
             formData.get('firstName'),
             formData.get('lastName'),
+            formData.get('email'),
             formData.get('password'),
             formData.get('passwordVerify'),
             avatarSrc
@@ -175,6 +176,16 @@ export default function EditAccountScreen() {
                                         <TextField
                                             required
                                             fullWidth
+                                            id="email"
+                                            label="Email Address"
+                                            name="email"
+                                            autoComplete="email"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            required
+                                            fullWidth
                                             name="password"
                                             label="Password"
                                             type="password"
@@ -194,30 +205,21 @@ export default function EditAccountScreen() {
                                         />
                                     </Grid>
                                 </Grid>
-                                <Grid container spacing={8}>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            sx={{ mt: 3, mb: 2 }}
-                                        >
-                                            Complete
-                                        </Button>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Button
-                                            type="button"
-                                            fullWidth
-                                            variant="contained"
-                                            sx={{ mt: 3, mb: 2 }}
-                                            onClick={() => window.location.href = '/'}
-                                        >
-                                            Cancel
-                                        </Button>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    sx={{ mt: 3, mb: 2 }}
+                                >
+                                    Sign Up
+                                </Button>
+                                <Grid container justifyContent="flex-start">
+                                    <Grid item>
+                                        <Link href="/login/" variant="body2">
+                                            Already have an account? Sign in
+                                        </Link>
                                     </Grid>
                                 </Grid>
-
                             </Box>
                         </Grid>
 

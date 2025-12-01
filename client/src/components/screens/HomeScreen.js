@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
-import { GlobalStoreContext } from '../store'
-import PlaylistCard from './PlaylistCard.js'
-import MUIDeleteModal from './MUIDeleteModal'
+import { GlobalStoreContext } from '../../store/index.js'
+import PlaylistCard from '../PlaylistCard.js'
+import MUIDeleteModal from '../MUIDeleteModal.js'
 
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
@@ -9,7 +9,7 @@ import List from '@mui/material/List';
 import Box from '@mui/material/Box'
 /*
     This React component lists all the top5 lists in the UI.
-    
+
     @author McKilla Gorilla
 */
 const HomeScreen = () => {
@@ -24,7 +24,7 @@ const HomeScreen = () => {
     }
     let listCard = "";
     if (store) {
-        listCard = 
+        listCard =
             <List sx={{width: '100%', bgcolor: 'background.paper', mb:"20px" }}>
             {
                 store.idNamePairs.map((pair) => (
@@ -34,10 +34,10 @@ const HomeScreen = () => {
                         selected={false}
                     />
                 ))
-                
+
             }
             <Fab sx={{transform:"translate(1150%, 10%)"}}
-                color="primary" 
+                color="primary"
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
@@ -50,7 +50,7 @@ const HomeScreen = () => {
         <div id="playlist-selector">
             <div id="list-selector-heading">
             <Fab sx={{transform:"translate(-20%, 0%)"}}
-                color="primary" 
+                color="primary"
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}

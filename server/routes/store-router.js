@@ -19,4 +19,7 @@ router.get("/playlistpairs", auth.verify, StoreController.getPlaylistPairs);
 router.get("/playlists", auth.verify, StoreController.getPlaylists);
 router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
 
+// For Song Catalog
+router.get("/songpairs", auth.verify, StoreController.getSongPairs);
+
 module.exports = router;

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { GlobalStoreContext } from '../store'
+import { GlobalStoreContext } from '../../store'
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import RedoIcon from '@mui/icons-material/Redo';
@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/HighlightOff';
 /*
     This toolbar is a functional React component that
     manages the undo/redo/close buttons.
-    
+
     @author McKilla Gorilla
 */
 function EditToolbar() {
@@ -36,21 +36,21 @@ function EditToolbar() {
                 variant="contained">
                 <AddIcon />
             </Button>
-            <Button 
+            <Button
                 disabled={!store.canUndo()}
                 id='undo-button'
                 onClick={handleUndo}
                 variant="contained">
                     <UndoIcon />
             </Button>
-            <Button 
+            <Button
                 disabled={!store.canRedo()}
                 id='redo-button'
                 onClick={handleRedo}
                 variant="contained">
                     <RedoIcon />
             </Button>
-            <Button 
+            <Button
                 disabled={!store.canClose()}
                 id='close-button'
                 onClick={handleClose}

@@ -1,5 +1,6 @@
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
+const Song = require('../models/song-model');
 const auth = require('../auth');
 /*
     This is our back-end API. It provides all the data services
@@ -285,6 +286,41 @@ updatePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
+getSongPairs = async (req, res) => {
+    // check if auth.verify is null
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: "UNAUTHORIZED"
+        });
+    }
+
+    // Find the User Email via req.userId
+    await User.findOne({_id: req.userId}, (err, user) => {
+        async function findUserSongs(email){
+            await Song.find({ ownerEmail: email }, (err, songs) => {
+                if (err){
+                    return res.status(400).json({
+                        success: false,
+                        message: "Error finding User's Songs"
+                    });
+                }
+                else{
+                    console.log(`Songs: ${songs}`);
+                    return res.status(200).json({
+                        success: true,
+                        songlist: songs
+                    })
+                }
+            }).catch(err => console.log(err));
+        }
+        findUserSongs(user.email);
+    }).catch(err => console.log(err));
+}
+
+
+
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -292,5 +328,6 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     findPlaylistsByFilter,
-    updatePlaylist
+    updatePlaylist,
+    getSongPairs
 }
