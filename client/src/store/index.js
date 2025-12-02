@@ -409,18 +409,6 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.addSongToCatalog = async (songToAdd) => {
-    let response = await storeRequestSender.createSong(songToAdd);
-
-    if (response.data.success) {
-      // Refetch the Songs from the DB
-      await store.getSongByUser();
-
-      // close the modal
-      await store.hideModals();
-    }
-  };
-
   store.hideModals = () => {
     auth.errorMessage = null;
     storeReducer({
@@ -644,7 +632,21 @@ function GlobalStoreContextProvider(props) {
       }
     }
 
+  store.addSongToCatalog = async (songToAdd) => {
+    try {
+      let response = await storeRequestSender.createSong(songToAdd);
 
+      if (response.data.success) {
+        // Refetch the Songs from the DB
+        await store.getSongByUser();
+
+        // close the modal
+        store.hideModals();
+      }
+    } catch (error) {
+      console.error("Error adding song to catalog:", error);
+    }
+  };
 
   store.findSongsByFilter = async (filters) => {
     const params = new URLSearchParams(filters);

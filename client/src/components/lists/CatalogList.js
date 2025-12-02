@@ -38,7 +38,7 @@ export default function CatalogList({ songs }) {
         </Box>
         <Typography variant="h6">{songs.length} Songs</Typography>
       </Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{overflowY:'scroll', maxHeight: '600px'}}>
         {songs.map((song) => (
           <Grid item xs={12} key={song._id}>
             <CatalogCard song={song} selected={false} />
