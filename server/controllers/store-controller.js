@@ -320,6 +320,59 @@ getSongPairs = async (req, res) => {
 
 
 
+createSong = async (req, res) => {
+    // First see if it is a registered user
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+    try {
+
+        // We try to find user
+        const user = await User.findOne({_id: req.userId});
+        if (!user){
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'USER NOT FOUND'
+            });
+        }
+
+        const { title, artist, year, youTubeId} = req.body;
+
+        //Create a new Song
+
+        const newSong = new Song({
+            title: title,
+            artist: artist,
+            year: year,
+            youTubeId: youTubeId,
+            ownerEmail: user.email,
+            numListeners: 0,
+            inPlaylists: 0
+        });
+
+        await newSong.save();
+
+        return res.status(200).json({
+            success: true,
+            song: newSong
+        });
+    } catch(err){
+        return res.status(400).json({
+            success: false,
+            message: "FAILED TO CREATE SONG"
+        })
+    }
+}
+
+
+
+
+
+
+
 
 module.exports = {
     createPlaylist,
@@ -329,5 +382,6 @@ module.exports = {
     getPlaylists,
     findPlaylistsByFilter,
     updatePlaylist,
-    getSongPairs
+    getSongPairs,
+    createSong
 }

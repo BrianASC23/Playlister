@@ -4,6 +4,8 @@ import SongSearchFilter from "../lists/SongSearchFilter";
 import CatalogList from "../lists/CatalogList";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import MUIEditSongModal from "../modals/MUIEditSongModal";
 
 export default function CatalogScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -29,8 +31,24 @@ export default function CatalogScreen() {
     console.log("filters:", filters);
     const songs = await store.findSongsByFilter(filters);
     console.log("Songs from search:", songs);
-    setSongs(songs);
+    setSongs(songs); // Don't know if I need this if I have a global songlist
   };
+
+  const handleAddNewSong = async () => {
+    //Should open the Add/Edit Song Modal
+    // Once I fill out everything and hit complete
+    // It should fill out and create a new song
+
+    store.showEditSongModal(-1, null);
+  };
+
+  // if I click on edit/add a new song, store should update and show the edit song modal
+  let modalJSX = "";
+  if (store.isEditSongModalOpen()) {
+    modalJSX = <MUIEditSongModal />;
+  }
+
+
 
   return (
     <Box id="playlist-screen">
@@ -44,8 +62,10 @@ export default function CatalogScreen() {
         </Grid>
         <Grid item xs={6}>
           <CatalogList songs={songs} />
+          <Button onClick={handleAddNewSong}>+ New Songs</Button>
         </Grid>
       </Grid>
+      {modalJSX}
     </Box>
   );
 }

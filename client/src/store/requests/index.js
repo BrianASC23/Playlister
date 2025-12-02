@@ -47,6 +47,15 @@ export const findPlaylistsByFilter = (filters) => api.get(`/playlist/search?${fi
 // For Song Catalog
 export const getSongPairs = () => api.get(`/songpairs/`)
 
+export const createSong = (songData) => {
+    return api.post(`/song/`, {
+        title: songData.title,
+        artist: songData.artist,
+        year: songData.year,
+        youTubeId: songData.youTubeId
+    })
+}
+
 
 const apis = {
     createPlaylist,
@@ -55,7 +64,8 @@ const apis = {
     getPlaylistPairs,
     updatePlaylistById,
     findPlaylistsByFilter,
-    getSongPairs
+    getSongPairs,
+    createSong
 }
 
 export default apis

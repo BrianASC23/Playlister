@@ -23,10 +23,13 @@ const style1 = {
 
 export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
-    const [ title, setTitle ] = useState(store.currentSong.title);
-    const [ artist, setArtist ] = useState(store.currentSong.artist);
-    const [ year, setYear ] = useState(store.currentSong.year);
-    const [ youTubeId, setYouTubeId ] = useState(store.currentSong.youTubeId);
+
+    const isAddMode = !store.currentSong || store.currentSong === -1
+
+    const [ title, setTitle ] = useState(store.currentSong?.title) || '';
+    const [ artist, setArtist ] = useState(store.currentSong?.artist) || '';
+    const [ year, setYear ] = useState(store.currentSong?.year) || '';
+    const [ youTubeId, setYouTubeId ] = useState(store.currentSong?.youTubeId) || '';
 
     function handleConfirmEditSong() {
         let newSongData = {
@@ -34,8 +37,17 @@ export default function MUIEditSongModal() {
             artist: artist,
             year: year,
             youTubeId: youTubeId
-        };
-        store.addUpdateSongTransaction(store.currentSongIndex, newSongData);
+        }
+
+        if (isAddMode){
+            console.log("Calling Function: Adding Song to Catalog");
+            store.addSongToCatalog(newSongData);
+
+        } else {
+            store.addUpdateSongTransaction(store.currentSongIndex, newSongData);
+
+        }
+
     }
 
     function handleCancelEditSong() {
@@ -67,7 +79,7 @@ export default function MUIEditSongModal() {
             <Typography
                 sx={{fontWeight: 'bold'}}
                 id="edit-song-modal-title" variant="h4" component="h2">
-                Edit Song
+                {isAddMode ? 'Add Song' : 'Edit Song'}
             </Typography>
             <Divider sx={{borderBottomWidth: 5, p: '5px', transform: 'translate(-5.5%, 0%)', width:377}}/>
             <Typography
