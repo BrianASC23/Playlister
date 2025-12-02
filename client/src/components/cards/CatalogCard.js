@@ -31,8 +31,8 @@ export default function CatalogCard({ song }) {
         <Typography>{song.title}</Typography>
         <Typography>{song.year}</Typography>
         <Box>
-          <Typography>Listens</Typography>
-          <Typography>In Playlists</Typography>
+          <Typography>Listens {song.numListeners}</Typography>
+          <Typography>In Playlists {song.inPlaylists}</Typography>
         </Box>
       </Box>
     </ListItem>
