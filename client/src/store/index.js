@@ -464,27 +464,6 @@ function GlobalStoreContextProvider(props) {
     asyncSetCurrentList(id);
   };
 
-  // Song Functions
-
-  store.getSongByUser = function () {
-    async function asyncGetSongByUser() {
-      let response = await storeRequestSender.getSongPairs();
-
-      if (response.data.success) {
-        console.log("Response Success");
-        let songs = response.data.songlist;
-        console.log(songs);
-        storeReducer({
-          type: GlobalStoreActionType.LOAD_USER_SONGS,
-          payload: songs,
-        });
-        console.log("Songlist From Store", store.songlist);
-      } else {
-        console.log("Failed to Get user songs");
-      }
-    }
-    asyncGetSongByUser();
-  };
 
   store.getPlaylistSize = function () {
     return store.currentList.songs.length;
@@ -642,8 +621,47 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
+
+
+// NEW STORE FUNCTIONS I IMPLEMENTED
+
+  // Song Functions
+
+  store.getSongByUser = async () => {
+      let response = await storeRequestSender.getSongPairs();
+
+      if (response.data.success) {
+        console.log("Response Success");
+        let songs = response.data.songlist;
+        console.log(songs);
+        storeReducer({
+          type: GlobalStoreActionType.LOAD_USER_SONGS,
+          payload: songs,
+        });
+        console.log("Songlist From Store", store.songlist);
+      } else {
+        console.log("Failed to Get user songs");
+      }
+    }
+
+
+
+  store.findSongsByFilter = async (filters) => {
+    const params = new URLSearchParams(filters);
+    console.log("Song Search Params:", params);
+    let response = await storeRequestSender.findSongsByFilter(params);
+    if (response.data.success){
+        console.log("Success! Found songs: ", response.data.songs);
+        return response.data.songs;
+    } else{
+        console.log("No Songs Found!");
+        return [];
+    }
+
+  }
+
   // FUNCTION to FIND ALL PLAYLISTS based on the FILTERS
-  store.findPlaylistsByFilter = async function (filters) {
+  store.findPlaylistsByFilter = async (filters) => {
     // Sanitize and use only filters that are nonempty
     console.log("Filters:", filters);
 

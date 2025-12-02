@@ -22,5 +22,6 @@ router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
 // For Song Catalog
 router.get("/songpairs", auth.verify, StoreController.getSongPairs);
 router.post("/song", auth.verify, StoreController.createSong);
+router.get("/songs/search", auth.verify, StoreController.findSongsByFilter);
 
 module.exports = router;

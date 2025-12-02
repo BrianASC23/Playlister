@@ -56,6 +56,8 @@ export const createSong = (songData) => {
     })
 }
 
+export const findSongsByFilter = (filters) => api.get(`/songs/search?${filters.toString()}`)
+
 
 const apis = {
     createPlaylist,
@@ -65,7 +67,8 @@ const apis = {
     updatePlaylistById,
     findPlaylistsByFilter,
     getSongPairs,
-    createSong
+    createSong,
+    findSongsByFilter
 }
 
 export default apis

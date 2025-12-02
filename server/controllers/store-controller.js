@@ -368,6 +368,42 @@ createSong = async (req, res) => {
 }
 
 
+// Don't need to do verification of user account -> can be guest account
+findSongsByFilter = async (req, res) =>{
+    try{
+        const { title, artist, year } = req.query;
+
+        let query = {}
+
+        if (title){
+            query.title = { $regex: title, $options: "i" };
+        }
+
+        if (artist){
+            query.artist = { $regex: artist, $options: "i" };
+        }
+
+        if (year){
+            query.year =  { $regex: year, $options: "i" };
+        }
+
+
+        const songs = await Song.find(query);
+
+        return res.status(200).json({
+            success: true,
+            songs: songs
+        });
+    } catch(error){
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            error: error.message
+        })
+    }
+
+}
+
 
 
 
@@ -383,5 +419,6 @@ module.exports = {
     findPlaylistsByFilter,
     updatePlaylist,
     getSongPairs,
-    createSong
+    createSong,
+    findSongsByFilter
 }
