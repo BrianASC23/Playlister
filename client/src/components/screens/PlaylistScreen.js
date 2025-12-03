@@ -2,8 +2,10 @@ import { useContext, useState, useEffect } from "react";
 import { GlobalStoreContext } from "../../store";
 import PlaylistSearchFilters from "../lists/PlaylistSearchFilters";
 import PlaylistsList from "../lists/PlaylistsList";
+import MUIEditPlaylistModal from "../modals/MUIEditPlaylistModal";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
 
 export default function PlaylistScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -30,6 +32,15 @@ export default function PlaylistScreen() {
     setPlaylists(playlists);
   };
 
+  const addNewPlaylist = async () => {
+    await store.createNewList();
+  };
+
+  let modalJSX = "";
+  if (store.isEditPlaylistModalOpen()) {
+    modalJSX = <MUIEditPlaylistModal />;
+  }
+
   return (
     <Box id="playlist-screen">
       <Grid container>
@@ -42,8 +53,10 @@ export default function PlaylistScreen() {
         </Grid>
         <Grid item xs={6}>
           <PlaylistsList playlists={playlists} />
+          <Button onClick={addNewPlaylist}>+ New Playlist</Button>
         </Grid>
       </Grid>
+      {modalJSX}
     </Box>
   );
 }

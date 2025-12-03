@@ -45,6 +45,7 @@ const CurrentModal = {
   DELETE_LIST: "DELETE_LIST",
   EDIT_SONG: "EDIT_SONG",
   ERROR: "ERROR",
+  EDIT_PLAYLIST: "EDIT_PLAYLIST"
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -111,7 +112,7 @@ function GlobalStoreContextProvider(props) {
       // CREATE A NEW LIST
       case GlobalStoreActionType.CREATE_NEW_LIST: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal: CurrentModal.EDIT_PLAYLIST,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -342,9 +343,10 @@ function GlobalStoreContextProvider(props) {
         type: GlobalStoreActionType.CREATE_NEW_LIST,
         payload: newList,
       });
+      console.log("Created new list with modal set to EDIT_PLAYLIST");
 
       // IF IT'S A VALID LIST THEN LET'S START EDITING IT
-      history.push("/playlist/" + newList._id);
+    //   history.push("/playlist/" + newList._id);
     } else {
       console.log("FAILED TO CREATE A NEW LIST");
     }
@@ -435,7 +437,7 @@ function GlobalStoreContextProvider(props) {
       let response = await storeRequestSender.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-
+        console.log("Setting current list is success");
         response = await storeRequestSender.updatePlaylistById(
           playlist._id,
           playlist
@@ -445,11 +447,12 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.SET_CURRENT_LIST,
             payload: playlist,
           });
-          history.push("/playlist/" + playlist._id);
+        console.log("Finished");
+        //   history.push("/playlist/" + playlist._id);
         }
       }
     }
-    asyncSetCurrentList(id);
+    return asyncSetCurrentList(id);
   };
 
 
@@ -638,7 +641,7 @@ function GlobalStoreContextProvider(props) {
 
       if (response.data.success) {
         // Refetch the Songs from the DB
-        await store.getSongByUser();
+        store.getSongByUser();
 
         // close the modal
         store.hideModals();
@@ -679,6 +682,17 @@ function GlobalStoreContextProvider(props) {
       return [];
     }
   };
+
+ // CHeck if Edit Playlist Modal is Open
+  store.isEditPlaylistModalOpen = () => {
+    return store.currentModal === CurrentModal.EDIT_PLAYLIST;
+  }
+
+  store.showEditPlaylistModal = () => {
+    storeReducer({
+        type: GlobalStoreActionType.EDIT_PLAYLIST
+    })
+  }
 
   function KeyPress(event) {
     if (!store.modalOpen && event.ctrlKey) {
