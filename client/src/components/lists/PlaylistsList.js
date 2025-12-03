@@ -60,7 +60,7 @@ export default function PlaylistsList({ playlists }) {
         </Box>
         <Typography variant="h6">{playlists.length} Playlists</Typography>
       </Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{overflowY: 'scroll', maxHeight: '600px' }}>
         {playlists.map((playlist) => (
           <Grid item xs={12} key={playlist._id}>
             <PlaylistCard playlist={playlist} selected={false} />
