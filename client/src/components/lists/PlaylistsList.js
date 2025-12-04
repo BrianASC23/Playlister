@@ -13,7 +13,7 @@ import { useState, useMemo } from "react";
 
 export default function PlaylistsList({ playlists }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [sortBy, setSortBy] = useState(null);
+  const [sortBy, setSortBy] = useState("");
 
   // Did not fully implement yet, need to add properties like listeners to playlist
   // const sortedPlaylists = useMemo(() => {

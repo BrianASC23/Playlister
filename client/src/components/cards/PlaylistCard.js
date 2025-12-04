@@ -44,9 +44,8 @@ function PlaylistCard({ playlist }) {
     }
   }
 
-  function handleToggleEdit(event) {
-    event.stopPropagation();
-    toggleEdit();
+  async function handleToggleEdit(playlist_id, playlist) {
+    store.showEditPlaylistModal(playlist);
   }
 
   function toggleEdit() {
@@ -144,7 +143,7 @@ function PlaylistCard({ playlist }) {
                 bgcolor: "#3949ab",
                 "&:hover": { bgcolor: "#283593" },
               }}
-              onClick={handleToggleEdit} // Should Open the Edit Modal
+              onClick={() => handleToggleEdit(playlist._id, playlist)}
             >
               Edit
             </Button>
