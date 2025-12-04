@@ -15,7 +15,7 @@ router.post("/playlist", auth.verify, StoreController.createPlaylist);
 router.get("/playlist/search", auth.verify, StoreController.findPlaylistsByFilter);
 router.delete("/playlist/:id", auth.verify, StoreController.deletePlaylist);
 router.get("/playlist/:id", auth.verify, StoreController.getPlaylistById);
-router.get("/playlistpairs", auth.verify, StoreController.getPlaylistPairs);
+router.get("/playlistpairs", auth.verify, StoreController.getUserPlaylists);
 router.get("/playlists", auth.verify, StoreController.getPlaylists);
 router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
 

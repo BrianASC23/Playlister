@@ -121,13 +121,13 @@ getPlaylistById = async (req, res) => {
         asyncFindUser(list);
     }).catch(err => console.log(err))
 }
-getPlaylistPairs = async (req, res) => {
+getUserPlaylists = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
             errorMessage: 'UNAUTHORIZED'
         })
     }
-    console.log("getPlaylistPairs");
+    console.log("getUserPlaylists");
     await User.findOne({ _id: req.userId }, (err, user) => {
         console.log("find user with id " + req.userId);
         async function asyncFindList(email) {
@@ -143,22 +143,9 @@ getPlaylistPairs = async (req, res) => {
                         .status(404)
                         .json({ success: false, error: 'Playlists not found' })
                 }
-                else {
-                    console.log("Send the Playlist pairs");
-                    // PUT ALL THE LISTS INTO ID, NAME PAIRS
-                    let pairs = [];
-                    for (let key in playlists) {
-                        let list = playlists[key];
-                        let pair = {
-                            _id: list._id,
-                            name: list.name,
-                            ownerEmail: list.ownerEmail,
-                            ownerName: user.firstName + " " + user.lastName
-                        };
-                        pairs.push(pair);
-                    }
-                    return res.status(200).json({ success: true, idNamePairs: pairs })
-                }
+
+                return res.status(200).json({ success: true, currentList: playlists })
+
             }).catch(err => console.log(err))
         }
         asyncFindList(user.email);
@@ -432,7 +419,7 @@ module.exports = {
     createPlaylist,
     deletePlaylist,
     getPlaylistById,
-    getPlaylistPairs,
+    getUserPlaylists,
     getPlaylists,
     findPlaylistsByFilter,
     updatePlaylist,

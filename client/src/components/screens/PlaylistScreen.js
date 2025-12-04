@@ -16,13 +16,13 @@ export default function PlaylistScreen() {
   // load the lists to the store
   // get the lists from the store and setPlaylist to it
   useEffect(() => {
-    store.loadIdNamePairs();
+    store.loadUserPlaylists();
   }, []);
 
   // Update local playlists when store.idNamePairs changes
   useEffect(() => {
-    setPlaylists(store.idNamePairs);
-  }, [store.idNamePairs]);
+    setPlaylists(store.userPlaylists);
+  }, [store.userPlaylists]);
 
   // Handle searching for playlists by filter
   const handleSearch = async () => {
