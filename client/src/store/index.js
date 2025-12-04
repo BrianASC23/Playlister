@@ -457,7 +457,7 @@ function GlobalStoreContextProvider(props) {
           type: GlobalStoreActionType.SET_CURRENT_LIST,
           payload: playlist,
         });
-        console.log("Finished");
+        console.log("Set Current List", playlist);
       }
     }
     return asyncSetCurrentList(id);

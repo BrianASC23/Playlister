@@ -52,6 +52,8 @@ export default function MUIEditPlaylistModal() {
     store.markSongForDeletion(index);
   }
 
+  console.log("MUIEDIT STORE CURRENT LIST:", store.currentList);
+
   return (
     <Modal open={store.isEditPlaylistModalOpen()} onClose={handleClose}>
       <Box
@@ -152,7 +154,8 @@ export default function MUIEditPlaylistModal() {
             sx={{
               bgcolor: "#e8e8ff",
               flex: 1,
-              overflow: "auto",
+              overflowY: "scroll",
+              maxHeight: "500px",
               p: 2,
               mb: 2,
               borderRadius: 1,

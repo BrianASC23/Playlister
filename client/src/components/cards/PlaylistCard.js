@@ -45,7 +45,9 @@ function PlaylistCard({ playlist }) {
   }
 
   async function handleToggleEdit(playlist_id, playlist) {
+    // Open the Edit playlist Modal
     store.showEditPlaylistModal(playlist);
+
   }
 
   function toggleEdit() {
