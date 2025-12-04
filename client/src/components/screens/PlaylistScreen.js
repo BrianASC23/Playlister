@@ -30,6 +30,7 @@ export default function PlaylistScreen() {
     const playlists = await store.findPlaylistsByFilter(filters);
     console.log("Playlists from search:", playlists);
     setPlaylists(playlists);
+    console.log("Playlists: ", playlists)
   };
 
   const addNewPlaylist = async () => {

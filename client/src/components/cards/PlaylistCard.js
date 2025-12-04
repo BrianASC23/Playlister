@@ -77,6 +77,10 @@ function PlaylistCard({ playlist }) {
     setText(event.target.value);
   }
 
+  // Check if the playlist's owner email is the same as our current user.
+  // Depending on this boolean, we render the option to edit & delete
+  const isOwner = auth.user.email === playlist.ownerEmail;
+
   let cardElement = (
     <ListItem
       id={playlist._id}
@@ -116,33 +120,36 @@ function PlaylistCard({ playlist }) {
       {/* RIGHT: buttons */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         {/* Delete */}
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            textTransform: "none",
-            bgcolor: "#e53935",
-            "&:hover": { bgcolor: "#c62828" },
-          }}
-          onClick={(event) => handleDeleteList(event, playlist._id)}
-        >
-          Delete
-        </Button>
 
-        {/* Edit */}
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            textTransform: "none",
-            bgcolor: "#3949ab",
-            "&:hover": { bgcolor: "#283593" },
-          }}
-          onClick={handleToggleEdit} // Should Open the Edit Modal
-        >
-          Edit
-        </Button>
-
+        {isOwner && (
+          <>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                textTransform: "none",
+                bgcolor: "#e53935",
+                "&:hover": { bgcolor: "#c62828" },
+              }}
+              onClick={(event) => handleDeleteList(event, playlist._id)}
+            >
+              Delete
+            </Button>
+            {/* Edit */}
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                textTransform: "none",
+                bgcolor: "#3949ab",
+                "&:hover": { bgcolor: "#283593" },
+              }}
+              onClick={handleToggleEdit} // Should Open the Edit Modal
+            >
+              Edit
+            </Button>
+          </>
+        )}
         {/* Copy */}
         <Button
           variant="contained"

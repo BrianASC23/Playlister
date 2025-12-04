@@ -151,7 +151,9 @@ getPlaylistPairs = async (req, res) => {
                         let list = playlists[key];
                         let pair = {
                             _id: list._id,
-                            name: list.name
+                            name: list.name,
+                            ownerEmail: list.ownerEmail,
+                            ownerName: user.firstName + " " + user.lastName
                         };
                         pairs.push(pair);
                     }
@@ -209,9 +211,25 @@ findPlaylistsByFilter = async (req, res) => {
 
         const playlists = await Playlist.find(query);
 
+        // Get owner names for each playlist
+        // Create array of promises so that for each playlist it would find the user email and based on that
+        // create the output with the new format + data
+        const playlistsWithOwnerNames = await Promise.all(
+            playlists.map(async (playlist) => {
+                const user = await User.findOne({ email: playlist.ownerEmail });
+                return {
+                    _id: playlist._id,
+                    name: playlist.name,
+                    ownerEmail: playlist.ownerEmail,
+                    ownerName: user ? `${user.firstName} ${user.lastName}` : 'Unknown',
+                    songs: playlist.songs
+                };
+            })
+        );
+
         return res.status(200).json({
             success: true,
-            playlists: playlists
+            playlists: playlistsWithOwnerNames
         });
     } catch(error){
         console.error(error);
