@@ -16,27 +16,28 @@ export default function PlaylistsList({ playlists }) {
   const [sortBy, setSortBy] = useState("");
 
   // Did not fully implement yet, need to add properties like listeners to playlist
-  // const sortedPlaylists = useMemo(() => {
+  const sortedPlaylists = useMemo(() => {
+      if (!playlists || playlists.length === 0) return [];
+      
+      const arr = [...playlists];
 
-  //     const arr = [...playlists];
-
-  //     switch (sortBy){
-  //         case "listener-hi":
-  //             return arr.sort((a, b) => a.listeners - b.listeners);
-  //         case "listener-lo":
-  //             return arr.sort((a, b) => b.listeners - a.listeners);
-  //         case "playlist-az":
-  //             return arr.sort((a, b) => a.title.localeCompare(b.title));
-  //         case "playlist-za":
-  //             return arr.sort((a, b) => b.title.localeCompare(a.title));
-  //         case "username-az":
-  //             return arr.sort((a, b) => a.ownerEmail.localeCompare(b.ownerEmail));
-  //         case "username-za":
-  //             return arr.sort((a,vb) => b.ownerEmail.localeCompare(a.ownerEmail));
-  //         default:
-  //             return arr;
-  //     }
-  // }, [playlists, sortBy]);
+      switch (sortBy){
+          case "listener-hi":
+              return arr.sort((a, b) => (a.listeners || 0) - (b.listeners || 0));
+          case "listener-lo":
+              return arr.sort((a, b) => (b.listeners || 0) - (a.listeners || 0));
+          case "playlist-az":
+              return arr.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+          case "playlist-za":
+              return arr.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
+          case "username-az":
+              return arr.sort((a, b) => (a.ownerEmail || "").localeCompare(b.ownerEmail || ""));
+          case "username-za":
+              return arr.sort((a, b) => (b.ownerEmail || "").localeCompare(a.ownerEmail || ""));
+          default:
+              return arr;
+      }
+  }, [playlists, sortBy]);
 
   return (
     <Box sx={{ px: 2, py: 1 }}>
@@ -61,7 +62,7 @@ export default function PlaylistsList({ playlists }) {
         <Typography variant="h6">{playlists.length} Playlists</Typography>
       </Box>
       <Grid container spacing={2} sx={{overflowY: 'scroll', maxHeight: '600px' }}>
-        {playlists.map((playlist) => (
+        {sortedPlaylists.map((playlist) => (
           <Grid item xs={12} key={playlist._id}>
             <PlaylistCard playlist={playlist} selected={false} />
           </Grid>
