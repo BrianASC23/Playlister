@@ -15,10 +15,9 @@ export default function PlaylistsList({ playlists }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [sortBy, setSortBy] = useState("");
 
-  // Did not fully implement yet, need to add properties like listeners to playlist
   const sortedPlaylists = useMemo(() => {
       if (!playlists || playlists.length === 0) return [];
-      
+
       const arr = [...playlists];
 
       switch (sortBy){
