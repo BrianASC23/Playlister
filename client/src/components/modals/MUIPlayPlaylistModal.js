@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { GlobalStoreContext } from "../../store";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -11,6 +11,10 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import { Typography, Grid } from "@mui/material";
 
 export default function MUIPlayPlaylistModal() {
@@ -19,19 +23,22 @@ export default function MUIPlayPlaylistModal() {
     store.currentList?.name || ""
   );
 
+  const playerRef = useRef(null);
+
   function handleClose() {
     store.closeCurrentList();
   }
 
-  function handleUpdatePlaylistName(event) {
-    setPlaylistName(event.target.value);
+  function handlePlayPause(){
+
   }
 
-  // For changing the list name
-  function handleKeyPress(event) {
-    if (event.key === "Enter") {
-      store.changeListName(store.currentList._id, playlistName);
-    }
+  function handlePreviousSong(){
+
+  }
+
+  function handleNextSong(){
+
   }
 
   console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
@@ -83,28 +90,10 @@ export default function MUIPlayPlaylistModal() {
                   mb: 1,
                 }}
               >
-                <TextField
-                  value={playlistName}
-                  onChange={handleUpdatePlaylistName}
-                  onKeyPress={handleKeyPress}
-                  variant="standard"
-                  size="small"
-                  sx={{
-                    bgcolor: "#e6e0e9",
-                    borderRadius: 1,
-                    p: 1,
-                    flex: 1,
-                    mr: 2,
-                    "& .MuiInput-underline:before": { borderBottom: "none" },
-                    "& .MuiInput-underline:after": { borderBottom: "none" },
-                    "& .MuiInput-underline:hover:before": {
-                      borderBottom: "none",
-                    },
-                  }}
-                />
+
                 <Box
                   sx={{
-                    bgcolor: "#e8e8ff",
+                    bgcolor: "white",
                     flex: 1,
                     overflowY: "scroll",
                     maxHeight: "500px",
@@ -113,6 +102,7 @@ export default function MUIPlayPlaylistModal() {
                     borderRadius: 1,
                   }}
                 >
+                <Typography color='black'>{playlistName}</Typography>
                   {store.currentList?.songs?.map((song, index) => (
                     <Box
                       key={index}
@@ -124,6 +114,7 @@ export default function MUIPlayPlaylistModal() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
+                        color: 'black'
                       }}
                     >
                       <Box
@@ -142,24 +133,90 @@ export default function MUIPlayPlaylistModal() {
               </Box>
             </Grid>
 
+            {/* YOUTUBE PLAYER IS HERE */}
+
             <Grid item xs={3} md={3}>
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-                Placeholder
-              </Box>
-              <Button
-                variant="contained"
-                onClick={handleClose}
-                sx={{
+              <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                alignItems: "center"
+              }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    bgcolor: "black",
+                    borderRadius: 1,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div ref={playerRef}></div>
+                </Box>
+
+                <Box sx={{ textAlign: "center", width: "100%" }}>
+                  <Typography variant="body2" sx={{ fontWeight: "bold", color: "black" }}>
+                    Now Playing:
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "black" }}>
+                    {store.currentList?.songs?.[store.currentSongIndex]?.title || "No song selected"}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "gray" }}>
+                    Song {store.currentSongIndex + 1} of {store.currentList?.songs?.length || 0}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+                  <IconButton
+                    onClick={handlePreviousSong}
+                    disabled={store.currentSongIndex === 0}
+                    sx={{
+                      bgcolor: "#2196f3",
+                      color: "white",
+                      "&:hover": { bgcolor: "#1976d2" },
+                      "&:disabled": { bgcolor: "#ccc" },
+                    }}
+                  >
+                    <SkipPreviousIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handlePlayPause}
+                    sx={{
+                      bgcolor: "#4caf50",
+                      color: "white",
+                      "&:hover": { bgcolor: "#45a049" },
+                    }}
+                  >
+                    <PlayArrowIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handleNextSong}
+                    disabled={store.currentSongIndex >= (store.currentList?.songs?.length || 0) - 1}
+                    sx={{
+                      bgcolor: "#2196f3",
+                      color: "white",
+                      "&:hover": { bgcolor: "#1976d2" },
+                      "&:disabled": { bgcolor: "#ccc" },
+                    }}
+                  >
+                    <SkipNextIcon />
+                  </IconButton>
+                </Box>
+
+                <Button
+                  variant="contained"
+                  onClick={handleClose}
+                  sx={{
                     bgcolor: "#4caf50",
                     borderRadius: "20px",
                     px: 4,
                     "&:hover": {
-                    bgcolor: "#45a049",
+                      bgcolor: "#45a049",
                     },
-                }}
+                  }}
                 >
-                Close
-              </Button>
+                  Close
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </Box>

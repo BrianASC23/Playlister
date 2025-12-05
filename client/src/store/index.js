@@ -37,6 +37,7 @@ export const GlobalStoreActionType = {
   PLAY_PLAYLIST: "PLAY_PLAYLIST",
   LOAD_USER_SONGS: "LOAD_USER_SONGS",
   CREATE_SONGS: "CREATE_SONGS",
+  SET_CURRENT_SONG_INDEX: "SET_CURRENT_SONG_INDEX",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -278,7 +279,21 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.PLAY_PLAYLIST,
           userPlaylists: store.userPlaylists,
           currentList: payload,
-          currentSongIndex: -1,
+          currentSongIndex: 0,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          songlist: store.songlist,
+        });
+      }
+      case GlobalStoreActionType.SET_CURRENT_SONG_INDEX: {
+        return setStore({
+          currentModal: store.currentModal,
+          userPlaylists: store.userPlaylists,
+          currentList: store.currentList,
+          currentSongIndex: payload,
           currentSong: null,
           newListCounter: store.newListCounter,
           listNameActive: false,
@@ -466,6 +481,8 @@ function GlobalStoreContextProvider(props) {
   }
 
 
+
+  // Might delete cuz I don't need it
   store.playPlaylist = async (id) => {
     try {
         console.log("Playing playlist with ID:", id);
