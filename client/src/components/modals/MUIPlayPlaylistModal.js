@@ -23,22 +23,133 @@ export default function MUIPlayPlaylistModal() {
     store.currentList?.name || ""
   );
 
+  const [player, setPlayer] = useState(null);
   const playerRef = useRef(null);
 
-  function handleClose() {
-    store.closeCurrentList();
+  // This code loads the IFrame Player API code asynchronously.
+  useEffect(() => {
+    if (!window.YT) {
+      let tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      let firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    window.onYouTubeIframeAPIReady = function () {
+      console.log("onYouTubeIframeAPIReady()");
+      createPlayer();
+    };
+
+    // If API is already loaded
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    }
+
+    return () => {
+      if (player) {
+        console.log("Destroying player");
+        player.destroy();
+        setPlayer(null);
+      }
+    };
+  }, []);
+
+  // AFter API finishes loading, check if the DOM element exists and if there is a valid song with a Youtube ID
+  function createPlayer() {
+    if (
+      playerRef.current &&
+      store.currentList?.songs?.[store.currentSongIndex]?.youTubeId
+    ) {
+      let newPlayer = new window.YT.Player(playerRef.current, {
+        height: "300",
+        width: "100%",
+        videoId: store.currentList.songs[store.currentSongIndex].youTubeId,
+        playerVars: {
+          playsinline: 1,
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+        },
+      });
+      setPlayer(newPlayer);
+    }
   }
 
-  function handlePlayPause(){
-    
+  function changeSong() {
+    console.log("changeSong()");
+    if (
+      player &&
+      store.currentSongIndex >= 0 &&
+      store.currentList?.songs?.[store.currentSongIndex]
+    ) {
+      player.loadVideoById(
+        store.currentList.songs[store.currentSongIndex].youTubeId
+      );
+    }
   }
 
-  function handlePreviousSong(){
+  // Update player when song changes
+  useEffect(() => {
+    changeSong();
+  }, [store.currentSongIndex]);
+
+  // Automatically plays video when the created player is ready
+  function onPlayerReady(event) {
+    console.log("onPlayerReady()");
+    event.target.playVideo();
+  }
+
+// When the video pauses, etc.
+  function onPlayerStateChange(event) {
+    console.log("onPlayerStateChange() event.data: " + event.data);
+    let playerStatus = event.data;
+    if (playerStatus == -1) {
+      // VIDEO UNSTARTED
+      console.log("Video unstarted");
+    } else if (playerStatus == 0) {
+      // THE VIDEO HAS COMPLETED PLAYING
+      console.log("Video ended");
+      handleNextSong();
+      changeSong();
+    } else if (playerStatus == 1) {
+      // THE VIDEO IS PLAYING
+      console.log("Video playing");
+    } else if (playerStatus == 2) {
+      // THE VIDEO IS PAUSED
+      console.log("Video paused");
+    } else if (playerStatus == 3) {
+      // THE VIDEO IS BUFFERING
+      console.log("Video buffering");
+    } else if (playerStatus == 5) {
+      // THE VIDEO HAS BEEN CUED
+      console.log("Video cued");
+    }
+  }
+
+  function handlePlayPause() {
+    if (player) {
+      const state = player.getPlayerState();
+      if (state === 1) {
+        player.pauseVideo();
+      } else {
+        player.playVideo();
+      }
+    }
+  }
+
+  function handlePreviousSong() {
     store.prevSong();
   }
 
-  function handleNextSong(){
+  function handleNextSong() {
     store.nextSong();
+  }
+
+  function handleClose() {
+    store.closeCurrentList();
   }
 
   console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
@@ -90,7 +201,6 @@ export default function MUIPlayPlaylistModal() {
                   mb: 1,
                 }}
               >
-
                 <Box
                   sx={{
                     bgcolor: "white",
@@ -102,7 +212,7 @@ export default function MUIPlayPlaylistModal() {
                     borderRadius: 1,
                   }}
                 >
-                <Typography color='black'>{playlistName}</Typography>
+                  <Typography color="black">{playlistName}</Typography>
                   {store.currentList?.songs?.map((song, index) => (
                     <Box
                       key={index}
@@ -114,7 +224,7 @@ export default function MUIPlayPlaylistModal() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        color: 'black'
+                        color: "black",
                       }}
                     >
                       <Box
@@ -136,12 +246,14 @@ export default function MUIPlayPlaylistModal() {
             {/* YOUTUBE PLAYER IS HERE */}
 
             <Grid item xs={3} md={3}>
-              <Box sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                alignItems: "center"
-              }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  alignItems: "center",
+                }}
+              >
                 <Box
                   sx={{
                     width: "100%",
@@ -154,14 +266,19 @@ export default function MUIPlayPlaylistModal() {
                 </Box>
 
                 <Box sx={{ textAlign: "center", width: "100%" }}>
-                  <Typography variant="body2" sx={{ fontWeight: "bold", color: "black" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: "bold", color: "black" }}
+                  >
                     Now Playing:
                   </Typography>
                   <Typography variant="body2" sx={{ color: "black" }}>
-                    {store.currentList?.songs?.[store.currentSongIndex]?.title || "No song selected"}
+                    {store.currentList?.songs?.[store.currentSongIndex]
+                      ?.title || "No song selected"}
                   </Typography>
                   <Typography variant="caption" sx={{ color: "gray" }}>
-                    Song {store.currentSongIndex + 1} of {store.currentList?.songs?.length || 0}
+                    Song {store.currentSongIndex + 1} of{" "}
+                    {store.currentList?.songs?.length || 0}
                   </Typography>
                 </Box>
 
@@ -190,7 +307,10 @@ export default function MUIPlayPlaylistModal() {
                   </IconButton>
                   <IconButton
                     onClick={handleNextSong}
-                    disabled={store.currentSongIndex >= (store.currentList?.songs?.length || 0) - 1}
+                    disabled={
+                      store.currentSongIndex >=
+                      (store.currentList?.songs?.length || 0) - 1
+                    }
                     sx={{
                       bgcolor: "#2196f3",
                       color: "white",

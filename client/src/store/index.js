@@ -797,7 +797,7 @@ function GlobalStoreContextProvider(props) {
   }
 
   store.prevSong = () => {
-    let prevIndex = store.currentSongIndex + 1;
+    let prevIndex = store.currentSongIndex - 1;
     storeReducer({
         type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
         payload: prevIndex
