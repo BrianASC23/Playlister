@@ -30,15 +30,15 @@ export default function MUIPlayPlaylistModal() {
   }
 
   function handlePlayPause(){
-
+    
   }
 
   function handlePreviousSong(){
-
+    store.prevSong();
   }
 
   function handleNextSong(){
-
+    store.nextSong();
   }
 
   console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
