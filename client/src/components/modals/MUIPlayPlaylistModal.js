@@ -45,14 +45,18 @@ export default function MUIPlayPlaylistModal() {
     }
 
     // Create new player if everything is ready
-    if (window.YT && window.YT.Player && store.currentList) {
+    if (store.currentList) {
       // set a timer to make sure the old player is destroyed + DOM is ready with its new div.
       setTimeout(() => {
-        if (playerRef.current) {
+        if (window.YT && window.YT.Player && playerRef.current) {
           createPlayer();
         } else {
-        // So if not ready still, try again with delay.
-          setTimeout(() => createPlayer(), 100);
+          // Try again if not ready
+          setTimeout(() => {
+            if (window.YT && window.YT.Player) {
+              createPlayer();
+            }
+          }, 500);
         }
       }, 100);
     }
@@ -163,6 +167,10 @@ export default function MUIPlayPlaylistModal() {
     store.closeCurrentList();
   }
 
+  function handleSwitchSongs(index){
+    store.setCurrentSong(index);
+  }
+
   console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
 
   return (
@@ -240,6 +248,7 @@ export default function MUIPlayPlaylistModal() {
                     >
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        onClick={() => handleSwitchSongs(index)}
                       >
                         <Box component="span" sx={{ fontWeight: "bold" }}>
                           {index + 1}.

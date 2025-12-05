@@ -7,7 +7,6 @@ import MoveSong_Transaction from "../transactions/MoveSong_Transaction";
 import RemoveSong_Transaction from "../transactions/RemoveSong_Transaction";
 import UpdateSong_Transaction from "../transactions/UpdateSong_Transaction";
 import AuthContext from "../auth";
-import { Global } from "@emotion/react";
 
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -801,6 +800,13 @@ function GlobalStoreContextProvider(props) {
     storeReducer({
         type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
         payload: prevIndex
+    });
+  }
+
+  store.setCurrentSong = (index) => {
+    storeReducer({
+        type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
+        payload: index
     });
   }
 
