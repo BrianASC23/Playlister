@@ -19,6 +19,8 @@ router.get("/playlistpairs", auth.verify, StoreController.getUserPlaylists);
 router.get("/playlists", auth.verify, StoreController.getPlaylists);
 router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
 
+router.post("/playlist/copy/:id", auth.verify, StoreController.copyPlaylistById);
+
 // For Song Catalog
 router.get("/songpairs", auth.verify, StoreController.getSongPairs);
 router.post("/song", auth.verify, StoreController.createSong);

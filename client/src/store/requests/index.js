@@ -58,6 +58,12 @@ export const createSong = (songData) => {
 
 export const findSongsByFilter = (filters) => api.get(`/songs/search?${filters.toString()}`)
 
+export const copyPlaylistById = (playlist) => {
+    return api.post(`/playlist/copy/${playlist._id}`, {
+        playlist: playlist
+    })
+}
+
 
 const apis = {
     createPlaylist,
@@ -68,7 +74,8 @@ const apis = {
     findPlaylistsByFilter,
     getSongPairs,
     createSong,
-    findSongsByFilter
+    findSongsByFilter,
+    copyPlaylistById
 }
 
 export default apis

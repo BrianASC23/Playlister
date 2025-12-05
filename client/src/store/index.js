@@ -373,14 +373,14 @@ function GlobalStoreContextProvider(props) {
   store.loadUserPlaylists = async () => {
     const response = await storeRequestSender.loadUserPlaylists();
     if (response.data.success) {
-    let playlists = response.data.currentList;
-    console.log(playlists);
-    storeReducer({
-        type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
-        payload: playlists,
-    });
+        let playlists = response.data.currentList;
+        console.log("Loading", playlists);
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
+            payload: playlists,
+        });
     } else {
-    console.log("FAILED TO GET THE LIST PAIRS");
+        console.log("FAILED TO GET THE LIST PAIRS");
     }
   }
 
@@ -416,6 +416,27 @@ function GlobalStoreContextProvider(props) {
     store.deleteList(store.listIdMarkedForDeletion);
     store.hideModals();
   };
+
+
+  // Copy/duplicate playlists
+
+  store.copyPlaylist = async (id) => {
+    try {
+      console.log("Copying playlist with ID:", id);
+      // Getting the playlist 
+      let response = await storeRequestSender.getPlaylistById(id);
+      let playlist = response.data.playlist;
+      console.log("Got playlist:", playlist);
+      let copyResponse = await storeRequestSender.copyPlaylistById(playlist);
+      if (copyResponse.data.success){
+        // Reload all playlists to show the new copy
+        await store.loadUserPlaylists();
+      }
+    } catch (error) {
+      console.error("Error copying playlist:", error);
+    }
+  }
+
   // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
   // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
 

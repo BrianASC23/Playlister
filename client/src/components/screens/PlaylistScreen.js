@@ -23,6 +23,7 @@ export default function PlaylistScreen() {
   // Update local playlists when store.idNamePairs changes
   useEffect(() => {
     setPlaylists(store.userPlaylists);
+    console.log("User Playlist in Screen", store.userPlaylists);
   }, [store.userPlaylists]);
 
   // Handle searching for playlists by filter

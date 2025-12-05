@@ -108,14 +108,9 @@ getPlaylistById = async (req, res) => {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
-                    console.log("correct user!");
-                    return res.status(200).json({ success: true, playlist: list })
-                }
-                else {
-                    console.log("incorrect user!");
-                    return res.status(400).json({ success: false, description: "authentication error" });
-                }
+                console.log("correct user!");
+                return res.status(200).json({ success: true, playlist: list })
+                // Removed the userId === req.userId check cuz I need to be able to get and access the playlist for copying
             });
         }
         asyncFindUser(list);
@@ -410,6 +405,55 @@ findSongsByFilter = async (req, res) =>{
 }
 
 
+copyPlaylistById = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: "UNAUTHORIZED"
+        });
+    }
+
+    let user = await User.findOne({ _id: req.userId });
+
+    let playlist = req.body.playlist;
+
+    if(!playlist){
+        console.log("CAN'T COPY");
+        return res.status(400).json({
+            errorMessage: "Playlist is Null?"
+        })
+    }
+
+    let newSongs = [];
+
+    // owner email for songs CANNOT change
+    // owner email for playlist CAN change
+
+    for (let song of playlist.songs){
+        let newSong = {
+            title: song.title,
+            artist: song.artist,
+            year: song.year,
+            youTubeId: song.youTubeId,
+            ownerEmail: song.ownerEmail
+        }
+        newSongs.push(newSong);
+    }
+
+    let newPlaylist = new Playlist({
+        name: playlist.name,
+        ownerEmail: user.email,
+        songs: newSongs
+    });
+
+    await newPlaylist.save();
+    console.log("Copied Playlist", newPlaylist);
+
+    return res.status(200).json({
+        success: true,
+        playlist: newPlaylist
+    });
+
+}
 
 
 
@@ -425,5 +469,6 @@ module.exports = {
     updatePlaylist,
     getSongPairs,
     createSong,
-    findSongsByFilter
+    findSongsByFilter,
+    copyPlaylistById
 }

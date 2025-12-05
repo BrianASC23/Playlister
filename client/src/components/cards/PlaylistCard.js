@@ -66,6 +66,13 @@ function PlaylistCard({ playlist }) {
     store.markListForDeletion(id);
   }
 
+
+  function handleCopy(id) {
+    store.copyPlaylist(id);
+  }
+
+
+
   function handleKeyPress(event) {
     if (event.code === "Enter") {
       let id = event.target.id.substring("list-".length);
@@ -160,6 +167,7 @@ function PlaylistCard({ playlist }) {
             bgcolor: "#2e7d32",
             "&:hover": { bgcolor: "#1b5e20" },
           }}
+          onClick={() => handleCopy(playlist._id)}
           // Gotta implement Copy Logic
         >
           Copy
