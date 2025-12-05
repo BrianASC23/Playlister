@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MUIDeleteModal from "../modals/MUIDeleteModal";
+import MUIPlayPlaylistModal from "../modals/MUIPlayPlaylistModal";
 
 export default function PlaylistScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -45,6 +46,9 @@ export default function PlaylistScreen() {
   }
   if (store.isDeleteListModalOpen()) {
     modalJSX = <MUIDeleteModal/>;
+  }
+  if (store.isPlayPlaylistModalOpen()) {
+    modalJSX = <MUIPlayPlaylistModal/>;
   }
 
   return (

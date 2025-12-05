@@ -33,6 +33,8 @@ export const GlobalStoreActionType = {
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
 
+  EDIT_PLAYLIST: "EDIT_PLAYLIST",
+  PLAY_PLAYLIST: "PLAY_PLAYLIST",
   LOAD_USER_SONGS: "LOAD_USER_SONGS",
   CREATE_SONGS: "CREATE_SONGS",
 };
@@ -46,6 +48,7 @@ const CurrentModal = {
   EDIT_SONG: "EDIT_SONG",
   ERROR: "ERROR",
   EDIT_PLAYLIST: "EDIT_PLAYLIST",
+  PLAY_PLAYLIST: "PLAY_PLAYLIST"
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -270,6 +273,20 @@ function GlobalStoreContextProvider(props) {
           songlist: store.songlist,
         });
       }
+      case GlobalStoreActionType.PLAY_PLAYLIST: {
+        return setStore({
+          currentModal: CurrentModal.PLAY_PLAYLIST,
+          userPlaylists: store.userPlaylists,
+          currentList: payload,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          songlist: store.songlist,
+        });
+      }
       default:
         return store;
     }
@@ -423,7 +440,7 @@ function GlobalStoreContextProvider(props) {
   store.copyPlaylist = async (id) => {
     try {
       console.log("Copying playlist with ID:", id);
-      // Getting the playlist 
+      // Getting the playlist
       let response = await storeRequestSender.getPlaylistById(id);
       let playlist = response.data.playlist;
       console.log("Got playlist:", playlist);
@@ -434,6 +451,35 @@ function GlobalStoreContextProvider(props) {
       }
     } catch (error) {
       console.error("Error copying playlist:", error);
+    }
+  }
+
+  store.isPlayPlaylistModalOpen = () => {
+    return store.currentModal === CurrentModal.PLAY_PLAYLIST;
+  }
+
+  store.showPlayPlaylistModal = async (playlist) => {
+    storeReducer({
+      type: GlobalStoreActionType.PLAY_PLAYLIST,
+      payload: playlist
+    });
+  }
+
+
+  store.playPlaylist = async (id) => {
+    try {
+        console.log("Playing playlist with ID:", id);
+        let response = await storeRequestSender.getPlaylistById(id);
+
+        if (response.data.success) {
+            let playlist = response.data.playlist;
+            storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_LIST,
+            payload: playlist
+            });
+        }
+    } catch(error){
+        console.error("Error getting playlist to play:", error);
     }
   }
 
@@ -715,14 +761,13 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.showEditPlaylistModal = (playlist) => {
-
-    // GEt the playlist
-
     storeReducer({
       type: GlobalStoreActionType.EDIT_PLAYLIST,
       payload: playlist
     });
   };
+
+
 
   function KeyPress(event) {
     if (!store.modalOpen && event.ctrlKey) {

@@ -37,7 +37,7 @@ export default function MUIPlayPlaylistModal() {
   console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
 
   return (
-    <Modal open={store.isEditPlaylistModalOpen()} onClose={handleClose}>
+    <Modal open={store.isPlayPlaylistModalOpen()} onClose={handleClose}>
       <Box
         sx={{
           position: "absolute",

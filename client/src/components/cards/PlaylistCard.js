@@ -71,6 +71,9 @@ function PlaylistCard({ playlist }) {
     store.copyPlaylist(id);
   }
 
+  function handlePlay(playlist){
+    store.showPlayPlaylistModal(playlist);
+  }
 
 
   function handleKeyPress(event) {
@@ -182,7 +185,7 @@ function PlaylistCard({ playlist }) {
             bgcolor: "#ec407a",
             "&:hover": { bgcolor: "#d81b60" },
           }}
-          // Open Play Playlist Modal
+          onClick={() => handlePlay(playlist)}
         >
           Play
         </Button>
