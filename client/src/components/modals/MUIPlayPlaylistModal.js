@@ -34,33 +34,42 @@ export default function MUIPlayPlaylistModal() {
       let firstScriptTag = document.getElementsByTagName("script")[0];
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     }
+  }, []);
 
-    // 3. This function creates an <iframe> (and YouTube player)
-    //    after the API code downloads.
-    window.onYouTubeIframeAPIReady = function () {
-      console.log("onYouTubeIframeAPIReady()");
-      createPlayer();
-    };
+  // Recreate player when playlist changes
+  useEffect(() => {
+    // Destroy old player first
+    if (player) {
+      player.destroy();
+      setPlayer(null);
+    }
 
-    // If API is already loaded
-    if (window.YT && window.YT.Player) {
-      createPlayer();
+    // Create new player if everything is ready
+    if (window.YT && window.YT.Player && store.currentList) {
+      // set a timer to make sure the old player is destroyed + DOM is ready with its new div.
+      setTimeout(() => {
+        if (playerRef.current) {
+          createPlayer();
+        } else {
+        // So if not ready still, try again with delay.
+          setTimeout(() => createPlayer(), 100);
+        }
+      }, 100);
     }
 
     return () => {
       if (player) {
-        console.log("Destroying player");
         player.destroy();
-        setPlayer(null);
       }
     };
-  }, []);
+  }, [store.currentList?._id]);
 
-  // AFter API finishes loading, check if the DOM element exists and if there is a valid song with a Youtube ID
+  // Create the YouTube player
   function createPlayer() {
     if (
       playerRef.current &&
-      store.currentList?.songs?.[store.currentSongIndex]?.youTubeId
+      store.currentList?.songs?.[store.currentSongIndex]?.youTubeId &&
+      !player
     ) {
       let newPlayer = new window.YT.Player(playerRef.current, {
         height: "300",
@@ -75,6 +84,8 @@ export default function MUIPlayPlaylistModal() {
         },
       });
       setPlayer(newPlayer);
+    } else {
+      console.log("Skipping player creation");
     }
   }
 
@@ -102,7 +113,7 @@ export default function MUIPlayPlaylistModal() {
     event.target.playVideo();
   }
 
-// When the video pauses, etc.
+  // When the video pauses, etc.
   function onPlayerStateChange(event) {
     console.log("onPlayerStateChange() event.data: " + event.data);
     let playerStatus = event.data;
@@ -262,7 +273,7 @@ export default function MUIPlayPlaylistModal() {
                     overflow: "hidden",
                   }}
                 >
-                  <div ref={playerRef}></div>
+                  <div key={store.currentList?._id} ref={playerRef}></div>
                 </Box>
 
                 <Box sx={{ textAlign: "center", width: "100%" }}>
