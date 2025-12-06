@@ -17,30 +17,42 @@ export default function CatalogCard({ song, selected, onSelect }) {
   const { auth } = useContext(AuthContext);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [playlistAnchorEl, setPlaylistAnchorEl] = useState(null);
+
   const open = Boolean(anchorEl);
 
+  const playlistMenuOpen = Boolean(playlistAnchorEl);
+
   const handleMenuClick = (event) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setPlaylistAnchorEl(null);
   };
 
-  const handleAddToPlaylist = () => {
+  const handlePlaylistMenuOpen = (event) => {
+    setPlaylistAnchorEl(event.currentTarget);
+  };
 
-  }
+  const handlePlaylistMenuClose = (event) => {
+    setPlaylistAnchorEl(null);
+  };
 
-  const handleEditSong = () => {
+  const handleAddToSpecificPlaylist = (playlistId) => {
+    console.log(`Adding song: ${song.name} to playlist: ${playlistId}`);
+    handleMenuClose();
+  };
 
-  }
+  const handleAddToPlaylist = () => {};
 
-  const handleRemoveFromCatalog = () => {
+  const handleEditSong = () => {};
 
-  }
+  const handleRemoveFromCatalog = () => {};
 
   let isOwned = song.ownerEmail === auth.user.email;
-
 
   return (
     <ListItem
@@ -78,17 +90,43 @@ export default function CatalogCard({ song, selected, onSelect }) {
             open={open}
             onClose={handleMenuClose}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
+              vertical: "bottom",
+              horizontal: "right",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
+              vertical: "top",
+              horizontal: "right",
             }}
           >
-            <MenuItem onClick={handleAddToPlaylist}>Add to Playlist</MenuItem>
+            <MenuItem onMouseEnter={handlePlaylistMenuOpen}>
+              Add to Playlist
+            </MenuItem>
             <MenuItem onClick={handleEditSong}>Edit Song</MenuItem>
-            <MenuItem onClick={handleRemoveFromCatalog}>Remove from Catalog</MenuItem>
+            <MenuItem onClick={handleRemoveFromCatalog}>
+              Remove from Catalog
+            </MenuItem>
+          </Menu>
+
+          <Menu
+            anchorEl={playlistAnchorEl}
+            open={playlistMenuOpen}
+            onClose={handlePlaylistMenuClose}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "left" }}
+            sx={{ ml: 1 }}
+          >
+            {store.userPlaylists && store.userPlaylists.length > 0 ? (
+              store.userPlaylists.map((playlist) => (
+                <MenuItem
+                  key={playlist._id}
+                  onClick={() => handleAddToSpecificPlaylist(playlist._id)}
+                >
+                  {playlist.name}
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem disabled>No playlists available</MenuItem>
+            )}
           </Menu>
         </Box>
         <Box
