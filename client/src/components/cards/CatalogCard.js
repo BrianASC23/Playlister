@@ -105,8 +105,10 @@ export default function CatalogCard({ song, selected, onSelect }) {
             <MenuItem onMouseEnter={handlePlaylistMenuOpen}>
               Add to Playlist
             </MenuItem>
-            <MenuItem onClick={handleEditSong}>Edit Song</MenuItem>
-            <MenuItem onClick={handleRemoveFromCatalog}>
+            <MenuItem onClick={handleEditSong} disabled={!isOwned}>
+              Edit Song
+            </MenuItem>
+            <MenuItem onClick={handleRemoveFromCatalog} disabled={!isOwned}>
               Remove from Catalog
             </MenuItem>
           </Menu>
