@@ -48,7 +48,7 @@ export default function PlaylistScreen() {
     modalJSX = <MUIDeleteModal/>;
   }
   if (store.isPlayPlaylistModalOpen()) {
-    modalJSX = <MUIPlayPlaylistModal/>;
+    modalJSX = <MUIPlayPlaylistModal/>
   }
 
   return (

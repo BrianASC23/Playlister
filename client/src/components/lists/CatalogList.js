@@ -13,9 +13,8 @@ import CatalogCard from "../cards/CatalogCard";
 
 // Should take the songs array from the parent CatalogScreen and render it
 
-export default function CatalogList({ songs }) {
+export default function CatalogList({ songs, selectedSong, onSelectSong }) {
   const [sortBy, setSortBy] = useState(null);
-  const [selectedSongId, setSelectedSongId] = useState(null);
 
   const sortedSongs = useMemo(() => {
       if (!songs || songs.length === 0) return [];
@@ -79,8 +78,8 @@ export default function CatalogList({ songs }) {
           <Grid item xs={12} key={song._id}>
             <CatalogCard
               song={song}
-              selected={selectedSongId === song._id}
-              onSelect={() => setSelectedSongId(song._id)}
+              selected={selectedSong?._id === song._id}
+              onSelect={() => onSelectSong(song)}
             />
           </Grid>
         ))}

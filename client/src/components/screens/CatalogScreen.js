@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { GlobalStoreContext } from "../../store";
 import SongSearchFilter from "../lists/SongSearchFilter";
 import CatalogList from "../lists/CatalogList";
@@ -13,6 +13,56 @@ export default function CatalogScreen() {
 
   const [filters, setFilters] = useState({});
   const [songs, setSongs] = useState([]);
+  const [selectedSong, setSelectedSong] = useState(null);
+  const playerRef = useRef(null);
+
+  // This code loads the IFrame Player API code asynchronously.
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+  }, []);
+
+  // Create YouTube player when song is selected
+  useEffect(() => {
+    if (!selectedSong || !selectedSong.youTubeId) {
+      if (playerRef.current) {
+        playerRef.current.innerHTML = "";
+      }
+      return;
+    }
+
+    console.log(`Creating player for song: ${selectedSong.title}. YouTube ID: ${selectedSong.youTubeId}`);
+
+    function createPlayer() {
+      if (window.YT && window.YT.Player) {
+        console.log("Creating player");
+        if (playerRef.current) {
+          playerRef.current.innerHTML = "";
+          const playerDiv = document.createElement("div");
+          playerDiv.id = "youtube-player-" + Date.now();
+          playerRef.current.appendChild(playerDiv);
+
+          new window.YT.Player(playerDiv, {
+            // I don't know what the smallest size is LOL
+            height: "300",
+            width: "100%",
+            videoId: selectedSong.youTubeId,
+            playerVars: {
+              playsinline: 1,
+            },
+          });
+        }
+      } else {
+        setTimeout(createPlayer, 100);
+      }
+    };
+
+    setTimeout(createPlayer, 100);
+  }, [selectedSong]);
 
   // load the lists to the store
   // get the lists from the store and setPlaylist to it
@@ -48,24 +98,46 @@ export default function CatalogScreen() {
   if (store.isEditSongModalOpen()) {
     modalJSX = <MUIEditSongModal />;
   }
-  if (store.isDeleteSongModalOpen()){
-    modalJSX = <MUIDeleteSongModal />
+  if (store.isDeleteSongModalOpen()) {
+    modalJSX = <MUIDeleteSongModal />;
   }
-
-
 
   return (
     <Box id="playlist-screen">
       <Grid container>
-        <Grid item xs={6}>
+        <Grid
+          item
+          xs={6}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <SongSearchFilter
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
           />
+
+          {selectedSong && (
+            <Box
+              ref={playerRef}
+              sx={{
+                mt: 2,
+                width: "450px",
+                height: "300px",
+                bgcolor: "#000",
+              }}
+            />
+          )}
         </Grid>
         <Grid item xs={6}>
-          <CatalogList songs={songs} />
+          <CatalogList
+            songs={songs}
+            selectedSong={selectedSong}
+            onSelectSong={setSelectedSong}
+          />
           <Button onClick={handleAddNewSong}>+ New Songs</Button>
         </Grid>
       </Grid>
