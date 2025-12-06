@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
@@ -47,7 +48,6 @@ function PlaylistCard({ playlist }) {
   async function handleToggleEdit(playlist_id, playlist) {
     // Open the Edit playlist Modal
     store.showEditPlaylistModal(playlist);
-
   }
 
   function toggleEdit() {
@@ -66,15 +66,13 @@ function PlaylistCard({ playlist }) {
     store.markListForDeletion(id);
   }
 
-
   function handleCopy(id) {
     store.copyPlaylist(id);
   }
 
-  function handlePlay(playlist){
+  function handlePlay(playlist) {
     store.showPlayPlaylistModal(playlist);
   }
-
 
   function handleKeyPress(event) {
     if (event.code === "Enter") {
@@ -129,66 +127,75 @@ function PlaylistCard({ playlist }) {
       </Box>
 
       {/* RIGHT: buttons */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {/* Delete */}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 0.5, paddingTop: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* Delete */}
 
-        {isOwner && (
-          <>
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                textTransform: "none",
-                bgcolor: "#e53935",
-                "&:hover": { bgcolor: "#c62828" },
-              }}
-              onClick={(event) => handleDeleteList(event, playlist._id)}
-            >
-              Delete
-            </Button>
-            {/* Edit */}
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                textTransform: "none",
-                bgcolor: "#3949ab",
-                "&:hover": { bgcolor: "#283593" },
-              }}
-              onClick={() => handleToggleEdit(playlist._id, playlist)}
-            >
-              Edit
-            </Button>
-          </>
-        )}
-        {/* Copy */}
-        <Button
-          variant="contained"
+          {isOwner && (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                sx={{
+                  textTransform: "none",
+                  bgcolor: "#e53935",
+                  "&:hover": { bgcolor: "#c62828" },
+                }}
+                onClick={(event) => handleDeleteList(event, playlist._id)}
+              >
+                Delete
+              </Button>
+              {/* Edit */}
+              <Button
+                variant="contained"
+                size="small"
+                sx={{
+                  textTransform: "none",
+                  bgcolor: "#3949ab",
+                  "&:hover": { bgcolor: "#283593" },
+                }}
+                onClick={() => handleToggleEdit(playlist._id, playlist)}
+              >
+                Edit
+              </Button>
+            </>
+          )}
+          {/* Copy */}
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              textTransform: "none",
+              bgcolor: "#2e7d32",
+              "&:hover": { bgcolor: "#1b5e20" },
+            }}
+            onClick={() => handleCopy(playlist._id)}
+          >
+            Copy
+          </Button>
+
+          {/* Play */}
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              textTransform: "none",
+              bgcolor: "#ec407a",
+              "&:hover": { bgcolor: "#d81b60" },
+            }}
+            onClick={() => handlePlay(playlist)}
+          >
+            Play
+          </Button>
+        </Box>
+        <IconButton
           size="small"
           sx={{
-            textTransform: "none",
-            bgcolor: "#2e7d32",
-            "&:hover": { bgcolor: "#1b5e20" },
+            alignSelf: "right",
           }}
-          onClick={() => handleCopy(playlist._id)}
-          // Gotta implement Copy Logic
         >
-          Copy
-        </Button>
-
-        {/* Play */}
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            textTransform: "none",
-            bgcolor: "#ec407a",
-            "&:hover": { bgcolor: "#d81b60" },
-          }}
-          onClick={() => handlePlay(playlist)}
-        >
-          Play
-        </Button>
+          <ExpandMoreIcon />
+        </IconButton>
       </Box>
     </ListItem>
   );
