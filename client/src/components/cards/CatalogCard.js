@@ -9,12 +9,35 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 export default function CatalogCard({ song, selected, onSelect }) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleAddToPlaylist = () => {
+
+  }
+
+  const handleEditSong = () => {
+
+  }
+
+  const handleRemoveFromCatalog = () => {
+
+  }
 
   let isOwned = song.ownerEmail === auth.user.email;
 
@@ -35,7 +58,6 @@ export default function CatalogCard({ song, selected, onSelect }) {
       onClick={onSelect}
     >
       <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-        {/* Top row: title + year + menu icon */}
         <Box
           sx={{
             display: "flex",
@@ -48,9 +70,26 @@ export default function CatalogCard({ song, selected, onSelect }) {
             {song.title} ({song.year})
           </Typography>
 
-          <IconButton size="small">
+          <IconButton size="small" onClick={handleMenuClick}>
             <MoreVertIcon />
           </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={handleAddToPlaylist}>Add to Playlist</MenuItem>
+            <MenuItem onClick={handleEditSong}>Edit Song</MenuItem>
+            <MenuItem onClick={handleRemoveFromCatalog}>Remove from Catalog</MenuItem>
+          </Menu>
         </Box>
         <Box
           sx={{
