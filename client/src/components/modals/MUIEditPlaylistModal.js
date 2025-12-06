@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { GlobalStoreContext } from "../../store";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -15,6 +16,7 @@ import { Typography, Grid } from "@mui/material";
 
 export default function MUIEditPlaylistModal() {
   const { store } = useContext(GlobalStoreContext);
+  const history = useHistory();
   const [playlistName, setPlaylistName] = useState(
     store.currentList?.name || ""
   );
@@ -36,7 +38,10 @@ export default function MUIEditPlaylistModal() {
     }
   }
 
-  function handleAddSong() {}
+  function handleAddSong() {
+    store.closeCurrentList();
+    history.push('/catalog');
+  }
 
   function handleCopySong() {}
 
