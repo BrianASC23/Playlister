@@ -15,6 +15,7 @@ import CatalogCard from "../cards/CatalogCard";
 
 export default function CatalogList({ songs }) {
   const [sortBy, setSortBy] = useState(null);
+  const [selectedSongId, setSelectedSongId] = useState(null);
 
   const sortedSongs = useMemo(() => {
       if (!songs || songs.length === 0) return [];
@@ -76,7 +77,11 @@ export default function CatalogList({ songs }) {
       <Grid container spacing={2} sx={{overflowY:'scroll', maxHeight: '600px'}}>
         {sortedSongs.map((song) => (
           <Grid item xs={12} key={song._id}>
-            <CatalogCard song={song} selected={false} />
+            <CatalogCard
+              song={song}
+              selected={selectedSongId === song._id}
+              onSelect={() => setSelectedSongId(song._id)}
+            />
           </Grid>
         ))}
       </Grid>
