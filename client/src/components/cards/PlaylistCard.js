@@ -120,27 +120,31 @@ function PlaylistCard({ playlist }) {
         }}
       >
         {/* LEFT: avatar + title + username */}
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
-        >
-          <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
+        <Box>
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
+          >
+            <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
 
-          <Box>
-            <Typography
-              variant="subtitle1"
-              sx={{ fontWeight: 600, lineHeight: 1.2 }}
-            >
-              {playlist.name}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: "text.secondary", lineHeight: 1.2 }}
-            >
-              {playlist.ownerName}
-            </Typography>
+            <Box sx={{ marginY: 2}}>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 600, lineHeight: 1.2 }}
+              >
+                {playlist.name}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{ color: "text.secondary", lineHeight: 1.2 }}
+              >
+                {playlist.ownerName}
+              </Typography>
+            </Box>
           </Box>
+          <Typography>
+            Listeners: {playlist.numListeners}
+          </Typography>
         </Box>
-
         {/* RIGHT: buttons */}
         <Box
           sx={{

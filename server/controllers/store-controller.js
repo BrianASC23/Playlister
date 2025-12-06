@@ -259,6 +259,9 @@ updatePlaylist = async (req, res) => {
 
                     list.name = body.playlist.name;
                     list.songs = body.playlist.songs;
+                    if (body.playlist.numListeners !== undefined) {
+                        list.numListeners = body.playlist.numListeners;
+                    }
                     list
                         .save()
                         .then(() => {
@@ -267,6 +270,7 @@ updatePlaylist = async (req, res) => {
                                 success: true,
                                 id: list._id,
                                 message: 'Playlist updated!',
+                                playlist: list
                             })
                         })
                         .catch(error => {

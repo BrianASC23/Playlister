@@ -49,7 +49,7 @@ const CurrentModal = {
   EDIT_SONG: "EDIT_SONG",
   ERROR: "ERROR",
   EDIT_PLAYLIST: "EDIT_PLAYLIST",
-  PLAY_PLAYLIST: "PLAY_PLAYLIST"
+  PLAY_PLAYLIST: "PLAY_PLAYLIST",
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -405,17 +405,16 @@ function GlobalStoreContextProvider(props) {
   store.loadUserPlaylists = async () => {
     const response = await storeRequestSender.loadUserPlaylists();
     if (response.data.success) {
-        let playlists = response.data.currentList;
-        console.log("Loading", playlists);
-        storeReducer({
-            type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
-            payload: playlists,
-        });
+      let playlists = response.data.currentList;
+      console.log("Loading", playlists);
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
+        payload: playlists,
+      });
     } else {
-        console.log("FAILED TO GET THE LIST PAIRS");
+      console.log("FAILED TO GET THE LIST PAIRS");
     }
-  }
-
+  };
 
   // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
   // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
@@ -449,7 +448,6 @@ function GlobalStoreContextProvider(props) {
     store.hideModals();
   };
 
-
   // Copy/duplicate playlists
 
   store.copyPlaylist = async (id) => {
@@ -460,45 +458,54 @@ function GlobalStoreContextProvider(props) {
       let playlist = response.data.playlist;
       console.log("Got playlist:", playlist);
       let copyResponse = await storeRequestSender.copyPlaylistById(playlist);
-      if (copyResponse.data.success){
+      if (copyResponse.data.success) {
         // Reload all playlists to show the new copy
         await store.loadUserPlaylists();
       }
     } catch (error) {
       console.error("Error copying playlist:", error);
     }
-  }
+  };
 
   store.isPlayPlaylistModalOpen = () => {
     return store.currentModal === CurrentModal.PLAY_PLAYLIST;
-  }
+  };
 
   store.showPlayPlaylistModal = async (playlist) => {
-    storeReducer({
-      type: GlobalStoreActionType.PLAY_PLAYLIST,
-      payload: playlist
-    });
-  }
+    let updatedPlaylist = {
+      ...playlist,
+      numListeners: (playlist.numListeners || 0) + 1,
+    };
 
-
+    let response = await storeRequestSender.updatePlaylistById(
+      playlist._id,
+      updatedPlaylist
+    );
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.PLAY_PLAYLIST,
+        payload: response.data.playlist,
+      });
+    }
+  };
 
   // Might delete cuz I don't need it
   store.playPlaylist = async (id) => {
     try {
-        console.log("Playing playlist with ID:", id);
-        let response = await storeRequestSender.getPlaylistById(id);
+      console.log("Playing playlist with ID:", id);
+      let response = await storeRequestSender.getPlaylistById(id);
 
-        if (response.data.success) {
-            let playlist = response.data.playlist;
-            storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_LIST,
-            payload: playlist
-            });
-        }
-    } catch(error){
-        console.error("Error getting playlist to play:", error);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        storeReducer({
+          type: GlobalStoreActionType.SET_CURRENT_LIST,
+          payload: playlist,
+        });
+      }
+    } catch (error) {
+      console.error("Error getting playlist to play:", error);
     }
-  }
+  };
 
   // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
   // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -553,7 +560,7 @@ function GlobalStoreContextProvider(props) {
   };
 
   // Add song from catalog to playlist
-  store.addSongToPlaylist = async (id, song) =>{
+  store.addSongToPlaylist = async (id, song) => {
     let getResponse = await storeRequestSender.getPlaylistById(id);
 
     let playlistFromGet = getResponse.data.playlist;
@@ -563,17 +570,19 @@ function GlobalStoreContextProvider(props) {
     songs.push(song);
 
     let updatedPlaylist = {
-        name: playlistFromGet.name,
-        ownerEmail: playlistFromGet.ownerEmail,
-        songs: songs,
+      name: playlistFromGet.name,
+      ownerEmail: playlistFromGet.ownerEmail,
+      songs: songs,
+    };
+
+    let response = await storeRequestSender.updatePlaylistById(
+      id,
+      updatedPlaylist
+    );
+
+    if (response.data.success) {
+      await store.loadUserPlaylists();
     }
-
-    let response = await storeRequestSender.updatePlaylistById(id, updatedPlaylist);
-
-    if (response.data.success){
-        await store.loadUserPlaylists();
-    }
-
   };
 
   // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
@@ -795,36 +804,34 @@ function GlobalStoreContextProvider(props) {
   store.showEditPlaylistModal = (playlist) => {
     storeReducer({
       type: GlobalStoreActionType.EDIT_PLAYLIST,
-      payload: playlist
+      payload: playlist,
     });
   };
-
 
   // Youtube Functions
 
   store.nextSong = () => {
     let nextIndex = store.currentSongIndex + 1;
     storeReducer({
-        type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
-        payload: nextIndex
+      type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
+      payload: nextIndex,
     });
-  }
+  };
 
   store.prevSong = () => {
     let prevIndex = store.currentSongIndex - 1;
     storeReducer({
-        type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
-        payload: prevIndex
+      type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
+      payload: prevIndex,
     });
-  }
+  };
 
   store.setCurrentSong = (index) => {
     storeReducer({
-        type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
-        payload: index
+      type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
+      payload: index,
     });
-  }
-
+  };
 
   function KeyPress(event) {
     if (!store.modalOpen && event.ctrlKey) {

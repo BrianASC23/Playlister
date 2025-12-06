@@ -21,10 +21,10 @@ export default function PlaylistsList({ playlists }) {
       const arr = [...playlists];
 
       switch (sortBy){
-          case "listener-hi":
-              return arr.sort((a, b) => (a.listeners || 0) - (b.listeners || 0));
           case "listener-lo":
-              return arr.sort((a, b) => (b.listeners || 0) - (a.listeners || 0));
+              return arr.sort((a, b) => (a.numListeners || 0) - (b.numListeners || 0));
+          case "listener-hi":
+              return arr.sort((a, b) => (b.numListeners || 0) - (a.numListeners || 0));
           case "playlist-az":
               return arr.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
           case "playlist-za":
