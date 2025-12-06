@@ -29,6 +29,8 @@ function PlaylistCard({ playlist }) {
   const [editActive, setEditActive] = useState(false);
   const [text, setText] = useState("");
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const avatar = auth.getUserAvatar();
 
   function handleLoadList(event, id) {
@@ -43,6 +45,10 @@ function PlaylistCard({ playlist }) {
       // CHANGE THE CURRENT LIST
       store.setCurrentList(id);
     }
+  }
+
+  function expandMore() {
+    setIsExpanded(!isExpanded);
   }
 
   async function handleToggleEdit(playlist_id, playlist) {
@@ -91,113 +97,157 @@ function PlaylistCard({ playlist }) {
   const isOwner = auth.user.email === playlist.ownerEmail;
 
   let cardElement = (
-    <ListItem
+    <Box
       id={playlist._id}
       sx={{
         mt: 2,
-        px: 2.5,
-        py: 1,
         borderRadius: "5px",
         border: "solid 1px #d7d3d5",
         bgcolor: "#fef7ff",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
+        overflow: "hidden",
         width: "100%",
       }}
     >
-      {/* LEFT: avatar + title + username */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}>
-        <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
+      {/* Main card content */}
+      <Box
+        sx={{
+          px: 2.5,
+          py: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        {/* LEFT: avatar + title + username */}
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
+        >
+          <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
 
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{ fontWeight: 600, lineHeight: 1.2 }}
-          >
-            {playlist.name}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: "text.secondary", lineHeight: 1.2 }}
-          >
-            {playlist.ownerName}
-          </Typography>
+          <Box>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 600, lineHeight: 1.2 }}
+            >
+              {playlist.name}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", lineHeight: 1.2 }}
+            >
+              {playlist.ownerName}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
 
-      {/* RIGHT: buttons */}
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 0.5, paddingTop: 1 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {/* Delete */}
-
-          {isOwner && (
-            <>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  bgcolor: "#e53935",
-                  "&:hover": { bgcolor: "#c62828" },
-                }}
-                onClick={(event) => handleDeleteList(event, playlist._id)}
-              >
-                Delete
-              </Button>
-              {/* Edit */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  bgcolor: "#3949ab",
-                  "&:hover": { bgcolor: "#283593" },
-                }}
-                onClick={() => handleToggleEdit(playlist._id, playlist)}
-              >
-                Edit
-              </Button>
-            </>
-          )}
-          {/* Copy */}
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              textTransform: "none",
-              bgcolor: "#2e7d32",
-              "&:hover": { bgcolor: "#1b5e20" },
-            }}
-            onClick={() => handleCopy(playlist._id)}
-          >
-            Copy
-          </Button>
-
-          {/* Play */}
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              textTransform: "none",
-              bgcolor: "#ec407a",
-              "&:hover": { bgcolor: "#d81b60" },
-            }}
-            onClick={() => handlePlay(playlist)}
-          >
-            Play
-          </Button>
-        </Box>
-        <IconButton
-          size="small"
+        {/* RIGHT: buttons */}
+        <Box
           sx={{
-            alignSelf: "right",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            gap: 0.5,
+            paddingTop: 1,
           }}
         >
-          <ExpandMoreIcon />
-        </IconButton>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {/* Delete */}
+
+            {isOwner && (
+              <>
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    textTransform: "none",
+                    bgcolor: "#e53935",
+                    "&:hover": { bgcolor: "#c62828" },
+                  }}
+                  onClick={(event) => handleDeleteList(event, playlist._id)}
+                >
+                  Delete
+                </Button>
+                {/* Edit */}
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    textTransform: "none",
+                    bgcolor: "#3949ab",
+                    "&:hover": { bgcolor: "#283593" },
+                  }}
+                  onClick={() => handleToggleEdit(playlist._id, playlist)}
+                >
+                  Edit
+                </Button>
+              </>
+            )}
+            {/* Copy */}
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                textTransform: "none",
+                bgcolor: "#2e7d32",
+                "&:hover": { bgcolor: "#1b5e20" },
+              }}
+              onClick={() => handleCopy(playlist._id)}
+            >
+              Copy
+            </Button>
+
+            {/* Play */}
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                textTransform: "none",
+                bgcolor: "#ec407a",
+                "&:hover": { bgcolor: "#d81b60" },
+              }}
+              onClick={() => handlePlay(playlist)}
+            >
+              Play
+            </Button>
+          </Box>
+          <IconButton
+            size="small"
+            sx={{
+              alignSelf: "right",
+              transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.3s",
+            }}
+            onClick={() => expandMore()}
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+        </Box>
       </Box>
-    </ListItem>
+      <Box
+        sx={{
+          maxHeight: isExpanded ? "500px" : "0px",
+          opacity: isExpanded ? 1 : 0,
+          overflow: "hidden",
+          transition: "max-height 0.3s ease-in-out, opacity 0.3s ease-in-out",
+          borderTop: isExpanded ? "solid 1px gray" : "none",
+        }}
+      >
+        <Box sx={{ px: 2.5, py: 2 }}>
+          {playlist.songs && playlist.songs.length > 0 ? (
+            playlist.songs.map((song, index) => (
+              <Typography key={index} variant="body2" sx={{ py: 0.5 }}>
+                {index + 1}. {song.title} {song.year}
+              </Typography>
+            ))
+          ) : (
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              No songs in this playlist
+            </Typography>
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 
   if (editActive) {
