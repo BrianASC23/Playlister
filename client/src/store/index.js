@@ -551,16 +551,31 @@ function GlobalStoreContextProvider(props) {
   store.getPlaylistSize = function () {
     return store.currentList.songs.length;
   };
-  store.addNewSong = function () {
-    let index = this.getPlaylistSize();
-    this.addCreateSongTransaction(
-      index,
-      "Untitled",
-      "?",
-      new Date().getFullYear(),
-      "dQw4w9WgXcQ"
-    );
+
+  // Add song from catalog to playlist
+  store.addSongToPlaylist = async (id, song) =>{
+    let getResponse = await storeRequestSender.getPlaylistById(id);
+
+    let playlistFromGet = getResponse.data.playlist;
+
+    let songs = [...playlistFromGet.songs];
+
+    songs.push(song);
+
+    let updatedPlaylist = {
+        name: playlistFromGet.name,
+        ownerEmail: playlistFromGet.ownerEmail,
+        songs: songs,
+    }
+
+    let response = await storeRequestSender.updatePlaylistById(id, updatedPlaylist);
+
+    if (response.data.success){
+        await store.loadUserPlaylists();
+    }
+
   };
+
   // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
   // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
   store.createSong = function (index, song) {
