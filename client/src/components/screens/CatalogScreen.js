@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MUIEditSongModal from "../modals/MUIEditSongModal";
+import MUIDeleteSongModal from "../modals/MUIDeleteSongModal";
 
 export default function CatalogScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -46,6 +47,9 @@ export default function CatalogScreen() {
   let modalJSX = "";
   if (store.isEditSongModalOpen()) {
     modalJSX = <MUIEditSongModal />;
+  }
+  if (store.isDeleteSongModalOpen()){
+    modalJSX = <MUIDeleteSongModal />
   }
 
 

@@ -14,6 +14,7 @@ import ListCard from "./cards/PlaylistCard";
 import SongCard from "./cards/SongCard";
 import CatalogCard from "./cards/CatalogCard";
 import MUIDeleteModal from "./modals/MUIDeleteModal";
+import MUIDeleteSongModal from "./modals/MUIDeleteSongModal";
 import MUIEditSongModal from "./modals/MUIEditSongModal";
 import MUIEditPlaylistModal from "./modals/MUIEditPlaylistModal";
 import MUIErrorModal from "./modals/MUIErrorModal";
@@ -44,6 +45,7 @@ export {
   CatalogScreen,
   EditAccountScreen,
   MUIDeleteModal,
+  MUIDeleteSongModal,
   MUIEditSongModal,
   MUIEditPlaylistModal,
   MUIErrorModal,

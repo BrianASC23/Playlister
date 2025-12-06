@@ -401,7 +401,7 @@ updateSong = async (req, res) => {
         if (song.ownerEmail !== user.email) {
             return res.status(403).json({
                 success: false,
-                errorMessage: 'NOT AUTHORIZED TO EDIT THIS SONG'
+                errorMessage: 'CANT EDIT THIS SONG'
             });
         }
 
@@ -511,6 +511,47 @@ copyPlaylistById = async (req, res) => {
 
 }
 
+deleteSong = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+
+    const user = await User.findOne({_id: req.userId});
+    if (!user){
+        return res.status(400).json({
+            success: false,
+            errorMessage: 'USER NOT FOUND'
+        });
+    }
+
+    const { id } = req.params;
+    const song = await Song.findById(id);
+
+    if (!song) {
+        return res.status(404).json({
+            success: false,
+            errorMessage: 'SONG NOT FOUND'
+        });
+    }
+
+    if (song.ownerEmail !== user.email) {
+        return res.status(403).json({
+            success: false,
+            errorMessage: 'CANT THIS SONG'
+        });
+    }
+
+    await Song.findByIdAndDelete(id);
+
+    return res.status(200).json({
+        success: true,
+        message: 'Song deleted successfully'
+    });
+}
+
 
 
 
@@ -526,6 +567,7 @@ module.exports = {
     getSongPairs,
     createSong,
     updateSong,
+    deleteSong,
     findSongsByFilter,
     copyPlaylistById
 }

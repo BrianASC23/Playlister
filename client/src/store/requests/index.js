@@ -73,6 +73,8 @@ export const copyPlaylistById = (playlist) => {
     })
 }
 
+export const deleteSongById = (id) => api.delete(`/song/${id}`)
+
 
 const apis = {
     createPlaylist,
@@ -85,7 +87,8 @@ const apis = {
     createSong,
     updateSongById,
     findSongsByFilter,
-    copyPlaylistById
+    copyPlaylistById,
+    deleteSongById
 }
 
 export default apis

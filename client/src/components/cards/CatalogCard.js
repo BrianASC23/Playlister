@@ -54,7 +54,9 @@ export default function CatalogCard({ song, selected, onSelect }) {
     handleMenuClose();
   };
 
-  const handleRemoveFromCatalog = () => {};
+  const handleRemoveFromCatalog = (id, song) => {
+    store.markSongForDeletion(id, song);
+  };
 
   let isOwned = song.ownerEmail === auth.user.email;
 
@@ -108,7 +110,7 @@ export default function CatalogCard({ song, selected, onSelect }) {
             <MenuItem onClick={handleEditSong} disabled={!isOwned}>
               Edit Song
             </MenuItem>
-            <MenuItem onClick={handleRemoveFromCatalog} disabled={!isOwned}>
+            <MenuItem onClick={() => handleRemoveFromCatalog(song._id, song)} disabled={!isOwned}>
               Remove from Catalog
             </MenuItem>
           </Menu>
