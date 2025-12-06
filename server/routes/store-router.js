@@ -24,6 +24,7 @@ router.post("/playlist/copy/:id", auth.verify, StoreController.copyPlaylistById)
 // For Song Catalog
 router.get("/songpairs", auth.verify, StoreController.getSongPairs);
 router.post("/song", auth.verify, StoreController.createSong);
+router.put("/song/:id", auth.verify, StoreController.updateSong);
 router.get("/songs/search", auth.verify, StoreController.findSongsByFilter);
 
 module.exports = router;

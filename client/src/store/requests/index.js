@@ -56,6 +56,15 @@ export const createSong = (songData) => {
     })
 }
 
+export const updateSongById = (id, songData) => {
+    return api.put(`/song/${id}`, {
+        title: songData.title,
+        artist: songData.artist,
+        year: songData.year,
+        youTubeId: songData.youTubeId
+    })
+}
+
 export const findSongsByFilter = (filters) => api.get(`/songs/search?${filters.toString()}`)
 
 export const copyPlaylistById = (playlist) => {
@@ -74,6 +83,7 @@ const apis = {
     findPlaylistsByFilter,
     getSongPairs,
     createSong,
+    updateSongById,
     findSongsByFilter,
     copyPlaylistById
 }

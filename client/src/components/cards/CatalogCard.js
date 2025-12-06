@@ -49,9 +49,10 @@ export default function CatalogCard({ song, selected, onSelect }) {
     handleMenuClose();
   };
 
-
-
-  const handleEditSong = () => {};
+  const handleEditSong = () => {
+    store.showEditSongModal(null, song);
+    handleMenuClose();
+  };
 
   const handleRemoveFromCatalog = () => {};
 

@@ -25,11 +25,12 @@ export default function MUIEditSongModal() {
     const { store } = useContext(GlobalStoreContext);
 
     const isAddMode = !store.currentSong || store.currentSong === -1
+    const isCatalogMode = store.currentSongIndex === null || store.currentSongIndex === undefined
 
-    const [ title, setTitle ] = useState(store.currentSong?.title) || '';
-    const [ artist, setArtist ] = useState(store.currentSong?.artist) || '';
-    const [ year, setYear ] = useState(store.currentSong?.year) || '';
-    const [ youTubeId, setYouTubeId ] = useState(store.currentSong?.youTubeId) || '';
+    const [ title, setTitle ] = useState(store.currentSong?.title || '');
+    const [ artist, setArtist ] = useState(store.currentSong?.artist || '');
+    const [ year, setYear ] = useState(store.currentSong?.year || '');
+    const [ youTubeId, setYouTubeId ] = useState(store.currentSong?.youTubeId || '');
 
     function handleConfirmEditSong() {
         let newSongData = {
@@ -42,12 +43,15 @@ export default function MUIEditSongModal() {
         if (isAddMode){
             console.log("Calling Function: Adding Song to Catalog");
             store.addSongToCatalog(newSongData);
-
+        } else if (isCatalogMode) {
+            // Editing a catalog song
+            console.log("Updating catalog song");
+            store.updateCatalogSong(store.currentSong._id, newSongData);
         } else {
             store.addUpdateSongTransaction(store.currentSongIndex, newSongData);
-
         }
 
+        store.hideModals();
     }
 
     function handleCancelEditSong() {

@@ -765,6 +765,16 @@ function GlobalStoreContextProvider(props) {
     }
   };
 
+  store.updateCatalogSong = async (songId, updatedSongData) => {
+    let response = await storeRequestSender.updateSongById(
+      songId,
+      updatedSongData
+    );
+    if (response.data.success) {
+      store.getSongByUser();
+    }
+  };
+
   store.findSongsByFilter = async (filters) => {
     const params = new URLSearchParams(filters);
     console.log("Song Search Params:", params);

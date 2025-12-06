@@ -371,6 +371,58 @@ createSong = async (req, res) => {
     }
 }
 
+updateSong = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+    try {
+        const user = await User.findOne({_id: req.userId});
+        if (!user){
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'USER NOT FOUND'
+            });
+        }
+
+        const { id } = req.params;
+        const { title, artist, year, youTubeId } = req.body;
+
+        const song = await Song.findById(id);
+        if (!song) {
+            return res.status(404).json({
+                success: false,
+                errorMessage: 'SONG NOT FOUND'
+            });
+        }
+
+        if (song.ownerEmail !== user.email) {
+            return res.status(403).json({
+                success: false,
+                errorMessage: 'NOT AUTHORIZED TO EDIT THIS SONG'
+            });
+        }
+
+        song.title = title;
+        song.artist = artist;
+        song.year = year;
+        song.youTubeId = youTubeId;
+
+        await song.save();
+
+        return res.status(200).json({
+            success: true,
+            song: song
+        });
+    } catch(err){
+        return res.status(400).json({
+            success: false,
+            message: "FAILED TO UPDATE SONG"
+        })
+    }
+}
 
 // Don't need to do verification of user account -> can be guest account
 findSongsByFilter = async (req, res) =>{
@@ -473,6 +525,7 @@ module.exports = {
     updatePlaylist,
     getSongPairs,
     createSong,
+    updateSong,
     findSongsByFilter,
     copyPlaylistById
 }
