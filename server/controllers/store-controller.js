@@ -176,7 +176,28 @@ findPlaylistsByFilter = async (req, res) => {
         }
 
         if (userName){
-            query.ownerEmail = { $regex: userName, $options: "i" };
+            const users = await User.find({
+                $or: [
+                    { firstName: { $regex: userName, $options: "i" } },
+                    { lastName: { $regex: userName, $options: "i" } },
+                    { $expr: {
+                        $regexMatch: {
+                            input: { $concat: ["$firstName", " ", "$lastName"] },
+                            regex: userName,
+                            options: "i"
+                        }
+                    }}
+                ]
+            });
+
+            // Get emails of matched users in order to query the Playlists by email
+            const userEmails = users.map(user => user.email);
+
+            if (userEmails.length > 0) {
+                query.ownerEmail = { $in: userEmails };
+            } else {
+                query.ownerEmail = null;
+            }
         }
 
         if (songTitle){
@@ -204,7 +225,8 @@ findPlaylistsByFilter = async (req, res) => {
                     name: playlist.name,
                     ownerEmail: playlist.ownerEmail,
                     ownerName: user ? `${user.firstName} ${user.lastName}` : 'Unknown',
-                    songs: playlist.songs
+                    songs: playlist.songs,
+                    numListeners: playlist.numListeners || 0
                 };
             })
         );
