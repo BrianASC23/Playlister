@@ -97,6 +97,10 @@ export const updateInPlaylistsNumber = (id, operation) => {
     })
 }
 
+export const updateSongListeners = (id) => {
+    return api.put(`/song/listeners/${id}`)
+}
+
 
 const apis = {
     createPlaylist,
@@ -114,6 +118,7 @@ const apis = {
     copyPlaylistById,
     deleteSongById,
     updateInPlaylistsNumber,
+    updateSongListeners,
 }
 
 export default apis

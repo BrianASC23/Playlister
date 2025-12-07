@@ -25,6 +25,7 @@ export default function MUIPlayPlaylistModal() {
 
   const [player, setPlayer] = useState(null);
   const playerRef = useRef(null);
+  const [hasListenCount, setHasListenCount] = useState(false);
 
   // This code loads the IFrame Player API code asynchronously.
   useEffect(() => {
@@ -109,6 +110,8 @@ export default function MUIPlayPlaylistModal() {
   // Update player when song changes
   useEffect(() => {
     changeSong();
+    // Reset the listen counter when song changes
+    setHasListenCount(false);
   }, [store.currentSongIndex]);
 
   // Automatically plays video when the created player is ready
@@ -132,6 +135,14 @@ export default function MUIPlayPlaylistModal() {
     } else if (playerStatus == 1) {
       // THE VIDEO IS PLAYING
       console.log("Video playing");
+      // Increment listener count when song starts playing (only once per song)
+      if (!hasListenCount) {
+        const currentSong = store.currentList?.songs?.[store.currentSongIndex];
+        if (currentSong?.catalogSongId) {
+          store.updateSongListeners(currentSong.catalogSongId);
+          setHasListenCount(true);
+        }
+      }
     } else if (playerStatus == 2) {
       // THE VIDEO IS PAUSED
       console.log("Video paused");

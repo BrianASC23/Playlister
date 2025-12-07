@@ -659,6 +659,33 @@ removeSongFromAllPlaylists = async (req, res) => {
 
 }
 
+updateSongListeners = async (req, res) => {
+    if (auth.verifyUser(req) === null) {
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+    const { id } = req.params;
+
+    const song = await Song.findById(id);
+    if (!song) {
+        return res.status(404).json({
+            success: false,
+            errorMessage: 'SONG NOT FOUND'
+        });
+    }
+
+    song.numListeners = (song.numListeners || 0) + 1;
+    await song.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Song Listeners Updated",
+        song: song
+    });
+}
+
 
 module.exports = {
     createPlaylist,
@@ -673,6 +700,7 @@ module.exports = {
     updateSong,
     deleteSong,
     updateInPlaylistsNumber,
+    updateSongListeners,
     updateSongInAllPlaylists,
     removeSongFromAllPlaylists,
     findSongsByFilter,

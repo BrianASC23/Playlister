@@ -39,7 +39,7 @@ export const GlobalStoreActionType = {
   LOAD_USER_SONGS: "LOAD_USER_SONGS",
   CREATE_SONGS: "CREATE_SONGS",
   SET_CURRENT_SONG_INDEX: "SET_CURRENT_SONG_INDEX",
-  MARK_SONG_FOR_DELETION: "MARK_SONG_FOR_DELETION"
+  MARK_SONG_FOR_DELETION: "MARK_SONG_FOR_DELETION",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -73,7 +73,7 @@ function GlobalStoreContextProvider(props) {
     // For Song Catalog
     songlist: [],
     songIdMarkedForDeletion: null,
-    songMarkedForDeletion: null
+    songMarkedForDeletion: null,
   });
   const history = useHistory();
 
@@ -102,7 +102,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // STOP EDITING THE CURRENT LIST
@@ -119,7 +119,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // CREATE A NEW LIST
@@ -136,7 +136,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -154,7 +154,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // PREPARE TO DELETE A LIST
@@ -171,7 +171,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: payload.playlist,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // UPDATE A LIST
@@ -188,7 +188,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // START EDITING A LIST NAME
@@ -205,7 +205,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       //
@@ -222,7 +222,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.REMOVE_SONG: {
@@ -238,7 +238,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.HIDE_MODALS: {
@@ -254,7 +254,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.LOAD_USER_SONGS: {
@@ -270,7 +270,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: payload,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.CREATE_SONGS: {
@@ -286,7 +286,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: payload.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.EDIT_PLAYLIST: {
@@ -302,7 +302,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.PLAY_PLAYLIST: {
@@ -318,7 +318,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SONG_INDEX: {
@@ -334,7 +334,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: null,
-          songMarkedForDeletion: null
+          songMarkedForDeletion: null,
         });
       }
       // PREPARE TO DELETE A SONG
@@ -351,7 +351,7 @@ function GlobalStoreContextProvider(props) {
           listMarkedForDeletion: null,
           songlist: store.songlist,
           songIdMarkedForDeletion: payload.id,
-          songMarkedForDeletion: payload.song
+          songMarkedForDeletion: payload.song,
         });
       }
       default:
@@ -422,7 +422,7 @@ function GlobalStoreContextProvider(props) {
     // If yes, then create the Copied Song in the Catalog
     if (store.currentList && store.currentList.songs) {
       const songsNeedingCatalog = store.currentList.songs.filter(
-        song => song.needsCatalogCreation === true && !song.catalogSongId
+        (song) => song.needsCatalogCreation === true && !song.catalogSongId
       );
 
       for (let song of songsNeedingCatalog) {
@@ -431,10 +431,12 @@ function GlobalStoreContextProvider(props) {
             title: song.title,
             artist: song.artist,
             year: song.year,
-            youTubeId: song.youTubeId
+            youTubeId: song.youTubeId,
           };
 
-          let catalogResponse = await storeRequestSender.createSong(catalogSongData);
+          let catalogResponse = await storeRequestSender.createSong(
+            catalogSongData
+          );
 
           if (catalogResponse.data.success) {
             // Update the song in the playlist with the new catalogSongId
@@ -442,7 +444,10 @@ function GlobalStoreContextProvider(props) {
             song.catalogSongId = catalogResponse.data.song._id;
 
             // Increment inPlaylists counter since the song is already in this playlist
-            await storeRequestSender.updateInPlaylistsNumber(song.catalogSongId, 'add');
+            await storeRequestSender.updateInPlaylistsNumber(
+              song.catalogSongId,
+              "add"
+            );
 
             // Remove the flag once we are done.
             delete song.needsCatalogCreation;
@@ -675,10 +680,10 @@ function GlobalStoreContextProvider(props) {
       year: song.year,
       youTubeId: song.youTubeId,
       ownerEmail: song.ownerEmail,
-      catalogSongId: song._id
+      catalogSongId: song._id,
     };
 
-    console.log('Adding song to playlist with catalogSongId:', song._id);
+    console.log("Adding song to playlist with catalogSongId:", song._id);
 
     songs.push(songToAdd);
 
@@ -699,7 +704,7 @@ function GlobalStoreContextProvider(props) {
     // Or just find all the number of playlists with that song._id. ->
     // Issue: might be costly cuz I would need to run a findSongInAllPlaylists function on all songs
 
-    await storeRequestSender.updateInPlaylistsNumber(song._id, 'add');
+    await storeRequestSender.updateInPlaylistsNumber(song._id, "add");
 
     if (response.data.success) {
       await store.loadUserPlaylists();
@@ -715,7 +720,10 @@ function GlobalStoreContextProvider(props) {
     // Increment inPlaylists counter if song has catalogSongId
     if (song.catalogSongId) {
       async function incrementInPlaylists() {
-        await storeRequestSender.updateInPlaylistsNumber(song.catalogSongId, 'add');
+        await storeRequestSender.updateInPlaylistsNumber(
+          song.catalogSongId,
+          "add"
+        );
       }
       incrementInPlaylists();
     }
@@ -758,7 +766,10 @@ function GlobalStoreContextProvider(props) {
     // Need to decrement the InPlaylist for it.
     if (catalogSongId) {
       async function decrementInPlaylists() {
-        await storeRequestSender.updateInPlaylistsNumber(catalogSongId, 'remove');
+        await storeRequestSender.updateInPlaylistsNumber(
+          catalogSongId,
+          "remove"
+        );
       }
       decrementInPlaylists();
     }
@@ -939,7 +950,7 @@ function GlobalStoreContextProvider(props) {
           title: updatedSongData.title,
           artist: updatedSongData.artist,
           year: updatedSongData.year,
-          youTubeId: updatedSongData.youTubeId
+          youTubeId: updatedSongData.youTubeId,
         });
 
         // reload the user songs
@@ -1018,6 +1029,15 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
+  // Increment the listener count for a song in the catalog
+  store.updateSongListeners = async (catalogSongId) => {
+    if (catalogSongId) {
+      await storeRequestSender.updateSongListeners(catalogSongId);
+      // Optionally refresh the song catalog to show updated count
+      await store.getSongByUser();
+    }
+  };
+
   function KeyPress(event) {
     if (!store.modalOpen && event.ctrlKey) {
       if (event.key === "z") {
@@ -1029,7 +1049,6 @@ function GlobalStoreContextProvider(props) {
     }
   }
 
-
   // Removing a Song from Catalog
   store.markSongForDeletion = async (id, song) => {
     storeReducer({
@@ -1037,7 +1056,6 @@ function GlobalStoreContextProvider(props) {
       payload: { id: id, song: song },
     });
   };
-
 
   // This is for Deleting a Song from Catalog
   store.deleteSong = function (id) {

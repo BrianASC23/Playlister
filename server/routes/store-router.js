@@ -30,5 +30,6 @@ router.post("/song/removeFromPlaylists", auth.verify, StoreController.removeSong
 router.put("/song/:id", auth.verify, StoreController.updateSong);
 router.delete("/song/:id", auth.verify, StoreController.deleteSong);
 router.put("/song/inPlaylists/:id", auth.verify, StoreController.updateInPlaylistsNumber);
+router.put("/song/listeners/:id", auth.verify, StoreController.updateSongListeners);
 
 module.exports = router;

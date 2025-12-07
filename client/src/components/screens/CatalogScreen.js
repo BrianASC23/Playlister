@@ -15,6 +15,7 @@ export default function CatalogScreen() {
   const [songs, setSongs] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
   const playerRef = useRef(null);
+  const [hasListenCount, setHasListenCount] = useState(false);
 
   // This code loads the IFrame Player API code asynchronously.
   useEffect(() => {
@@ -35,6 +36,9 @@ export default function CatalogScreen() {
       return;
     }
 
+    // Reset listen counter when song changes
+    setHasListenCount(false);
+
     console.log(`Creating player for song: ${selectedSong.title}. YouTube ID: ${selectedSong.youTubeId}`);
 
     function createPlayer() {
@@ -54,6 +58,17 @@ export default function CatalogScreen() {
             playerVars: {
               playsinline: 1,
             },
+            events: {
+              onStateChange: (event) => {
+                // When video starts playing (state = 1), increment listener count
+                if (event.data === 1 && !hasListenCount) {
+                  if (selectedSong?._id) {
+                    store.updateSongListeners(selectedSong._id);
+                    setHasListenCount(true);
+                  }
+                }
+              }
+            }
           });
         }
       } else {
