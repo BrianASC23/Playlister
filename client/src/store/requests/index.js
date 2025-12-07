@@ -91,7 +91,11 @@ export const copyPlaylistById = (playlist) => {
 
 export const deleteSongById = (id) => api.delete(`/song/${id}`)
 
-export const updateInPlaylistsNumber = (id) => api.put(`/song/inPlaylists/${id}`)
+export const updateInPlaylistsNumber = (id, operation) => {
+    return api.put(`/song/inPlaylists/${id}`, {
+        operation: operation
+    })
+}
 
 
 const apis = {

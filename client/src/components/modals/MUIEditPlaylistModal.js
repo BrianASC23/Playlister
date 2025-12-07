@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { GlobalStoreContext } from "../../store";
+import SongCard from "../cards/SongCard";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
@@ -51,10 +52,6 @@ export default function MUIEditPlaylistModal() {
 
   function handleRedo() {
     store.redo();
-  }
-
-  function handleRemoveSong(index) {
-    store.markSongForDeletion(index);
   }
 
   console.log("MUIEDIT STORE CURRENT LIST:", store.currentList);
@@ -167,41 +164,11 @@ export default function MUIEditPlaylistModal() {
             }}
           >
             {store.currentList?.songs?.map((song, index) => (
-              <Box
+              <SongCard
                 key={index}
-                sx={{
-                  bgcolor: "#ffffaa",
-                  p: 1.5,
-                  mb: 1.5,
-                  borderRadius: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Box component="span" sx={{ fontWeight: "bold" }}>
-                    {index + 1}.
-                  </Box>
-                  <Box component="span" sx={{ fontWeight: "bold" }}>
-                    {song.title} by {song.artist} ({song.year})
-                  </Box>
-                </Box>
-                <Box>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleCopySong(index)}
-                  >
-                    <ContentCopyIcon />
-                  </IconButton>
-                  <IconButton
-                    size="small"
-                    onClick={() => handleRemoveSong(index)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              </Box>
+                song={song}
+                index={index}
+              />
             ))}
           </Box>
 

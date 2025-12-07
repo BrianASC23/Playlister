@@ -373,6 +373,7 @@ createSong = async (req, res) => {
 
 
 // Updating the "in playlists number field"
+// Added a parameter for deciding whether to increment or decrement.
 updateInPlaylistsNumber = async (req, res) => {
     if (auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -380,8 +381,8 @@ updateInPlaylistsNumber = async (req, res) => {
         });
     }
 
-
     const { id } = req.params;
+    const { operation } = req.body; // 'add' or 'remove'
     const song = await Song.findById(id);
 
     if(!song){
@@ -391,7 +392,16 @@ updateInPlaylistsNumber = async (req, res) => {
         });
     }
 
-    song.inPlaylists = (song.inPlaylists || 0) + 1;
+    if (operation === 'add') {
+        song.inPlaylists = (song.inPlaylists || 0) + 1;
+    } else if (operation === 'remove') {
+        song.inPlaylists = Math.max((song.inPlaylists || 0) - 1, 0);
+    } else {
+        return res.status(400).json({
+            success: false,
+            errorMessage: 'INVALID OPERATION. USE "add" OR "remove"'
+        });
+    }
 
     await song.save();
 
@@ -400,7 +410,7 @@ updateInPlaylistsNumber = async (req, res) => {
         message: "Song In Playlists Updated",
         song: song
     });
-  
+
 }
 
 

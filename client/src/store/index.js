@@ -581,7 +581,7 @@ function GlobalStoreContextProvider(props) {
 
   store.isDeleteSongModalOpen = () => {
     return store.currentModal === CurrentModal.DELETE_SONG;
-  }
+  };
   store.isEditSongModalOpen = () => {
     return store.currentModal === CurrentModal.EDIT_SONG;
   };
@@ -650,24 +650,30 @@ function GlobalStoreContextProvider(props) {
     // Then need to update the Song Catalog "in Playlist number"
     // I can either update the field, which I alr have. Will go with this
 
-
     // Or just find all the number of playlists with that song._id. ->
     // Issue: might be costly cuz I would need to run a findSongInAllPlaylists function on all songs
 
-    await storeRequestSender.updateInPlaylistsNumber(song._id);
+    await storeRequestSender.updateInPlaylistsNumber(song._id, 'add');
 
     if (response.data.success) {
       await store.loadUserPlaylists();
     }
   };
 
-
-
   // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
   // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX
   store.createSong = function (index, song) {
     let list = store.currentList;
     list.songs.splice(index, 0, song);
+
+    // Increment inPlaylists counter if song has catalogSongId
+    if (song.catalogSongId) {
+      async function incrementInPlaylists() {
+        await storeRequestSender.updateInPlaylistsNumber(song.catalogSongId, 'add');
+      }
+      incrementInPlaylists();
+    }
+
     // NOW MAKE IT OFFICIAL
     store.updateCurrentList();
   };
@@ -698,7 +704,18 @@ function GlobalStoreContextProvider(props) {
   // FROM THE CURRENT LIST
   store.removeSong = function (index) {
     let list = store.currentList;
+    const song = list.songs[index];
+    const catalogSongId = song.catalogSongId;
+
     list.songs.splice(index, 1);
+
+    // Need to decrement the InPlaylist for it.
+    if (catalogSongId) {
+      async function decrementInPlaylists() {
+        await storeRequestSender.updateInPlaylistsNumber(catalogSongId, 'remove');
+      }
+      decrementInPlaylists();
+    }
 
     // NOW MAKE IT OFFICIAL
     store.updateCurrentList();
@@ -949,24 +966,25 @@ function GlobalStoreContextProvider(props) {
   }
 
 
-// Removing a Song from Catalog
-store.markSongForDeletion = async (id, song) => {
+  // Removing a Song from Catalog
+  store.markSongForDeletion = async (id, song) => {
     storeReducer({
-        type: GlobalStoreActionType.MARK_SONG_FOR_DELETION,
-        payload: { id: id, song: song },
+      type: GlobalStoreActionType.MARK_SONG_FOR_DELETION,
+      payload: { id: id, song: song },
     });
-};
+  };
 
+
+  // This is for Deleting a Song from Catalog
   store.deleteSong = function (id) {
     async function processDelete(id) {
-        let response = await storeRequestSender.deleteSongById(id);
-        if (response.data.success) {
-            // find all playlists that have the songs and delete it
-            await storeRequestSender.removeSongFromAllPlaylists(id);
+      let response = await storeRequestSender.deleteSongById(id);
+      if (response.data.success) {
+        // find all playlists that have the songs and delete it
+        await storeRequestSender.removeSongFromAllPlaylists(id);
 
-            store.getSongByUser();
-
-        }
+        store.getSongByUser();
+      }
     }
     processDelete(id);
   };
