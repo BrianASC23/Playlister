@@ -97,13 +97,41 @@ export default function MUIPlayPlaylistModal() {
   function changeSong() {
     console.log("changeSong()");
     if (
-      player &&
       store.currentSongIndex >= 0 &&
-      store.currentList?.songs?.[store.currentSongIndex]
+      store.currentList?.songs?.[store.currentSongIndex]?.youTubeId
     ) {
-      player.loadVideoById(
-        store.currentList.songs[store.currentSongIndex].youTubeId
-      );
+      if (player) {
+        // Fixed my bug: where YT player is not working when the first song has an invalid id.
+        // When I skip to a song with a valid ID, realized that the YT player was not created.
+        // SO check if player exists, load the new video. If not create a new player
+        player.loadVideoById(
+          store.currentList.songs[store.currentSongIndex].youTubeId
+        );
+      } else {
+        // If player doesn't exist (first song had invalid ID), create it now
+        console.log("Player doesn't exist, creating new player for valid song");
+        if (playerRef.current && window.YT && window.YT.Player) {
+          // Clear the playerRef and create a new player with a proper div element
+          playerRef.current.innerHTML = "";
+          const playerDiv = document.createElement("div");
+          playerDiv.id = "youtube-player-" + Date.now();
+          playerRef.current.appendChild(playerDiv);
+
+          let newPlayer = new window.YT.Player(playerDiv.id, {
+            height: "300",
+            width: "100%",
+            videoId: store.currentList.songs[store.currentSongIndex].youTubeId,
+            playerVars: {
+              playsinline: 1,
+            },
+            events: {
+              onReady: onPlayerReady,
+              onStateChange: onPlayerStateChange,
+            },
+          });
+          setPlayer(newPlayer);
+        }
+      }
     }
   }
 
