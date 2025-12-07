@@ -29,5 +29,6 @@ router.put("/song/updatePlaylists", auth.verify, StoreController.updateSongInAll
 router.post("/song/removeFromPlaylists", auth.verify, StoreController.removeSongFromAllPlaylists);
 router.put("/song/:id", auth.verify, StoreController.updateSong);
 router.delete("/song/:id", auth.verify, StoreController.deleteSong);
+router.put("/song/inPlaylists/:id", auth.verify, StoreController.updateInPlaylistsNumber);
 
 module.exports = router;

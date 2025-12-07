@@ -647,10 +647,21 @@ function GlobalStoreContextProvider(props) {
       updatedPlaylist
     );
 
+    // Then need to update the Song Catalog "in Playlist number"
+    // I can either update the field, which I alr have. Will go with this
+
+
+    // Or just find all the number of playlists with that song._id. ->
+    // Issue: might be costly cuz I would need to run a findSongInAllPlaylists function on all songs
+
+    await storeRequestSender.updateInPlaylistsNumber(song._id);
+
     if (response.data.success) {
       await store.loadUserPlaylists();
     }
   };
+
+
 
   // THIS FUNCTION CREATES A NEW SONG IN THE CURRENT LIST
   // USING THE PROVIDED DATA AND PUTS THIS SONG AT INDEX

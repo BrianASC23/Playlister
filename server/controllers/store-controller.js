@@ -371,6 +371,39 @@ createSong = async (req, res) => {
     }
 }
 
+
+// Updating the "in playlists number field"
+updateInPlaylistsNumber = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+
+    const { id } = req.params;
+    const song = await Song.findById(id);
+
+    if(!song){
+        return res.status(400).json({
+            success: false,
+            errorMessage: 'SONG NOT FOUND'
+        });
+    }
+
+    song.inPlaylists = (song.inPlaylists || 0) + 1;
+
+    await song.save();
+
+    return res.status(200).json({
+        success: true,
+        message: "Song In Playlists Updated",
+        song: song
+    });
+  
+}
+
+
 updateSong = async (req, res) => {
     if (auth.verifyUser(req) === null){
         return res.status(400).json({
@@ -629,6 +662,7 @@ module.exports = {
     createSong,
     updateSong,
     deleteSong,
+    updateInPlaylistsNumber,
     updateSongInAllPlaylists,
     removeSongFromAllPlaylists,
     findSongsByFilter,
