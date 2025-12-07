@@ -622,7 +622,19 @@ function GlobalStoreContextProvider(props) {
 
     let songs = [...playlistFromGet.songs];
 
-    songs.push(song);
+    // Add the song with catalogSongId
+    const songToAdd = {
+      title: song.title,
+      artist: song.artist,
+      year: song.year,
+      youTubeId: song.youTubeId,
+      ownerEmail: song.ownerEmail,
+      catalogSongId: song._id
+    };
+
+    console.log('Adding song to playlist with catalogSongId:', song._id);
+
+    songs.push(songToAdd);
 
     let updatedPlaylist = {
       name: playlistFromGet.name,
@@ -821,12 +833,28 @@ function GlobalStoreContextProvider(props) {
   };
 
   store.updateCatalogSong = async (songId, updatedSongData) => {
-    let response = await storeRequestSender.updateSongById(
-      songId,
-      updatedSongData
-    );
-    if (response.data.success) {
-      store.getSongByUser();
+    try {
+      // updates song in song catalog
+      let response = await storeRequestSender.updateSongById(
+        songId,
+        updatedSongData
+      );
+      if (response.data.success) {
+        // updates song in the playlists
+        //find all playlists that contain the songs and update it as well
+        await storeRequestSender.updateSongInAllPlaylists({
+          catalogSongId: songId,
+          title: updatedSongData.title,
+          artist: updatedSongData.artist,
+          year: updatedSongData.year,
+          youTubeId: updatedSongData.youTubeId
+        });
+
+        // reload the user songs
+        store.getSongByUser();
+      }
+    } catch (error) {
+      console.error("Error updating catalog song:", error);
     }
   };
 
@@ -920,10 +948,14 @@ store.markSongForDeletion = async (id, song) => {
 
   store.deleteSong = function (id) {
     async function processDelete(id) {
-      let response = await storeRequestSender.deleteSongById(id);
-      if (response.data.success) {
-        store.getSongByUser();
-      }
+        let response = await storeRequestSender.deleteSongById(id);
+        if (response.data.success) {
+            // find all playlists that have the songs and delete it
+            await storeRequestSender.removeSongFromAllPlaylists(id);
+
+            store.getSongByUser();
+
+        }
     }
     processDelete(id);
   };

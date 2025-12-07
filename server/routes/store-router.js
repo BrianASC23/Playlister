@@ -24,8 +24,10 @@ router.post("/playlist/copy/:id", auth.verify, StoreController.copyPlaylistById)
 // For Song Catalog
 router.get("/songpairs", auth.verify, StoreController.getSongPairs);
 router.post("/song", auth.verify, StoreController.createSong);
-router.put("/song/:id", auth.verify, StoreController.updateSong);
 router.get("/songs/search", auth.verify, StoreController.findSongsByFilter);
+router.put("/song/updatePlaylists", auth.verify, StoreController.updateSongInAllPlaylists);
+router.post("/song/removeFromPlaylists", auth.verify, StoreController.removeSongFromAllPlaylists);
+router.put("/song/:id", auth.verify, StoreController.updateSong);
 router.delete("/song/:id", auth.verify, StoreController.deleteSong);
 
 module.exports = router;

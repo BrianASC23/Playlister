@@ -65,6 +65,22 @@ export const updateSongById = (id, songData) => {
     })
 }
 
+export const updateSongInAllPlaylists = (songData) => {
+    return api.put(`/song/updatePlaylists`, {
+        catalogSongId: songData.catalogSongId,
+        title: songData.title,
+        artist: songData.artist,
+        year: songData.year,
+        youTubeId: songData.youTubeId
+    })
+}
+
+export const removeSongFromAllPlaylists = (catalogSongId) => {
+    return api.post(`/song/removeFromPlaylists`, {
+        catalogSongId: catalogSongId
+    })
+}
+
 export const findSongsByFilter = (filters) => api.get(`/songs/search?${filters.toString()}`)
 
 export const copyPlaylistById = (playlist) => {
@@ -86,6 +102,8 @@ const apis = {
     getSongPairs,
     createSong,
     updateSongById,
+    updateSongInAllPlaylists,
+    removeSongFromAllPlaylists,
     findSongsByFilter,
     copyPlaylistById,
     deleteSongById

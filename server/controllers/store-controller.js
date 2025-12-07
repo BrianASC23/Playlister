@@ -552,8 +552,69 @@ deleteSong = async (req, res) => {
     });
 }
 
+updateSongInAllPlaylists = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
+
+    const { catalogSongId, title, artist, year, youTubeId } = req.body;
+
+    // Find all playlists that contain the song._id to be deleted.
+    const playlists = await Playlist.find({
+        'songs.catalogSongId': catalogSongId
+    });
+
+    // Update each matched playlist's song
+    for (let playlist of playlists) {
+        for (let song of playlist.songs) {
+            if (song.catalogSongId === catalogSongId) {
+                console.log(`Updating song in playlist ${playlist.name}`);
+                song.title = title;
+                song.artist = artist;
+                song.year = year;
+                song.youTubeId = youTubeId;
+            }
+        }
+        await playlist.save();
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: `Updated song in the playlists`
+    });
+}
+
+removeSongFromAllPlaylists = async (req, res) => {
+    if (auth.verifyUser(req) === null){
+        return res.status(400).json({
+            errorMessage: 'UNAUTHORIZED'
+        });
+    }
 
 
+    const { catalogSongId } = req.body;
+
+    // Find all playlists that contain a song with this catalogSongId
+    const playlists = await Playlist.find({
+        'songs.catalogSongId': catalogSongId
+    });
+
+    // Remove the song from each playlist
+    for (let playlist of playlists) {
+        playlist.songs = playlist.songs.filter(
+            song => song.catalogSongId !== catalogSongId
+        );
+        await playlist.save();
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: `Removed song from ${playlists.length} playlists`
+    });
+
+}
 
 
 module.exports = {
@@ -568,6 +629,8 @@ module.exports = {
     createSong,
     updateSong,
     deleteSong,
+    updateSongInAllPlaylists,
+    removeSongFromAllPlaylists,
     findSongsByFilter,
     copyPlaylistById
 }
