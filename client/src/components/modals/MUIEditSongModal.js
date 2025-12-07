@@ -32,7 +32,11 @@ export default function MUIEditSongModal() {
     const [ year, setYear ] = useState(store.currentSong?.year || '');
     const [ youTubeId, setYouTubeId ] = useState(store.currentSong?.youTubeId || '');
 
+    // Check if all the fields are filled. Ignore white space.
+    const isComplete = title.trim() && artist.trim() && year.toString().trim() && youTubeId.trim();
+
     function handleConfirmEditSong() {
+
         let newSongData = {
             title: title,
             artist: artist,
@@ -108,7 +112,7 @@ export default function MUIEditSongModal() {
             </Typography>
             <Button
                 sx={{color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px"}} variant="outlined"
-                id="edit-song-confirm-button" onClick={handleConfirmEditSong}>Confirm</Button>
+                id="edit-song-confirm-button" onClick={handleConfirmEditSong} disabled={!isComplete}>Confirm</Button>
             <Button
                 sx={{opacity: 0.80, color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px", ml:"197px"}} variant="outlined"
                 id="edit-song-confirm-button" onClick={handleCancelEditSong}>Cancel</Button>
