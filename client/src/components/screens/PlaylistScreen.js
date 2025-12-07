@@ -21,7 +21,7 @@ export default function PlaylistScreen() {
     store.loadUserPlaylists();
   }, []);
 
-  // Update local playlists when store.idNamePairs changes
+
   useEffect(() => {
     setPlaylists(store.userPlaylists);
     console.log("User Playlist in Screen", store.userPlaylists);

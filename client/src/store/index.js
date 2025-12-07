@@ -126,8 +126,8 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.CREATE_NEW_LIST: {
         return setStore({
           currentModal: CurrentModal.EDIT_PLAYLIST,
-          userPlaylists: store.userPlaylists,
-          currentList: payload.playlists,
+          userPlaylists: [...store.userPlaylists, payload],
+          currentList: payload,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter + 1,
@@ -493,7 +493,6 @@ function GlobalStoreContextProvider(props) {
         payload: newList,
       });
       console.log("Created new list with modal set to EDIT_PLAYLIST");
-
       // IF IT'S A VALID LIST THEN LET'S START EDITING IT
       //   history.push("/playlist/" + newList._id);
     } else {
