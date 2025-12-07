@@ -6,6 +6,7 @@ import CreateSong_Transaction from "../transactions/CreateSong_Transaction";
 import MoveSong_Transaction from "../transactions/MoveSong_Transaction";
 import RemoveSong_Transaction from "../transactions/RemoveSong_Transaction";
 import UpdateSong_Transaction from "../transactions/UpdateSong_Transaction";
+import CopySong_Transaction from "../transactions/CopySong_Transaction";
 import AuthContext from "../auth";
 
 /*
@@ -416,7 +417,52 @@ function GlobalStoreContextProvider(props) {
   };
 
   // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
-  store.closeCurrentList = function () {
+  store.closeCurrentList = async function () {
+    // Before we close the list, check if any songs were duplicated/copied in the playlists.
+    // If yes, then create the Copied Song in the Catalog
+    if (store.currentList && store.currentList.songs) {
+      const songsNeedingCatalog = store.currentList.songs.filter(
+        song => song.needsCatalogCreation === true && !song.catalogSongId
+      );
+
+      for (let song of songsNeedingCatalog) {
+        try {
+          let catalogSongData = {
+            title: song.title,
+            artist: song.artist,
+            year: song.year,
+            youTubeId: song.youTubeId
+          };
+
+          let catalogResponse = await storeRequestSender.createSong(catalogSongData);
+
+          if (catalogResponse.data.success) {
+            // Update the song in the playlist with the new catalogSongId
+            // because old catalogSongId points to the original one
+            song.catalogSongId = catalogResponse.data.song._id;
+
+            // Increment inPlaylists counter since the song is already in this playlist
+            await storeRequestSender.updateInPlaylistsNumber(song.catalogSongId, 'add');
+
+            // Remove the flag once we are done.
+            delete song.needsCatalogCreation;
+          }
+        } catch (error) {
+          console.error("Error creating catalog song:", error);
+        }
+      }
+
+      // If any songs were added to catalog, update the playlist
+      if (songsNeedingCatalog.length > 0) {
+        await storeRequestSender.updatePlaylistById(
+          store.currentList._id,
+          store.currentList
+        );
+        // Refresh the song catalog
+        store.getSongByUser();
+      }
+    }
+
     storeReducer({
       type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
       payload: {},
@@ -763,6 +809,24 @@ function GlobalStoreContextProvider(props) {
     //let index = store.currentSongIndex;
     //let song = store.currentList.songs[index];
     let transaction = new RemoveSong_Transaction(store, index, song);
+    tps.processTransaction(transaction);
+  };
+  // THIS FUNCTION ADDS A CopySong_Transaction TO THE TRANSACTION STACK
+  store.addCopySongTransaction = (index) => {
+    let userEmail = auth.user.email;
+
+    let song = store.currentList.songs[index];
+    // Create a copy of the song
+    let copiedSong = {
+      title: song.title + " (Copy)",
+      artist: song.artist,
+      year: song.year,
+      youTubeId: song.youTubeId,
+      ownerEmail: userEmail,
+      catalogSongId: null, // Will be set when modal closes
+      needsCatalogCreation: true, // Flag to indicate this needs catalog creation
+    };
+    let transaction = new CopySong_Transaction(store, index, copiedSong);
     tps.processTransaction(transaction);
   };
   store.addUpdateSongTransaction = function (index, newSongData) {

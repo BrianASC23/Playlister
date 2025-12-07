@@ -44,8 +44,6 @@ export default function MUIEditPlaylistModal() {
     history.push('/catalog');
   }
 
-  function handleCopySong() {}
-
   function handleUndo() {
     store.undo();
   }

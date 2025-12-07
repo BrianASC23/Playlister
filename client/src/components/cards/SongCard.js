@@ -31,8 +31,15 @@ function SongCard(props) {
         store.addMoveSongTransaction(sourceIndex, targetIndex);
     }
     function handleRemoveSong(event) {
+        event.stopPropagation();
         store.addRemoveSongTransaction(song, index);
     }
+
+    function handleCopySong(event){
+        event.stopPropagation();
+        store.addCopySongTransaction(index);
+    }
+
     function handleClick(event) {
         // DOUBLE CLICK IS FOR SONG EDITING
         if (event.detail === 2) {
@@ -68,6 +75,13 @@ function SongCard(props) {
                 id={"remove-song-" + index}
                 className="list-card-button"
                 onClick={handleRemoveSong}>{"\u2715"}</Button>
+            <Button
+                sx={{transform:"translate(-5%, -5%)", width:"5px", height:"30px"}}
+                variant="contained"
+                id={"remove-song-" + index}
+                className="list-card-button"
+                onClick={handleCopySong}>{"\u2FFB"}</Button>
+
         </div>
     );
 }
