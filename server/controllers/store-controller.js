@@ -1,6 +1,7 @@
 const Playlist = require('../models/playlist-model')
 const User = require('../models/user-model');
 const Song = require('../models/song-model');
+const Counter = require('../models/counter-model');
 const auth = require('../auth');
 /*
     This is our back-end API. It provides all the data services
@@ -9,7 +10,7 @@ const auth = require('../auth');
 
     @author McKilla Gorilla
 */
-createPlaylist = (req, res) => {
+createPlaylist = async (req, res) => {
     if(auth.verifyUser(req) === null){
         return res.status(400).json({
             errorMessage: 'UNAUTHORIZED'
@@ -24,32 +25,52 @@ createPlaylist = (req, res) => {
         })
     }
 
-    const playlist = new Playlist(body);
-    console.log("playlist: " + playlist.toString());
-    if (!playlist) {
-        return res.status(400).json({ success: false, error: err })
-    }
+    try {
+        // Check if user already has a playlist with the same name
+        const existingPlaylist = await Playlist.findOne({
+            ownerEmail: body.ownerEmail,
+            name: body.name
+        });
 
-    User.findOne({ _id: req.userId }, (err, user) => {
-        console.log("user found: " + JSON.stringify(user));
-        user.playlists.push(playlist._id);
-        user
-            .save()
-            .then(() => {
-                playlist
-                    .save()
-                    .then(() => {
-                        return res.status(201).json({
-                            playlist: playlist
-                        })
-                    })
-                    .catch(error => {
-                        return res.status(400).json({
-                            errorMessage: 'Playlist Not Created!'
-                        })
-                    })
+        if (existingPlaylist) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'A playlist with this name already exists!'
             });
-    })
+        }
+
+        const playlist = new Playlist(body);
+        console.log("playlist: " + playlist.toString());
+        if (!playlist) {
+            return res.status(400).json({ success: false, error: 'Invalid playlist data' })
+        }
+
+        const user = await User.findOne({ _id: req.userId });
+        console.log("user found: " + JSON.stringify(user));
+
+        // Get and increment the global list counter
+        let counter = await Counter.findOne({ name: 'globalListCounter' });
+        if (!counter) {
+            counter = new Counter({ name: 'globalListCounter', value: 0 });
+        }
+        counter.value += 1;
+        await counter.save();
+
+        user.playlists.push(playlist._id);
+        await user.save();
+        await playlist.save();
+
+        return res.status(201).json({
+            playlist: playlist,
+            globalListCounter: counter.value
+        });
+    } catch (error) {
+        console.error('Error creating playlist:', error);
+        return res.status(400).json({
+            success: false,
+            errorMessage: 'Playlist Not Created!'
+        });
+    }
 }
 deletePlaylist = async (req, res) => {
     if(auth.verifyUser(req) === null){
@@ -99,11 +120,8 @@ deletePlaylist = async (req, res) => {
     })
 }
 getPlaylistById = async (req, res) => {
-    if(auth.verifyUser(req) === null){
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
+    // Allow both guests and authenticated users to get playlists. When I had the check, it broke adding catalog song to Playlist
+    const userId = auth.verifyUser(req);
     console.log("Find Playlist with id: " + JSON.stringify(req.params.id));
 
     await Playlist.findById({ _id: req.params.id }, (err, list) => {
@@ -121,23 +139,8 @@ getPlaylistById = async (req, res) => {
 
         console.log("Found list: " + JSON.stringify(list));
 
-        // DOES THIS LIST BELONG TO THIS USER?
-        async function asyncFindUser(list) {
-            await User.findOne({ email: list.ownerEmail }, (err, user) => {
-                if(err) {
-                    return res.status(400).json({
-                        success: false,
-                        errorMessage: "Can't Find User"
-                    })
-                }
-                console.log("user._id: " + user._id);
-                console.log("req.userId: " + req.userId);
-                console.log("correct user!");
-                return res.status(200).json({ success: true, playlist: list })
-                // Removed the userId === req.userId check cuz I need to be able to get and access the playlist for copying
-            });
-        }
-        asyncFindUser(list);
+        // Return the playlist (no ownership check needed for viewing)
+        return res.status(200).json({ success: true, playlist: list })
     }).catch(err => console.log(err))
 }
 getUserPlaylists = async (req, res) => {
@@ -174,7 +177,15 @@ getUserPlaylists = async (req, res) => {
                     numListeners: playlist.numListeners || 0
                 }));
 
-                return res.status(200).json({ success: true, currentList: playlistsWithOwnerInfo })
+                // Get the global list counter
+                const counter = await Counter.findOne({ name: 'globalListCounter' });
+                const globalListCounter = counter ? counter.value : 0;
+
+                return res.status(200).json({
+                    success: true,
+                    currentList: playlistsWithOwnerInfo,
+                    globalListCounter: globalListCounter
+                })
 
             }).catch(err => console.log(err))
         }
@@ -379,10 +390,11 @@ updatePlaylist = async (req, res) => {
 
         // DOES THIS LIST BELONG TO THIS USER? (for name/songs updates)
         async function asyncFindUser(list) {
-            await User.findOne({ email: list.ownerEmail }, (err, user) => {
+            try {
+                const user = await User.findOne({ email: list.ownerEmail });
                 console.log("user._id: " + user._id);
-                console.log("req.userId: " + req.userId);
-                if (user._id == req.userId) {
+                console.log("userId from verifyUser: " + userId);
+                if (user._id == userId) {
                     console.log("correct user!");
                     console.log("req.body.name: " + req.body.name);
 
@@ -414,7 +426,10 @@ updatePlaylist = async (req, res) => {
                     console.log("incorrect user!");
                     return res.status(400).json({ success: false, description: "authentication error" });
                 }
-            });
+            } catch (err) {
+                console.log("Error finding user:", err);
+                return res.status(400).json({ success: false, description: "user lookup error" });
+            }
         }
         asyncFindUser(playlist);
     })
@@ -473,6 +488,20 @@ createSong = async (req, res) => {
         }
 
         const { title, artist, year, youTubeId} = req.body;
+
+        // Check if a song with the same title, artist, and year already exists
+        const existingSong = await Song.findOne({
+            title: title,
+            artist: artist,
+            year: year
+        });
+
+        if (existingSong) {
+            return res.status(400).json({
+                success: false,
+                errorMessage: 'A song with this title, artist, and year combination already exists!'
+            });
+        }
 
         //Create a new Song
 
@@ -668,7 +697,7 @@ copyPlaylistById = async (req, res) => {
     }
 
     let newPlaylist = new Playlist({
-        name: playlist.name,
+        name: playlist.name + " (Copy)",
         ownerEmail: user.email,
         songs: newSongs
     });

@@ -42,7 +42,7 @@ export default function CatalogCard({ song, selected, onSelect }) {
   };
 
   const handleAddToSpecificPlaylist = (playlistId) => {
-    console.log(`Adding song: ${song.name} to playlist: ${playlistId}`);
+    console.log(`Adding song: ${song.title} to playlist: ${playlistId}`);
 
     store.addSongToPlaylist(playlistId, song);
 
