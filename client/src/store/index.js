@@ -143,11 +143,11 @@ function GlobalStoreContextProvider(props) {
       // ORIGINALLY LOAD_ID_NAME_PAIR
       case GlobalStoreActionType.LOAD_USER_PLAYLISTS: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal: store.currentModal,
           userPlaylists: payload.playlists,
-          currentList: null,
-          currentSongIndex: -1,
-          currentSong: null,
+          currentList: store.currentList,
+          currentSongIndex: store.currentSongIndex,
+          currentSong: store.currentSong,
           globalListCounter: payload.globalListCounter,
           listNameActive: false,
           listIdMarkedForDeletion: null,
@@ -259,11 +259,11 @@ function GlobalStoreContextProvider(props) {
       }
       case GlobalStoreActionType.LOAD_USER_SONGS: {
         return setStore({
-          currentModal: CurrentModal.NONE,
+          currentModal: store.currentModal,
           userPlaylists: store.userPlaylists,
-          currentList: null,
-          currentSongIndex: -1,
-          currentSong: null,
+          currentList: store.currentList,
+          currentSongIndex: store.currentSongIndex,
+          currentSong: store.currentSong,
           globalListCounter: store.globalListCounter,
           listNameActive: false,
           listIdMarkedForDeletion: null,
@@ -492,15 +492,15 @@ function GlobalStoreContextProvider(props) {
         type: GlobalStoreActionType.CREATE_NEW_LIST,
         payload: {
           playlist: newList,
-          globalListCounter: globalListCounter
+          globalListCounter: globalListCounter,
         },
       });
       console.log("Created new list with modal set to EDIT_PLAYLIST");
       // IF IT'S A VALID LIST THEN LET'S START EDITING IT
       //   history.push("/playlist/" + newList._id);
-      } else {
-        console.log("FAILED TO CREATE A NEW LIST");
-      }
+    } else {
+      console.log("FAILED TO CREATE A NEW LIST");
+    }
   };
 
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
@@ -516,7 +516,7 @@ function GlobalStoreContextProvider(props) {
         type: GlobalStoreActionType.LOAD_USER_PLAYLISTS,
         payload: {
           playlists: playlists,
-          globalListCounter: globalListCounter
+          globalListCounter: globalListCounter,
         },
       });
     } else {
@@ -1019,8 +1019,8 @@ function GlobalStoreContextProvider(props) {
 
   // Youtube Functions
 
-  store.nextSong = () => {
-    let nextIndex = store.currentSongIndex + 1;
+  store.nextSong = (index) => {
+    let nextIndex = index + 1;
     storeReducer({
       type: GlobalStoreActionType.SET_CURRENT_SONG_INDEX,
       payload: nextIndex,

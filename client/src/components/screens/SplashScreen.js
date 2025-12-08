@@ -37,7 +37,7 @@ export default function SplashScreen() {
                 </Typography>
                 <Box
                     component="img"
-                    src="/images/playlist-logo.png"
+                    src="/playlist-logo.png"
                     alt="Playlister logo"
                     sx={{
                         width: 170,

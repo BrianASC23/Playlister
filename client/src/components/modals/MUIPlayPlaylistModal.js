@@ -1,10 +1,6 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { GlobalStoreContext } from "../../store";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -15,7 +11,15 @@ import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
-import { Typography, Grid } from "@mui/material";
+import {
+  Typography,
+  Grid,
+  Checkbox,
+  Modal,
+  Box,
+  Button,
+  IconButton,
+} from "@mui/material";
 
 export default function MUIPlayPlaylistModal() {
   const { store } = useContext(GlobalStoreContext);
@@ -26,6 +30,21 @@ export default function MUIPlayPlaylistModal() {
   const [player, setPlayer] = useState(null);
   const playerRef = useRef(null);
   const [hasListenCount, setHasListenCount] = useState(false);
+
+  // Looping
+  const [shouldLoop, setShouldLoop] = useState(false);
+  const shouldLoopRef = useRef(false);
+  const currentSongIndexRef = useRef(store.currentSongIndex);
+
+  // keep refs in sync with state
+  useEffect(() => {
+    shouldLoopRef.current = shouldLoop;
+  }, [shouldLoop]);
+
+  useEffect(() => {
+    currentSongIndexRef.current = store.currentSongIndex;
+    console.log("CURRENT SONG INDEX: ", store.currentSongIndex);
+  }, [store.currentSongIndex]);
 
   // This code loads the IFrame Player API code asynchronously.
   useEffect(() => {
@@ -90,17 +109,17 @@ export default function MUIPlayPlaylistModal() {
       });
       setPlayer(newPlayer);
     } else {
-      console.log("Skipping player creation");
+      //console.log("Skipping player creation");
     }
   }
 
   function changeSong() {
-    console.log("changeSong()");
+    //console.log("changeSong()");
     if (
       store.currentSongIndex >= 0 &&
       store.currentList?.songs?.[store.currentSongIndex]?.youTubeId
     ) {
-      if (player) {
+      if (player && typeof player.loadVideoById === "function") {
         // Fixed my bug: where YT player is not working when the first song has an invalid id.
         // When I skip to a song with a valid ID, realized that the YT player was not created.
         // SO check if player exists, load the new video. If not create a new player
@@ -109,7 +128,7 @@ export default function MUIPlayPlaylistModal() {
         );
       } else {
         // If player doesn't exist (first song had invalid ID), create it now
-        console.log("Player doesn't exist, creating new player for valid song");
+        //console.log("Player doesn't exist, creating new player for valid song");
         if (playerRef.current && window.YT && window.YT.Player) {
           // Clear the playerRef and create a new player with a proper div element
           playerRef.current.innerHTML = "";
@@ -144,25 +163,24 @@ export default function MUIPlayPlaylistModal() {
 
   // Automatically plays video when the created player is ready
   function onPlayerReady(event) {
-    console.log("onPlayerReady()");
+    //console.log("onPlayerReady()");
     event.target.playVideo();
   }
 
   // When the video pauses, etc.
   function onPlayerStateChange(event) {
-    console.log("onPlayerStateChange() event.data: " + event.data);
+    //console.log("onPlayerStateChange() event.data: " + event.data);
     let playerStatus = event.data;
     if (playerStatus == -1) {
       // VIDEO UNSTARTED
-      console.log("Video unstarted");
+      //console.log("Video unstarted");
     } else if (playerStatus == 0) {
       // THE VIDEO HAS COMPLETED PLAYING
-      console.log("Video ended");
+      console.log("Video ended, shouldLoop:", shouldLoopRef.current);
       handleNextSong();
-      changeSong();
     } else if (playerStatus == 1) {
       // THE VIDEO IS PLAYING
-      console.log("Video playing");
+      //console.log("Video playing");
       // Increment listener count when song starts playing (only once per song)
       if (!hasListenCount) {
         const currentSong = store.currentList?.songs?.[store.currentSongIndex];
@@ -173,13 +191,13 @@ export default function MUIPlayPlaylistModal() {
       }
     } else if (playerStatus == 2) {
       // THE VIDEO IS PAUSED
-      console.log("Video paused");
+      //console.log("Video paused");
     } else if (playerStatus == 3) {
       // THE VIDEO IS BUFFERING
-      console.log("Video buffering");
+      //console.log("Video buffering");
     } else if (playerStatus == 5) {
       // THE VIDEO HAS BEEN CUED
-      console.log("Video cued");
+      //console.log("Video cued");
     }
   }
 
@@ -199,18 +217,54 @@ export default function MUIPlayPlaylistModal() {
   }
 
   function handleNextSong() {
-    store.nextSong();
+    const songs = store.currentList?.songs || [];
+    const songsLength = songs.length;
+
+    const lastIndex = songsLength - 1;
+    const currentIndex = currentSongIndexRef.current ?? 0;
+
+    console.log(
+      "handleNextSong - currentIndex:",
+      currentIndex,
+      "lastIndex:",
+      lastIndex,
+      "songsLength:",
+      songsLength
+    );
+
+    // At last song
+    if (currentIndex === lastIndex) {
+      console.log("At last song, shouldLoop:", shouldLoopRef.current);
+      if (shouldLoopRef.current) {
+        console.log("Auto-loop: going back to first song");
+        store.setCurrentSong(0);
+      } else {
+        console.log("At last song, auto-play stopped (no loop)");
+        // Optionally: stop video
+        if (player && typeof player.stopVideo === "function") {
+          player.stopVideo();
+        }
+      }
+    } else {
+      console.log("Advancing to next song");
+      store.nextSong(currentIndex);
+    }
   }
 
   function handleClose() {
+    setShouldLoop(false);
     store.closeCurrentList();
   }
 
-  function handleSwitchSongs(index){
+  function handleSwitchSongs(index) {
     store.setCurrentSong(index);
   }
 
-  console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
+  function handleLoopChange() {
+    setShouldLoop((prev) => !prev);
+  }
+
+  //console.log("MUIPLAY STORE CURRENT LIST:", store.currentList);
 
   return (
     <Modal open={store.isPlayPlaylistModalOpen()} onClose={handleClose}>
@@ -365,10 +419,11 @@ export default function MUIPlayPlaylistModal() {
                     <PlayArrowIcon />
                   </IconButton>
                   <IconButton
-                    onClick={handleNextSong}
+                    onClick={() => handleNextSong(false)}
                     disabled={
+                      !shouldLoop &&
                       store.currentSongIndex >=
-                      (store.currentList?.songs?.length || 0) - 1
+                        (store.currentList?.songs?.length || 0) - 1
                     }
                     sx={{
                       bgcolor: "#2196f3",
@@ -380,6 +435,21 @@ export default function MUIPlayPlaylistModal() {
                     <SkipNextIcon />
                   </IconButton>
                 </Box>
+
+                <Button
+                  variant="contained"
+                  onClick={handleLoopChange}
+                  sx={{
+                    bgcolor: shouldLoop ? "#4caf50" : "#9e9e9e",
+                    borderRadius: "20px",
+                    px: 3,
+                    "&:hover": {
+                      bgcolor: shouldLoop ? "#45a049" : "#757575",
+                    },
+                  }}
+                >
+                  {shouldLoop ? "Repeat: ON" : "Repeat: OFF"}
+                </Button>
 
                 <Button
                   variant="contained"
