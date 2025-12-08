@@ -155,7 +155,7 @@ export default function MUIEditPlaylistModal() {
               bgcolor: "#e8e8ff",
               flex: 1,
               overflowY: "scroll",
-              maxHeight: "500px",
+              maxHeight: "450px",
               p: 2,
               mb: 2,
               borderRadius: 1,
