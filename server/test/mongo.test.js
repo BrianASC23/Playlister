@@ -133,6 +133,8 @@ test("Test #1) User CRUD (Create + Read + Update + Delete)", async () => {
   expect(verifyDelete.success).toBe(false);
 });
 
+
+
 /**
  * Test User Authentication operations
  */
@@ -163,3 +165,63 @@ test("Test #2) User Authentication (Login + Failed Login + Duplicate Registratio
   expect(duplicateUser.success).toBe(false);
   expect(duplicateUser.error).toBeDefined();
 });
+
+test("Test #3) Playlist CRUD (Create + Read + Update + Delete)", async () => {
+
+    // CREATE: Create a playlist
+    const newPlaylist = {
+        name: "TestPlaylist",
+        ownerEmail: existingUserEmail,
+        songs: [],
+        // NumListeners will be added by default
+    }
+
+    const createResult = await db.createPlaylist(existingUserId, newPlaylist);
+
+    // Get playlist ID for later CRUD
+    let playlistId = createResult.playlist._id;
+
+    expect(createResult.success).toBe(true);
+    expect(createResult.playlist).toBeDefined();
+    expect(createResult.playlist.name).toBe(newPlaylist.name);
+    expect(createResult.playlist.ownerEmail).toBe(newPlaylist.ownerEmail);
+
+
+    // READ: Read the playlist
+
+    const readResult = await db.getPlaylistById(playlistId, existingUserId);
+
+    expect(readResult.success).toBe(true);
+    expect(readResult.playlist).toBeDefined();
+    expect(readResult.playlist.name).toBe(newPlaylist.name);
+    expect(readResult.playlist.ownerEmail).toBe(existingUserEmail);
+
+
+    // UPDATE: Update the Playlist
+    const updateBody = {
+        playlist: {
+            name: "Updated Name",
+            songs: [],
+        },
+    };
+    const updateResult = await db.updatePlaylist(playlistId, existingUserId, updateBody);
+
+    expect(updateResult.success).toBe(true);
+    expect(updateResult.id).toBeDefined();
+    expect(updateResult.message).toBe("Playlist Updated!");
+
+    // DELETE: Delete the playlist
+    const deleteResult = await db.deletePlaylist(existingUserId, playlistId);
+
+    expect(deleteResult.success).toBe(true);
+    expect(deleteResult.playlist).toBeDefined();
+
+
+    // Do a Check to See if the Playlist is Gone
+    const checkDeleteResult = await db.getPlaylistById(playlistId, existingUserId);
+
+    expect(checkDeleteResult.success).toBe(false);
+    expect(checkDeleteResult.playlist).toBeUndefined();
+})
+
+
