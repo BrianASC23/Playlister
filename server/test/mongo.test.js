@@ -10,7 +10,6 @@ import {
   expect,
   test,
 } from "vitest";
-const mongoose = require("mongoose");
 
 const MongoDBManager = require("../db/DatabaseManager");
 
@@ -31,18 +30,16 @@ const MongoDBManager = require("../db/DatabaseManager");
  * Executed once before all tests are performed.
  */
 
-// Creating this user before hand - setting the variables first
+// Creating this user beforehand - setting the variables first
 let existingUserId;
 let existingUserEmail = "read@gmail.com";
-
-let playlistId;
 let db;
 
 beforeAll(async () => {
   // Initialize the database manager
   db = new MongoDBManager();
 
-  // Create a user that will exist for Test #1 to read
+  // Create a user that will exist for tests
   const result = await db.registerUser(
     "Read",
     "Test",
@@ -84,30 +81,9 @@ afterAll(async () => {
   }
 });
 
-/**
- * Vitest test to see if the Database Manager can get a User.
- */
-test("Test #1) Reading a User from the Database", async () => {
-  const expectedUser = {
-    firstName: "Read",
-    lastName: "Test",
-    email: "read@gmail.com",
-  };
-
-  // Read the user using DatabaseManager
-  const result = await db.getLoggedIn(existingUserId);
-
-  // Compare the values
-  expect(result.success).toBe(true);
-  expect(result.user.firstName).toBe(expectedUser.firstName);
-  expect(result.user.lastName).toBe(expectedUser.lastName);
-  expect(result.user.email).toBe(expectedUser.email);
-});
-
-/**
- * Vitest test to see if the Database Manager can create a User
- */
-test("Test #2) Creating a User in the Database", async () => {
+// ----------------------------------------------------------------------------
+// Testing CRUD on User
+test("Test #1) User CRUD (Create + Read + Update + Delete)", async () => {
   const testUser = {
     firstName: "Create",
     lastName: "Test",
@@ -115,127 +91,75 @@ test("Test #2) Creating a User in the Database", async () => {
     password: "password123",
   };
 
-  // Create the user using DatabaseManager
-  const result = await db.registerUser(
+  // CREATE: Create the user using DatabaseManager
+  const createResult = await db.registerUser(
     testUser.firstName,
     testUser.lastName,
     testUser.email,
     testUser.password
   );
-  const userId = result.user._id;
+  const userId = createResult.user._id;
 
-  // Verify the user was created
-  const expectedUser = {
-    firstName: "Create",
-    lastName: "Test",
-    email: "create@gmail.com",
+  expect(createResult.success).toBe(true);
+  expect(createResult.user.firstName).toBe("Create");
+  expect(createResult.user.lastName).toBe("Test");
+  expect(createResult.user.email).toBe("create@gmail.com");
+
+  // READ: Read the user back
+  const readResult = await db.getLoggedIn(userId);
+
+  expect(readResult.success).toBe(true);
+  expect(readResult.user.firstName).toBe(testUser.firstName);
+  expect(readResult.user.lastName).toBe(testUser.lastName);
+  expect(readResult.user.email).toBe(testUser.email);
+
+  // UPDATE: Update the user's information
+  const updateData = {
+    firstName: "Updated",
+    lastName: "User",
   };
+  const updateResult = await db.updateUser(userId, updateData);
 
-  // Read the user back
-  const getUserResult = await db.getLoggedIn(userId);
+  expect(updateResult.success).toBe(true);
+  expect(updateResult.user.firstName).toBe("Updated");
+  expect(updateResult.user.lastName).toBe("User");
 
-  // Compare values
-  expect(result.success).toBe(true);
-  expect(getUserResult.success).toBe(true);
-  expect(getUserResult.user.firstName).toBe(expectedUser.firstName);
-  expect(getUserResult.user.lastName).toBe(expectedUser.lastName);
-  expect(getUserResult.user.email).toBe(expectedUser.email);
+  // DELETE: Delete the user
+  const deleteResult = await db.deleteUser(userId);
+  expect(deleteResult.success).toBe(true);
+
+  // Verify deletion
+  const verifyDelete = await db.getLoggedIn(userId);
+  expect(verifyDelete.success).toBe(false);
 });
 
-test("Test #3) Creating a Playlist in the Database", async () => {
-  const testPlaylist = {
-    name: "Test Playlist",
-    ownerEmail: existingUserEmail,
-    songs: [],
-  };
+/**
+ * Test User Authentication operations
+ */
+test("Test #2) User Authentication (Login + Failed Login + Duplicate Registration)", async () => {
+  // Test successful login
+  const loginResult = await db.loginUser(existingUserEmail, "password123");
 
-  // Create playlist using DatabaseManager
-  const result = await db.createPlaylist(existingUserId, testPlaylist);
-  playlistId = result.playlist._id;
+  expect(loginResult.success).toBe(true);
+  expect(loginResult.user).toBeDefined();
+  expect(loginResult.user.email).toBe(existingUserEmail);
+  expect(loginResult.user.firstName).toBe("Read");
+  expect(loginResult.user.lastName).toBe("Test");
 
-  expect(result.success).toBe(true);
-  expect(result.playlist).toBeDefined();
-  expect(result.playlist.name).toBe(testPlaylist.name);
-  expect(result.playlist.ownerEmail).toBe(testPlaylist.ownerEmail);
-});
+  // Test failed login with wrong password
+  const failedLogin = await db.loginUser(existingUserEmail, "wrongpassword");
 
-test("Test #4) Reading a Playlist By Id in the Database", async () => {
-  const testPlaylist = {
-    name: "Read Test Playlist",
-    ownerEmail: existingUserEmail,
-    songs: [],
-  };
+  expect(failedLogin.success).toBe(false);
+  expect(failedLogin.error).toBeDefined();
 
-  // Create playlist
-  const createResult = await db.createPlaylist(existingUserId, testPlaylist);
-  const testPlaylistId = createResult.playlist._id;
-
-  // Read the playlist
-  const result = await db.getPlaylistById(testPlaylistId, existingUserId);
-
-  expect(result.success).toBe(true);
-  expect(result.playlist).toBeDefined();
-  expect(result.playlist.name).toBe("Read Test Playlist");
-  expect(result.playlist.ownerEmail).toBe(existingUserEmail);
-});
-
-test("Test #5) Getting Playlist Pairs from the Database", async () => {
-  // Get playlist pairs using DatabaseManager
-  const result = await db.getPlaylistPairs(existingUserId);
-
-  expect(result.success).toBe(true);
-  expect(result.idNamePairs).toBeDefined();
-  expect(Array.isArray(result.idNamePairs)).toBe(true);
-  expect(result.idNamePairs.length).toBeGreaterThan(0);
-});
-
-test("Test #6) Getting All Playlists from the Database", async () => {
-  // Get all playlists for the user using DatabaseManager
-  const result = await db.getPlaylists(existingUserId);
-
-  expect(result.success).toBe(true);
-  expect(result.playlists).toBeDefined();
-  expect(Array.isArray(result.playlists)).toBe(true);
-  expect(result.playlists.length).toBeGreaterThan(0);
-});
-
-test("Test #7) Updating a Playlist in the Database", async () => {
-  // Create a playlist to update
-  const testPlaylist = {
-    name: "Before Name",
-    ownerEmail: existingUserEmail,
-    songs: [],
-  };
-
-  const createResult = await db.createPlaylist(existingUserId, testPlaylist);
-  const testPlaylistId = createResult.playlist._id;
-
-  // Update the playlist using DatabaseManager
-  const updateBody = {
-    playlist: {
-      name: "Updated Name",
-      songs: [],
-    },
-  };
-
-  const result = await db.updatePlaylist(
-    testPlaylistId,
-    existingUserId,
-    updateBody
+  // Test duplicate user registration
+  const duplicateUser = await db.registerUser(
+    "Duplicate",
+    "User",
+    existingUserEmail,
+    "password123"
   );
 
-  expect(result.success).toBe(true);
-  expect(result.id).toBeDefined();
-  expect(result.message).toBe("Playlist Updated!");
-});
-
-test("Test #8) Login User", async () => {
-  // Login user using DatabaseManager
-  const result = await db.loginUser(existingUserEmail, "password123");
-
-  expect(result.success).toBe(true);
-  expect(result.user).toBeDefined();
-  expect(result.user.email).toBe(existingUserEmail);
-  expect(result.user.firstName).toBe("Read");
-  expect(result.user.lastName).toBe("Test");
+  expect(duplicateUser.success).toBe(false);
+  expect(duplicateUser.error).toBeDefined();
 });

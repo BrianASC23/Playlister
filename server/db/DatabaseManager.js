@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config({ path: __dirname + "/../../.env" });
 const Playlist = require("../models/playlist-model");
 const User = require("../models/user-model");
+const Song = require("../models/song-model");
 const bcrypt = require("bcryptjs");
 
 class MongoDBManager {
@@ -102,7 +103,6 @@ class MongoDBManager {
     }
   }
 
-  // no arguments b/c we are getting all the playlists
   async getPlaylists(userId) {
     try {
       const user = await User.findOne({ _id: userId });
@@ -238,6 +238,40 @@ class MongoDBManager {
 
   async logoutUser() {}
 
+  async updateUser(userId, updateData) {
+    try {
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+      });
+      if (!updatedUser) {
+        return { success: false, error: "User not found" };
+      }
+      return {
+        success: true,
+        user: {
+          _id: updatedUser._id,
+          firstName: updatedUser.firstName,
+          lastName: updatedUser.lastName,
+          email: updatedUser.email,
+        },
+      };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  async deleteUser(userId) {
+    try {
+      const deletedUser = await User.findByIdAndDelete(userId);
+      if (!deletedUser) {
+        return { success: false, error: "User not found" };
+      }
+      return { success: true, user: deletedUser };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
   /*
     Functions I created to clean up after the vitest.
     */
@@ -264,6 +298,55 @@ class MongoDBManager {
 
       const res = await Playlist.deleteMany({ ownerEmail: { $in: emails } });
       return { success: true, deletedCount: res.deletedCount };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  // Song CRUD Operations
+  async createSong(songData) {
+    try {
+      const song = new Song(songData);
+      const savedSong = await song.save();
+      return { success: true, song: savedSong };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  async getSongById(songId) {
+    try {
+      const song = await Song.findById(songId);
+      if (!song) {
+        return { success: false, error: "Song not found" };
+      }
+      return { success: true, song };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  async updateSong(songId, updateData) {
+    try {
+      const updatedSong = await Song.findByIdAndUpdate(songId, updateData, {
+        new: true,
+      });
+      if (!updatedSong) {
+        return { success: false, error: "Song not found" };
+      }
+      return { success: true, song: updatedSong };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  async deleteSong(songId) {
+    try {
+      const deletedSong = await Song.findByIdAndDelete(songId);
+      if (!deletedSong) {
+        return { success: false, error: "Song not found" };
+      }
+      return { success: true, song: deletedSong };
     } catch (err) {
       return { success: false, error: err.message };
     }
