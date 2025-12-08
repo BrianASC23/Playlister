@@ -222,6 +222,64 @@ test("Test #3) Playlist CRUD (Create + Read + Update + Delete)", async () => {
 
     expect(checkDeleteResult.success).toBe(false);
     expect(checkDeleteResult.playlist).toBeUndefined();
-})
+});
+
+test("Test #4) Song CRUD (Create + Read + Update + Delete)", async () => {
+
+    // CREATE: Create a playlist
+    const newSong = {
+        title: "testSong",
+        artist: "Dummy",
+        year: 2005,
+        youTubeId: "someYoutubeIdIDK",
+        ownerEmail: existingUserEmail,
+    }
+
+    const createResult = await db.createSong(newSong);
+
+    // Get playlist ID for later CRUD
+    let songId = createResult.song._id;
+
+    expect(createResult.success).toBe(true);
+    expect(createResult.song).toBeDefined();
+    expect(createResult.song.title).toBe(newSong.title);
+    expect(createResult.song.ownerEmail).toBe(newSong.ownerEmail);
+
+
+    // READ: Read the playlist
+
+    const readResult = await db.getSongById(songId);
+
+    expect(readResult.success).toBe(true);
+    expect(readResult.song).toBeDefined();
+    expect(readResult.song.title).toBe(newSong.title);
+    expect(readResult.song.ownerEmail).toBe(existingUserEmail);
+
+
+    // UPDATE: Update the Song
+    const updateData = {
+        title: "Updated Song Title",
+        artist: "Updated Artist",
+    };
+    const updateResult = await db.updateSong(songId, updateData);
+
+    expect(updateResult.success).toBe(true);
+    expect(updateResult.song).toBeDefined();
+    expect(updateResult.song.title).toBe("Updated Song Title");
+    expect(updateResult.song.artist).toBe("Updated Artist");
+
+
+    // DELETE: Delete the song
+    const deleteResult = await db.deleteSong(songId);
+
+    expect(deleteResult.success).toBe(true);
+
+
+    // Do a Check to See if the Song is Gone
+    const checkDeleteResult = await db.getSongById(songId);
+
+    expect(checkDeleteResult.success).toBe(false);
+    expect(checkDeleteResult.song).toBeUndefined();
+});
 
 
