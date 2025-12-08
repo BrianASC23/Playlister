@@ -82,26 +82,6 @@ class MongoDBManager {
     }
   }
 
-  async getPlaylistPairs(userId) {
-    try {
-      const user = await User.findOne({ _id: userId });
-      if (!user) {
-        return { success: false, error: "User not found!" };
-      }
-      const playlists = await Playlist.find({ ownerEmail: user.email });
-      if (!playlists) {
-        return { success: false, error: "Playlists not found!" };
-      }
-      const pairs = playlists.map((list) => ({
-        _id: list._id,
-        name: list.name,
-      }));
-
-      return { success: true, idNamePairs: pairs };
-    } catch (err) {
-      return { success: false, error: err.message };
-    }
-  }
 
   async getPlaylists(userId) {
     try {

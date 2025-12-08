@@ -133,8 +133,6 @@ test("Test #1) User CRUD (Create + Read + Update + Delete)", async () => {
   expect(verifyDelete.success).toBe(false);
 });
 
-
-
 /**
  * Test User Authentication operations
  */
@@ -167,119 +165,162 @@ test("Test #2) User Authentication (Login + Failed Login + Duplicate Registratio
 });
 
 test("Test #3) Playlist CRUD (Create + Read + Update + Delete)", async () => {
+  // CREATE: Create a playlist
+  const newPlaylist = {
+    name: "TestPlaylist",
+    ownerEmail: existingUserEmail,
+    songs: [],
+    // NumListeners will be added by default
+  };
 
-    // CREATE: Create a playlist
-    const newPlaylist = {
-        name: "TestPlaylist",
-        ownerEmail: existingUserEmail,
-        songs: [],
-        // NumListeners will be added by default
-    }
+  const createResult = await db.createPlaylist(existingUserId, newPlaylist);
 
-    const createResult = await db.createPlaylist(existingUserId, newPlaylist);
+  // Get playlist ID for later CRUD
+  let playlistId = createResult.playlist._id;
 
-    // Get playlist ID for later CRUD
-    let playlistId = createResult.playlist._id;
+  expect(createResult.success).toBe(true);
+  expect(createResult.playlist).toBeDefined();
+  expect(createResult.playlist.name).toBe(newPlaylist.name);
+  expect(createResult.playlist.ownerEmail).toBe(newPlaylist.ownerEmail);
 
-    expect(createResult.success).toBe(true);
-    expect(createResult.playlist).toBeDefined();
-    expect(createResult.playlist.name).toBe(newPlaylist.name);
-    expect(createResult.playlist.ownerEmail).toBe(newPlaylist.ownerEmail);
+  // READ: Read the playlist
 
+  const readResult = await db.getPlaylistById(playlistId, existingUserId);
 
-    // READ: Read the playlist
+  expect(readResult.success).toBe(true);
+  expect(readResult.playlist).toBeDefined();
+  expect(readResult.playlist.name).toBe(newPlaylist.name);
+  expect(readResult.playlist.ownerEmail).toBe(existingUserEmail);
 
-    const readResult = await db.getPlaylistById(playlistId, existingUserId);
+  // UPDATE: Update the Playlist
+  const updateBody = {
+    playlist: {
+      name: "Updated Name",
+      songs: [],
+    },
+  };
+  const updateResult = await db.updatePlaylist(
+    playlistId,
+    existingUserId,
+    updateBody
+  );
 
-    expect(readResult.success).toBe(true);
-    expect(readResult.playlist).toBeDefined();
-    expect(readResult.playlist.name).toBe(newPlaylist.name);
-    expect(readResult.playlist.ownerEmail).toBe(existingUserEmail);
+  expect(updateResult.success).toBe(true);
+  expect(updateResult.id).toBeDefined();
+  expect(updateResult.message).toBe("Playlist Updated!");
 
+  // DELETE: Delete the playlist
+  const deleteResult = await db.deletePlaylist(existingUserId, playlistId);
 
-    // UPDATE: Update the Playlist
-    const updateBody = {
-        playlist: {
-            name: "Updated Name",
-            songs: [],
-        },
-    };
-    const updateResult = await db.updatePlaylist(playlistId, existingUserId, updateBody);
+  expect(deleteResult.success).toBe(true);
+  expect(deleteResult.playlist).toBeDefined();
 
-    expect(updateResult.success).toBe(true);
-    expect(updateResult.id).toBeDefined();
-    expect(updateResult.message).toBe("Playlist Updated!");
+  // Do a Check to See if the Playlist is Gone
+  const checkDeleteResult = await db.getPlaylistById(
+    playlistId,
+    existingUserId
+  );
 
-    // DELETE: Delete the playlist
-    const deleteResult = await db.deletePlaylist(existingUserId, playlistId);
-
-    expect(deleteResult.success).toBe(true);
-    expect(deleteResult.playlist).toBeDefined();
-
-
-    // Do a Check to See if the Playlist is Gone
-    const checkDeleteResult = await db.getPlaylistById(playlistId, existingUserId);
-
-    expect(checkDeleteResult.success).toBe(false);
-    expect(checkDeleteResult.playlist).toBeUndefined();
+  expect(checkDeleteResult.success).toBe(false);
+  expect(checkDeleteResult.playlist).toBeUndefined();
 });
 
 test("Test #4) Song CRUD (Create + Read + Update + Delete)", async () => {
+  // CREATE: Create a playlist
+  const newSong = {
+    title: "testSong",
+    artist: "Dummy",
+    year: 2005,
+    youTubeId: "someYoutubeIdIDK",
+    ownerEmail: existingUserEmail,
+  };
 
-    // CREATE: Create a playlist
-    const newSong = {
-        title: "testSong",
-        artist: "Dummy",
-        year: 2005,
-        youTubeId: "someYoutubeIdIDK",
-        ownerEmail: existingUserEmail,
-    }
+  const createResult = await db.createSong(newSong);
 
-    const createResult = await db.createSong(newSong);
+  // Get playlist ID for later CRUD
+  let songId = createResult.song._id;
 
-    // Get playlist ID for later CRUD
-    let songId = createResult.song._id;
+  expect(createResult.success).toBe(true);
+  expect(createResult.song).toBeDefined();
+  expect(createResult.song.title).toBe(newSong.title);
+  expect(createResult.song.ownerEmail).toBe(newSong.ownerEmail);
 
-    expect(createResult.success).toBe(true);
-    expect(createResult.song).toBeDefined();
-    expect(createResult.song.title).toBe(newSong.title);
-    expect(createResult.song.ownerEmail).toBe(newSong.ownerEmail);
+  // READ: Read the playlist
 
+  const readResult = await db.getSongById(songId);
 
-    // READ: Read the playlist
+  expect(readResult.success).toBe(true);
+  expect(readResult.song).toBeDefined();
+  expect(readResult.song.title).toBe(newSong.title);
+  expect(readResult.song.ownerEmail).toBe(existingUserEmail);
 
-    const readResult = await db.getSongById(songId);
+  // UPDATE: Update the Song
+  const updateData = {
+    title: "Updated Song Title",
+    artist: "Updated Artist",
+  };
+  const updateResult = await db.updateSong(songId, updateData);
 
-    expect(readResult.success).toBe(true);
-    expect(readResult.song).toBeDefined();
-    expect(readResult.song.title).toBe(newSong.title);
-    expect(readResult.song.ownerEmail).toBe(existingUserEmail);
+  expect(updateResult.success).toBe(true);
+  expect(updateResult.song).toBeDefined();
+  expect(updateResult.song.title).toBe("Updated Song Title");
+  expect(updateResult.song.artist).toBe("Updated Artist");
 
+  // DELETE: Delete the song
+  const deleteResult = await db.deleteSong(songId);
 
-    // UPDATE: Update the Song
-    const updateData = {
-        title: "Updated Song Title",
-        artist: "Updated Artist",
-    };
-    const updateResult = await db.updateSong(songId, updateData);
+  expect(deleteResult.success).toBe(true);
 
-    expect(updateResult.success).toBe(true);
-    expect(updateResult.song).toBeDefined();
-    expect(updateResult.song.title).toBe("Updated Song Title");
-    expect(updateResult.song.artist).toBe("Updated Artist");
+  // Do a Check to See if the Song is Gone
+  const checkDeleteResult = await db.getSongById(songId);
 
-
-    // DELETE: Delete the song
-    const deleteResult = await db.deleteSong(songId);
-
-    expect(deleteResult.success).toBe(true);
-
-
-    // Do a Check to See if the Song is Gone
-    const checkDeleteResult = await db.getSongById(songId);
-
-    expect(checkDeleteResult.success).toBe(false);
-    expect(checkDeleteResult.song).toBeUndefined();
+  expect(checkDeleteResult.success).toBe(false);
+  expect(checkDeleteResult.song).toBeUndefined();
 });
 
+test("Test #5) Get all user playlists", async () => {
+  // create some test playlists for the existing user
+  const testPlaylists = [
+    {
+      name: "Test Playlist 1",
+      ownerEmail: existingUserEmail,
+      songs: [],
+    },
+    {
+      name: "Test Playlist 2",
+      ownerEmail: existingUserEmail,
+      songs: [],
+    },
+  ];
+
+  // Create the playlists and store their IDs
+  const playlistIds = [];
+  for (const playlist of testPlaylists) {
+    const createResult = await db.createPlaylist(existingUserId, playlist);
+    expect(createResult.success).toBe(true);
+    playlistIds.push(createResult.playlist._id);
+  }
+
+  // Get all playlists for the user
+  const allResult = await db.getPlaylists(existingUserId);
+
+  expect(allResult.success).toBe(true);
+  expect(allResult.playlists).toBeDefined();
+  expect(Array.isArray(allResult.playlists)).toBe(true);
+  expect(allResult.playlists.length).toBeGreaterThanOrEqual(2);
+
+  // Verify the playlists have complete data
+  const fullPlaylist1 = allResult.playlists.find(
+    (p) => p._id.toString() === playlistIds[0].toString()
+  );
+  expect(fullPlaylist1).toBeDefined();
+  expect(fullPlaylist1.name).toBe("Test Playlist 1");
+  expect(fullPlaylist1.ownerEmail).toBe(existingUserEmail);
+  expect(Array.isArray(fullPlaylist1.songs)).toBe(true);
+
+  // Cleanup - delete the test playlists
+  for (const playlistId of playlistIds) {
+    await db.deletePlaylist(existingUserId, playlistId);
+  }
+});
 
