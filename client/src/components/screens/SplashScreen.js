@@ -1,12 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-
+import AuthContext from '../../auth';
 
 export default function SplashScreen() {
+    const { auth } = useContext(AuthContext);
+
+    function handleGuestLogin() {
+        auth.loginAsGuest();
+    }
+
     return (
         <Box id="splash-screen"
             sx={{
@@ -45,6 +51,7 @@ export default function SplashScreen() {
                     <Grid item>
                         <Button
                             variant="contained"
+                            onClick={handleGuestLogin}
                             sx={{
                                 textTransform: "none",
                                 borderRadius: 1.5,
@@ -52,7 +59,7 @@ export default function SplashScreen() {
                                 bgcolor: "black",
                             }}
                         >
-                            <Link to="/guest/">Continue As Guest</Link>
+                            Continue As Guest
                         </Button>
                     </Grid>
                     <Grid item>

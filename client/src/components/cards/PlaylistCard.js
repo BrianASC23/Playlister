@@ -105,7 +105,8 @@ function PlaylistCard({ playlist }) {
 
   // Check if the playlist's owner email is the same as our current user.
   // Depending on this boolean, we render the option to edit & delete
-  const isOwner = auth.user.email === playlist.ownerEmail;
+  // Guests will have isOwner = false since auth.user is null
+  const isOwner = auth.user && auth.user.email === playlist.ownerEmail;
 
   let cardElement = (
     <Box
@@ -205,21 +206,23 @@ function PlaylistCard({ playlist }) {
                 </Button>
               </>
             )}
-            {/* Copy */}
-            <Button
-              variant="contained"
-              size="small"
-              sx={{
-                textTransform: "none",
-                bgcolor: "#2e7d32",
-                "&:hover": { bgcolor: "#1b5e20" },
-              }}
-              onClick={() => handleCopy(playlist._id)}
-            >
-              Copy
-            </Button>
+            {/* Copy - Only show for logged in users, not guests */}
+            {auth.loggedIn && (
+              <Button
+                variant="contained"
+                size="small"
+                sx={{
+                  textTransform: "none",
+                  bgcolor: "#2e7d32",
+                  "&:hover": { bgcolor: "#1b5e20" },
+                }}
+                onClick={() => handleCopy(playlist._id)}
+              >
+                Copy
+              </Button>
+            )}
 
-            {/* Play */}
+            {/* Play - Available for everyone including guests */}
             <Button
               variant="contained"
               size="small"

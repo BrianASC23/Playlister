@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
-import { useHistory } from 'react-router-dom'
-import authRequestSender from './requests'
+import { useHistory } from "react-router-dom";
+import authRequestSender from "./requests";
 
 const AuthContext = createContext();
 console.log("create AuthContext: " + AuthContext);
@@ -11,13 +11,15 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     REGISTER_USER: "REGISTER_USER",
-    EDIT_USER: "EDIT_USER"
+    EDIT_USER: "EDIT_USER",
+    GUEST_LOGIN: "GUEST_LOGIN"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
+        guest: false,
         errorMessage: null
     });
     const history = useHistory();
@@ -33,6 +35,7 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
+                    guest: false,
                     errorMessage: null
                 });
             }
@@ -40,6 +43,7 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
+                    guest: false,
                     errorMessage: payload.errorMessage
                 })
             }
@@ -47,6 +51,7 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: null,
                     loggedIn: false,
+                    guest: false,
                     errorMessage: null
                 })
             }
@@ -54,6 +59,7 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
+                    guest: false,
                     errorMessage: payload.errorMessage
                 })
             }
@@ -61,7 +67,16 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
+                    guest: false,
                     errorMessage: payload.errorMessage
+                })
+            }
+            case AuthActionType.GUEST_LOGIN: {
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    guest: true,
+                    errorMessage: null
                 })
             }
             default:
@@ -107,6 +122,7 @@ function AuthContextProvider(props) {
                 payload: {
                     user: auth.user,
                     loggedIn: false,
+                    guest: false,
                     errorMessage: error.response.data.errorMessage
                 }
             })
@@ -136,6 +152,7 @@ function AuthContextProvider(props) {
                 payload:{
                     user: auth.user,
                     loggedIn: true,
+                    guest: false,
                     errorMessage: error.response.data.errorMessage
                 }
             })
@@ -162,6 +179,7 @@ function AuthContextProvider(props) {
                 payload: {
                     user: auth.user,
                     loggedIn: false,
+                    guest: false,
                     errorMessage: error.response.data.errorMessage
                 }
             })
@@ -177,6 +195,14 @@ function AuthContextProvider(props) {
             })
             history.push("/");
         }
+    }
+
+    auth.loginAsGuest = function() {
+        authReducer({
+            type: AuthActionType.GUEST_LOGIN,
+            payload: null
+        });
+        history.push("/");
     }
 
     auth.getUserInitials = function() {

@@ -58,7 +58,8 @@ export default function CatalogCard({ song, selected, onSelect }) {
     store.markSongForDeletion(id, song);
   };
 
-  let isOwned = song.ownerEmail === auth.user.email;
+  // Guests will have isOwned = false since auth.user is null
+  let isOwned = auth.user && song.ownerEmail === auth.user.email;
 
   return (
     <ListItem
@@ -88,54 +89,62 @@ export default function CatalogCard({ song, selected, onSelect }) {
             {song.title} ({song.year})
           </Typography>
 
-          <IconButton size="small" onClick={handleMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <MenuItem onMouseEnter={handlePlaylistMenuOpen}>
-              Add to Playlist
-            </MenuItem>
-            <MenuItem onClick={handleEditSong} disabled={!isOwned}>
-              Edit Song
-            </MenuItem>
-            <MenuItem onClick={() => handleRemoveFromCatalog(song._id, song)} disabled={!isOwned}>
-              Remove from Catalog
-            </MenuItem>
-          </Menu>
-
-          <Menu
-            anchorEl={playlistAnchorEl}
-            open={playlistMenuOpen}
-            onClose={handlePlaylistMenuClose}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            transformOrigin={{ vertical: "top", horizontal: "left" }}
-            sx={{ ml: 1 }}
-          >
-            {store.userPlaylists && store.userPlaylists.length > 0 ? (
-              store.userPlaylists.map((playlist) => (
-                <MenuItem
-                  key={playlist._id}
-                  onClick={() => handleAddToSpecificPlaylist(playlist._id)}
-                >
-                  {playlist.name}
+          {/* Only show menu for logged in users, not guests */}
+          {auth.loggedIn && (
+            <>
+              <IconButton size="small" onClick={handleMenuClick}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                <MenuItem onMouseEnter={handlePlaylistMenuOpen}>
+                  Add to Playlist
                 </MenuItem>
-              ))
-            ) : (
-              <MenuItem disabled>No playlists available</MenuItem>
-            )}
-          </Menu>
+                <MenuItem onClick={handleEditSong} disabled={!isOwned}>
+                  Edit Song
+                </MenuItem>
+                <MenuItem
+                  onClick={() => handleRemoveFromCatalog(song._id, song)}
+                  disabled={!isOwned}
+                >
+                  Remove from Catalog
+                </MenuItem>
+              </Menu>
+
+              <Menu
+                anchorEl={playlistAnchorEl}
+                open={playlistMenuOpen}
+                onClose={handlePlaylistMenuClose}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+                sx={{ ml: 1 }}
+              >
+                {store.userPlaylists && store.userPlaylists.length > 0 ? (
+                  store.userPlaylists.map((playlist) => (
+                    <MenuItem
+                      key={playlist._id}
+                      onClick={() => handleAddToSpecificPlaylist(playlist._id)}
+                    >
+                      {playlist.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No playlists available</MenuItem>
+                )}
+              </Menu>
+            </>
+          )}
         </Box>
         <Box
           sx={{
