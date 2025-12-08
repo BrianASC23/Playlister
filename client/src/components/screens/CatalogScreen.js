@@ -100,6 +100,11 @@ export default function CatalogScreen() {
     setSongs(songs); // Don't know if I need this if I have a global songlist
   };
 
+  // Handle clearing filters and loading user's owned songs
+  const handleClear = () => {
+    store.getSongByUser();
+  };
+
   const handleAddNewSong = async () => {
     //Should open the Add/Edit Song Modal
     // Once I fill out everything and hit complete
@@ -133,6 +138,7 @@ export default function CatalogScreen() {
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
+            onClear={handleClear}
           />
 
           {selectedSong && (

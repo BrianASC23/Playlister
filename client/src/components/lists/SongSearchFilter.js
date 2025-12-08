@@ -11,7 +11,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
-export default function SongSearchFilter({ filters, setFilters, onSearch }) {
+export default function SongSearchFilter({ filters, setFilters, onSearch, onClear }) {
   const updateField = (field) => (e) => {
     setFilters({
       ...filters,
@@ -24,7 +24,7 @@ export default function SongSearchFilter({ filters, setFilters, onSearch }) {
     onSearch(filters);
   };
 
-  const onClear = () => {
+  const handleClear = () => {
     const empty = {
       title: "",
       artist: "",
@@ -32,6 +32,11 @@ export default function SongSearchFilter({ filters, setFilters, onSearch }) {
     };
 
     setFilters(empty);
+    
+    // Call the onClear callback to load user's owned songs
+    if (onClear) {
+      onClear();
+    }
   };
 
   return (
@@ -83,7 +88,7 @@ export default function SongSearchFilter({ filters, setFilters, onSearch }) {
             <Button type="submit" variant="contained">
               Search
             </Button>
-            <Button variant="outlined" onClick={onClear}>
+            <Button variant="outlined" onClick={handleClear}>
               Clear
             </Button>
           </Box>

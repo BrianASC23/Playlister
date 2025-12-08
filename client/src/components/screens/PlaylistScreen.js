@@ -27,6 +27,11 @@ export default function PlaylistScreen() {
     console.log("User Playlist in Screen", store.userPlaylists);
   }, [store.userPlaylists]);
 
+
+  const handleClear = () => {
+    store.loadUserPlaylists();
+  }
+
   // Handle searching for playlists by filter
   const handleSearch = async () => {
     console.log("filters:", filters);
@@ -59,6 +64,7 @@ export default function PlaylistScreen() {
             filters={filters}
             setFilters={setFilters}
             onSearch={handleSearch}
+            onClear={handleClear}
           />
         </Grid>
         <Grid item xs={6}>
