@@ -281,11 +281,6 @@ findPlaylistsByFilter = async (req, res) => {
 
 }
 updatePlaylist = async (req, res) => {
-    if(auth.verifyUser(req) === null){
-        return res.status(400).json({
-            errorMessage: 'UNAUTHORIZED'
-        })
-    }
     const body = req.body
     console.log("updatePlaylist: " + JSON.stringify(body));
     console.log("req.body.name: " + req.body.name);
@@ -297,6 +292,47 @@ updatePlaylist = async (req, res) => {
         })
     }
 
+    // Check if this is a guest user (no authentication)
+    const userId = auth.verifyUser(req);
+    const playlist = body.playlist || body;
+
+    if (userId === null) {
+        // Guest users can only increment listener count, not modify playlist content
+        Playlist.findById(req.params.id, (err, foundPlaylist) => {
+            if (err || !foundPlaylist) {
+                return res.status(404).json({
+                    success: false,
+                    errorMessage: 'Playlist not found'
+                });
+            }
+
+            // Only update numListeners for guests
+            if (playlist.numListeners !== undefined) {
+                foundPlaylist.numListeners = playlist.numListeners;
+            }
+
+            foundPlaylist
+                .save()
+                .then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        id: foundPlaylist._id,
+                        message: 'Playlist updated!',
+                        playlist: foundPlaylist
+                    })
+                })
+                .catch(error => {
+                    console.log("FAILURE: " + JSON.stringify(error));
+                    return res.status(404).json({
+                        error,
+                        message: 'Playlist not updated!',
+                    })
+                });
+        });
+        return;
+    }
+
+    // For authenticated users, proceed with full update logic
     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
         console.log("playlist found: " + JSON.stringify(playlist));
         if (!playlist) {
@@ -312,7 +348,36 @@ updatePlaylist = async (req, res) => {
             })
         }
 
-        // DOES THIS LIST BELONG TO THIS USER?
+        // listener count update (playing a playlist)
+        const isListenerUpdate = body.playlist &&
+                                 body.playlist.numListeners !== undefined &&
+                                 body.playlist.name === playlist.name &&
+                                 JSON.stringify(body.playlist.songs) === JSON.stringify(playlist.songs);
+
+        if (isListenerUpdate) {
+            // Allow any authenticated user to increment listener count on any playlist
+            playlist.numListeners = body.playlist.numListeners;
+            playlist
+                .save()
+                .then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        id: playlist._id,
+                        message: 'Playlist updated!',
+                        playlist: playlist
+                    })
+                })
+                .catch(error => {
+                    console.log("FAILURE: " + JSON.stringify(error));
+                    return res.status(404).json({
+                        error,
+                        message: 'Playlist not updated!',
+                    })
+                });
+            return;
+        }
+
+        // DOES THIS LIST BELONG TO THIS USER? (for name/songs updates)
         async function asyncFindUser(list) {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
                 console.log("user._id: " + user._id);

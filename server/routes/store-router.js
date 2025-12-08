@@ -15,10 +15,10 @@ router.post("/playlist", auth.verify, StoreController.createPlaylist);
 // Search endpoints don't require auth so guests can search
 router.get("/playlist/search", StoreController.findPlaylistsByFilter);
 router.delete("/playlist/:id", auth.verify, StoreController.deletePlaylist);
-router.get("/playlist/:id", auth.verify, StoreController.getPlaylistById);
+router.get("/playlist/:id", StoreController.getPlaylistById);
 router.get("/playlistpairs", auth.verify, StoreController.getUserPlaylists);
 router.get("/playlists", auth.verify, StoreController.getPlaylists);
-router.put("/playlist/:id", auth.verify, StoreController.updatePlaylist);
+router.put("/playlist/:id", StoreController.updatePlaylist);
 
 router.post("/playlist/copy/:id", auth.verify, StoreController.copyPlaylistById);
 
