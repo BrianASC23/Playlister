@@ -8,6 +8,109 @@
 	},
 	"item": [
 		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"email\": \"Dummy@test.com\",\r\n    \"password\": \"aaaaaaa\",\r\n    \"passwordVerify\": \"aaaaaaaa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"Dummy@test.com\",\r\n    \"password\": \"aaaaaaaa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Logged In User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/auth/loggedIn",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"loggedIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Create Playlist",
 			"item": [
 				{
@@ -25,14 +128,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist",
+							"raw": "http://localhost:4000/store/playlist",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
+								"store",
 								"playlist"
 							]
 						}
@@ -54,14 +157,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist",
+							"raw": "http://localhost:4000/store/playlist",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
+								"store",
 								"playlist"
 							]
 						}
@@ -83,14 +186,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist",
+							"raw": "http://localhost:4000/store/playlist",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
+								"store",
 								"playlist"
 							]
 						}
@@ -104,63 +207,61 @@
 			"name": "Read Playlist",
 			"item": [
 				{
-					"name": "Read Spacey (_id will be different each time it is created)",
+					"name": "Read Spacey (need to insert ID)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-								"raw": "http://localhost:4000/api/playlist68dda5a6a4c16f69de5251b4",
+								"raw": "http://localhost:4000/store/playlist/",
 								"protocol": "http",
 								"host": [
 									"localhost"
 								],
 								"port": "4000",
 								"path": [
-									"api",
-									"playlist",
-									"68dda5a6a4c16f69de5251b4"
+									"store",
+									"playlist"
 								]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Read Any Colour You Like (_id will be different each time it is created)",
+					"name": "Read Any Colour You Like",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b5",
+							"raw": "http://localhost:4000/store/playlist/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b5"
+								"store",
+								"playlist"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Read Don't Be Rude (_id will be different each time it is created)",
+					"name": "Read Don't Be Rude",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b6",
+							"raw": "http://localhost:4000/store/playlist/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b6"
+								"store",
+								"playlist"
+
 							]
 						}
 					},
@@ -186,16 +287,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b4",
+							"raw": "http://localhost:4000/store/playlist/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b4"
+								"store",
+								"playlist"
 							]
 						}
 					},
@@ -217,16 +317,15 @@
 
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b5",
+							"raw": "http://localhost:4000/store/playlist",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b5"
+								"store",
+								"playlist"
 							]
 						}
 					},
@@ -247,106 +346,15 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b6",
+							"raw": "http://localhost:4000/store/playlist/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Add Song to Spacey (add Attack On Titan Soundtrack)",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"songs\": [\r\n        {\r\n            \"title\": \"Across the Universe\",\r\n            \"artist\": \"The Beatles\",\r\n            \"year\": 1969,\r\n            \"youTubeId\": \"90M60PzmxEE\"\r\n        },\r\n        {\r\n            \"title\": \"Astronomy Domine\",\r\n            \"artist\": \"Pink Floyd\",\r\n            \"year\": 1967,\r\n            \"youTubeId\": \"8UbNbor3OqQ\"\r\n        },\r\n        {\r\n            \"title\": \"Black Hole Sun\",\r\n            \"artist\": \"Soundgarden\",\r\n            \"year\": 1994,\r\n            \"youTubeId\": \"3mbBbFH9fAg\"\r\n        },\r\n        {\r\n            \"title\": \"Brain Damage/Eclipse\",\r\n            \"artist\": \"Pink Floyd\",\r\n            \"year\": 1973,\r\n            \"youTubeId\": \"g1OOQP1-wOE\"\r\n        },\r\n        {\r\n            \"title\": \"Fly Me to the Moon\",\r\n            \"artist\": \"Frank Sinatra\",\r\n            \"year\": 1964,\r\n            \"youTubeId\": \"ZEcqHA7dbwM\"\r\n        },\r\n        {\r\n            \"title\": \"In the Meantime\",\r\n            \"artist\": \"Spacehog\",\r\n            \"year\": 1994,\r\n            \"youTubeId\": \"PCsGRCf8T9Y\"\r\n        },\r\n        {\r\n            \"title\": \"Major Tom\",\r\n            \"artist\": \"Peter Shilling\",\r\n            \"year\": 1982,\r\n            \"youTubeId\": \"wO0A0XcWy88\"\r\n        },\r\n        {\r\n            \"title\": \"Man on the Moon\",\r\n            \"artist\": \"REM\",\r\n            \"year\": 1992,\r\n            \"youTubeId\": \"dLxpNiF0YKs\"\r\n        },\r\n        {\r\n            \"title\": \"Rocket Man\",\r\n            \"artist\": \"Elton John\",\r\n            \"year\": 1972,\r\n            \"youTubeId\": \"DtVBCG6ThDk\"\r\n        },\r\n        {\r\n            \"title\": \"Set the Controls for the Heart of the Sun\",\r\n            \"artist\": \"Pink Floyd\",\r\n            \"year\": 1968,\r\n            \"youTubeId\": \"qupVCTn5Dko\"\r\n        },\r\n        {\r\n            \"title\": \"Space Oddity\",\r\n            \"artist\": \"David Bowie\",\r\n            \"year\": 1969,\r\n            \"youTubeId\": \"iYYRH4apXDo\"\r\n        },\r\n        {\r\n            \"title\": \"Space Song\",\r\n            \"artist\": \"Beach House\",\r\n            \"year\": 2015,\r\n            \"youTubeId\": \"RBtlPT23PTM\"\r\n        },\r\n        {\r\n            \"title\": \"Starless\",\r\n            \"artist\": \"King Crimson\",\r\n            \"year\": 1974,\r\n            \"youTubeId\": \"OfR6_V91fG8\"\r\n        },\r\n        {\r\n            \"title\": \"Starman\",\r\n            \"artist\": \"David Bowie\",\r\n            \"year\": 1972,\r\n            \"youTubeId\": \"t365MuktYQs\"\r\n        },\r\n        {\r\n            \"title\": \"Starship Trooper\",\r\n            \"artist\": \"Yes\",\r\n            \"year\": 1971,\r\n            \"youTubeId\": \"xk4U8BembHM\"\r\n        },\r\n        {\r\n            \"title\": \"YouSeeBIGGIRL/T:T\",\r\n            \"artist\": \"Sawano Hiroyuki\",\r\n            \"year\": 2018,\r\n            \"youTubeId\": \"vy63u2hKoPE\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b4",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Moving Song in Don't Be Rude (swap song order)",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"songs\": [\r\n        {\r\n            \"title\": \"Rudie Can't Fail\",\r\n            \"artist\": \"The Clash\",\r\n            \"year\": 1979,\r\n            \"youTubeId\": \"uEK9oK02D1M\"\r\n        },\r\n        {\r\n            \"title\": \"A Message to You Rudy\",\r\n            \"artist\": \"The Specials\",\r\n            \"year\": 1979,\r\n            \"youTubeId\": \"cntvEDbagAw\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b6",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b6"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Updating a Song Field for Any Color You Like (fix Purple Rain year)",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"songs\": [\r\n        {\r\n            \"title\": \"99 Red Balloons\",\r\n            \"artist\": \"Nena\",\r\n            \"year\": 1984,\r\n            \"youTubeId\": \"Fpu5a0Bl8eY\"\r\n        },\r\n        {\r\n            \"title\": \"Big Blue Sun\",\r\n            \"artist\": \"Adrian Belew\",\r\n            \"year\": 1986,\r\n            \"youTubeId\": \"DMkEmW2awQw\"\r\n        },\r\n        {\r\n            \"title\": \"Black Dog\",\r\n            \"artist\": \"Led Zeppelin\",\r\n            \"year\": 1971,\r\n            \"youTubeId\": \"2KPEHohJMuw\"\r\n        },\r\n        {\r\n            \"title\": \"Golden Brown\",\r\n            \"artist\": \"The Stranglers\",\r\n            \"year\": 1981,\r\n            \"youTubeId\": \"7KIHvuMl4Kk\"\r\n        },\r\n        {\r\n            \"title\": \"Goodbye Yellow Brick Road\",\r\n            \"artist\": \"Elton John\",\r\n            \"year\": 1973,\r\n            \"youTubeId\": \"wy709iNG6i8\"\r\n        },\r\n        {\r\n            \"title\": \"Green is the Colour\",\r\n            \"artist\": \"Pink Floyd\",\r\n            \"year\": 1969,\r\n            \"youTubeId\": \"4XeWngFZaa8\"\r\n        },\r\n        {\r\n            \"title\": \"In the Court of the Crimson King\",\r\n            \"artist\": \"King Crimson\",\r\n            \"year\": 1969,\r\n            \"youTubeId\": \"ukgraQ-xkp4\"\r\n        },\r\n        {\r\n            \"title\": \"Orange Crush\",\r\n            \"artist\": \"REM\",\r\n            \"year\": 1988,\r\n            \"youTubeId\": \"_mSmOcmk7uQ\"\r\n        },\r\n        {\r\n            \"title\": \"Pink Houses\",\r\n            \"artist\": \"John Mellancamp\",\r\n            \"year\": 1983,\r\n            \"youTubeId\": \"qOfkpu6749w\"\r\n        },\r\n        {\r\n            \"title\": \"Purple Rain\",\r\n            \"artist\": \"Brian\",\r\n            \"year\": 1984,\r\n            \"youTubeId\": \"TvnYmWpD_T8\"\r\n        },\r\n        {\r\n            \"title\": \"White Lines\",\r\n            \"artist\": \"Grandmaster Flash and the Furious Five\",\r\n            \"year\": 1983,\r\n            \"youTubeId\": \"DwRXI-y6M9o\"\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b5",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"playlist",
-								"68dda5a6a4c16f69de5251b5"
+								"store",
+								"playlist"
 							]
 						}
 					},
@@ -367,14 +375,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/68dda5a6a4c16f69de5251b4",
+							"raw": "http://localhost:4000/store/playlist/68dda5a6a4c16f69de5251b4",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
+								"store",
 								"playlist",
 								"68dda5a6a4c16f69de5251b4"
 							]
@@ -389,21 +397,20 @@
 			"name": "Delete Playlist",
 			"item": [
 				{
-					"name": "Delete Playlist (change ID as needed)",
+					"name": "Delete Playlist",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/api/playlist/PLAYLIST_ID_HERE",
+							"raw": "http://localhost:4000/store/playlist/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
-								"playlist",
-								"PLAYLIST_ID_HERE"
+								"store",
+								"playlist"
 							]
 						}
 					},
@@ -421,52 +428,17 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/api/playlists/startswith/My",
+							"raw": "http://localhost:4000/store/playlists/startswith/My",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "4000",
 							"path": [
-								"api",
+								"store",
 								"playlists",
 								"startswith",
 								"My"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get All Songs With No Duplicates (Filtering for Lady Gaga)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:4000/api/songs/noduplicates?artist=Lady Gaga",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"songs",
-								"noduplicates"
-							],
-							"query": [
-								{
-									"key": "title",
-									"value": "Space"
-								},
-								{
-									"key": "artist",
-									"value": "David"
-								},
-								{
-									"key": "year",
-									"value": "1972"
-								}
 							]
 						}
 					},
