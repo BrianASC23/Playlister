@@ -23,13 +23,13 @@ export default function CatalogList({ songs, selectedSong, onSelectSong }) {
 
       switch (sortBy){
           case "listener-hi":
-              return arr.sort((a, b) => (a.listeners || 0) - (b.listeners || 0));
+              return arr.sort((a, b) => (a.numListeners || 0) - (b.numListeners || 0));
           case "listener-lo":
-              return arr.sort((a, b) => (b.listeners || 0) - (a.listeners || 0));
+              return arr.sort((a, b) => (b.numListeners || 0) - (a.numListeners || 0));
           case "playlist-hi":
-              return arr.sort((a, b) => (a.playlists || 0) - (b.playlists || 0));
+              return arr.sort((a, b) => (a.inPlaylists || 0) - (b.inPlaylists || 0));
           case "playlist-lo":
-              return arr.sort((a, b) => (b.playlists || 0) - (a.playlists || 0));
+              return arr.sort((a, b) => (b.inPlaylists || 0) - (a.inPlaylists || 0));
           case "title-az":
               return arr.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
           case "title-za":
@@ -61,8 +61,8 @@ export default function CatalogList({ songs, selectedSong, onSelectSong }) {
           >
             <MenuItem value="listener-hi">Listener (Hi-Lo)</MenuItem>
             <MenuItem value="listener-lo">Listener (Lo-Hi)</MenuItem>
-            <MenuItem value="playlist-hi">Number of Playlists (Hi-Lo)</MenuItem>
-            <MenuItem value="playlist-lo">Number of Playlists (Lo-Hi)</MenuItem>
+            <MenuItem value="playlist-hi">Number of inPlaylists (Hi-Lo)</MenuItem>
+            <MenuItem value="playlist-lo">Number of inPlaylists (Lo-Hi)</MenuItem>
             <MenuItem value="title-az">Song Title (A-Z)</MenuItem>
             <MenuItem value="title-za">Song Title (Z-A)</MenuItem>
             <MenuItem value="artist-az">Song Artist (A-Z)</MenuItem>
