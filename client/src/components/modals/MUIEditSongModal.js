@@ -12,8 +12,8 @@ const style1 = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 345,
-    height: 250,
+    width: 500,
+    height: 375,
     backgroundSize: "contain",
     backgroundImage: `url(https://i.insider.com/602ee9ced3ad27001837f2ac?})`,
     border: '3px solid #000',
@@ -114,7 +114,7 @@ export default function MUIEditSongModal() {
                 sx={{color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px"}} variant="outlined"
                 id="edit-song-confirm-button" onClick={handleConfirmEditSong} disabled={!isComplete}>Confirm</Button>
             <Button
-                sx={{opacity: 0.80, color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px", ml:"197px"}} variant="outlined"
+                sx={{opacity: 0.80, color: "#8932CC", backgroundColor: "#CBC3E3", fontSize: 13, fontWeight: 'bold', border: 2, p:"5px", mt:"20px", ml:"315px"}} variant="outlined"
                 id="edit-song-confirm-button" onClick={handleCancelEditSong}>Cancel</Button>
             </div>
         </Box>
