@@ -123,11 +123,11 @@ getUserPlaylists = async (req, res) => {
         })
     }
     console.log("getUserPlaylists");
-    await User.findOne({ _id: req.userId }, (err, user) => {
+    await User.findOne({ _id: req.userId }, async (err, user) => {
         console.log("find user with id " + req.userId);
-        async function asyncFindList(email) {
+        async function asyncFindList(email, user) {
             console.log("find all Playlists owned by " + email);
-            await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+            await Playlist.find({ ownerEmail: email }, async (err, playlists) => {
                 console.log("found Playlists: " + JSON.stringify(playlists));
                 if (err) {
                     return res.status(400).json({ success: false, error: err })
@@ -139,11 +139,22 @@ getUserPlaylists = async (req, res) => {
                         .json({ success: false, error: 'Playlists not found' })
                 }
 
-                return res.status(200).json({ success: true, currentList: playlists })
+                // Add owner information to each playlist -> for the initial load
+                const playlistsWithOwnerInfo = playlists.map(playlist => ({
+                    _id: playlist._id,
+                    name: playlist.name,
+                    ownerEmail: playlist.ownerEmail,
+                    ownerName: `${user.firstName} ${user.lastName}`,
+                    ownerAvatar: user.avatar,
+                    songs: playlist.songs,
+                    numListeners: playlist.numListeners || 0
+                }));
+
+                return res.status(200).json({ success: true, currentList: playlistsWithOwnerInfo })
 
             }).catch(err => console.log(err))
         }
-        asyncFindList(user.email);
+        asyncFindList(user.email, user);
     }).catch(err => console.log(err))
 }
 getPlaylists = async (req, res) => {
@@ -225,6 +236,7 @@ findPlaylistsByFilter = async (req, res) => {
                     name: playlist.name,
                     ownerEmail: playlist.ownerEmail,
                     ownerName: user ? `${user.firstName} ${user.lastName}` : 'Unknown',
+                    ownerAvatar: user ? user.avatar : null,
                     songs: playlist.songs,
                     numListeners: playlist.numListeners || 0
                 };

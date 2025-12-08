@@ -31,7 +31,18 @@ function PlaylistCard({ playlist }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const avatar = auth.getUserAvatar();
+  // Generate initials from playlist owner's name
+  const getOwnerInitials = () => {
+    if (playlist.ownerName) {
+      const names = playlist.ownerName.split(" ");
+      if (names.length >= 2) {
+        return names[0].charAt(0) + names[names.length - 1].charAt(0);
+      } else if (names.length === 1) {
+        return names[0].charAt(0);
+      }
+    }
+    return "?";
+  };
 
   function handleLoadList(event, id) {
     console.log("handleLoadList for " + id);
@@ -124,9 +135,18 @@ function PlaylistCard({ playlist }) {
           <Box
             sx={{ display: "flex", alignItems: "center", gap: 2, flexGrow: 1 }}
           >
-            <Avatar src={avatar} sx={{ width: 40, height: 40 }} />
+            {playlist.ownerAvatar ? (
+              <Avatar
+                src={playlist.ownerAvatar}
+                sx={{ width: 40, height: 40 }}
+              />
+            ) : (
+              <Avatar sx={{ width: 40, height: 40, bgcolor: "#white" }}>
+                {getOwnerInitials()}
+              </Avatar>
+            )}
 
-            <Box sx={{ marginY: 2}}>
+            <Box sx={{ marginY: 2 }}>
               <Typography
                 variant="subtitle1"
                 sx={{ fontWeight: 600, lineHeight: 1.2 }}
@@ -141,9 +161,7 @@ function PlaylistCard({ playlist }) {
               </Typography>
             </Box>
           </Box>
-          <Typography>
-            Listeners: {playlist.numListeners}
-          </Typography>
+          <Typography>Listeners: {playlist.numListeners}</Typography>
         </Box>
         {/* RIGHT: buttons */}
         <Box
