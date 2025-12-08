@@ -157,40 +157,44 @@ export default function AppBanner() {
                   ⌂
                 </Link>
               </Typography>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  bgcolor: "#1e1e1e",
-                  "&:hover": { bgcolor: "#1e1e1e" },
-                }}
-              >
-                <Link
-                  onClick={handleHouseClick}
-                  style={{ textDecoration: "none", color: "white" }}
-                  to="/"
-                >
-                  Playlists
-                </Link>
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  textTransform: "none",
-                  bgcolor: "#3a64c4",
-                  "&:hover": { bgcolor: "#3a64c4" },
-                }}
-              >
-                <Link
-                  onClick={handleHouseClick}
-                  style={{ textDecoration: "none", color: "white" }}
-                  to="/catalog"
-                >
-                  Song Catalogue
-                </Link>
-              </Button>
+              {(auth.loggedIn || auth.guest) && (
+                <>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      textTransform: "none",
+                      bgcolor: "#1e1e1e",
+                      "&:hover": { bgcolor: "#1e1e1e" },
+                    }}
+                  >
+                    <Link
+                      onClick={auth.guest ? undefined : handleHouseClick}
+                      style={{ textDecoration: "none", color: "white" }}
+                      to="/"
+                    >
+                      Playlists
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{
+                      textTransform: "none",
+                      bgcolor: "#3a64c4",
+                      "&:hover": { bgcolor: "#3a64c4" },
+                    }}
+                  >
+                    <Link
+                      onClick={auth.guest ? undefined : handleHouseClick}
+                      style={{ textDecoration: "none", color: "white" }}
+                      to="/catalog"
+                    >
+                      Song Catalogue
+                    </Link>
+                  </Button>
+                </>
+              )}
             </Box>
             <Box
               sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}

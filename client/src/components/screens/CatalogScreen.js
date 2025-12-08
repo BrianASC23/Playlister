@@ -7,10 +7,11 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MUIEditSongModal from "../modals/MUIEditSongModal";
 import MUIDeleteSongModal from "../modals/MUIDeleteSongModal";
+import AuthContext from "../../auth";
 
 export default function CatalogScreen() {
   const { store } = useContext(GlobalStoreContext);
-
+  const { auth } = useContext(AuthContext);
   const [filters, setFilters] = useState({});
   const [songs, setSongs] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
@@ -102,7 +103,18 @@ export default function CatalogScreen() {
 
   // Handle clearing filters and loading user's owned songs
   const handleClear = () => {
-    store.getSongByUser();
+    setFilters({
+      title: "",
+      artist: "",
+      year: "",
+    });
+
+    if (auth.guest){
+      setSongs([]);
+    } else{
+      store.getSongByUser();
+    }
+
   };
 
   const handleAddNewSong = async () => {
@@ -159,7 +171,7 @@ export default function CatalogScreen() {
             selectedSong={selectedSong}
             onSelectSong={setSelectedSong}
           />
-          <Button onClick={handleAddNewSong}>+ New Songs</Button>
+          {auth.loggedIn && <Button onClick={handleAddNewSong}>+ New Songs</Button>}
         </Grid>
       </Grid>
       {modalJSX}
