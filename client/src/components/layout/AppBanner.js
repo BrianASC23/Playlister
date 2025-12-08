@@ -36,7 +36,13 @@ export default function AppBanner() {
   };
 
   const handleHouseClick = () => {
-    store.closeCurrentList();
+    // If guest, logout (returns to splash screen)
+    // If logged in, close current list
+    if (auth.guest) {
+      auth.logoutUser();
+    } else {
+      store.closeCurrentList();
+    }
   };
 
   const menuId = "primary-search-account-menu";

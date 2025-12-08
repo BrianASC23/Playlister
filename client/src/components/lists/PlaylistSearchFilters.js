@@ -22,7 +22,7 @@ export default function PlaylistSearchFilters({ onSearch, filters, setFilters, o
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSearch(filters);
+        onSearch();
     };
 
     const handleClear = () => {

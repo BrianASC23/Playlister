@@ -12,7 +12,8 @@ const auth = require("../auth");
 router.post("/playlist", auth.verify, StoreController.createPlaylist);
 
 // Issue that I had. Specific routes need to come before parameterized routes.
-router.get("/playlist/search", auth.verify, StoreController.findPlaylistsByFilter);
+// Search endpoints don't require auth so guests can search
+router.get("/playlist/search", StoreController.findPlaylistsByFilter);
 router.delete("/playlist/:id", auth.verify, StoreController.deletePlaylist);
 router.get("/playlist/:id", auth.verify, StoreController.getPlaylistById);
 router.get("/playlistpairs", auth.verify, StoreController.getUserPlaylists);
@@ -24,7 +25,8 @@ router.post("/playlist/copy/:id", auth.verify, StoreController.copyPlaylistById)
 // For Song Catalog
 router.get("/songpairs", auth.verify, StoreController.getSongPairs);
 router.post("/song", auth.verify, StoreController.createSong);
-router.get("/songs/search", auth.verify, StoreController.findSongsByFilter);
+// Search endpoints don't require auth so guests can search
+router.get("/songs/search", StoreController.findSongsByFilter);
 router.put("/song/updatePlaylists", auth.verify, StoreController.updateSongInAllPlaylists);
 router.post("/song/removeFromPlaylists", auth.verify, StoreController.removeSongFromAllPlaylists);
 router.put("/song/:id", auth.verify, StoreController.updateSong);

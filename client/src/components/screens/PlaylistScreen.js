@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { GlobalStoreContext } from "../../store";
+import AuthContext from "../../auth";
 import PlaylistSearchFilters from "../lists/PlaylistSearchFilters";
 import PlaylistsList from "../lists/PlaylistsList";
 import MUIEditPlaylistModal from "../modals/MUIEditPlaylistModal";
@@ -11,6 +12,7 @@ import MUIPlayPlaylistModal from "../modals/MUIPlayPlaylistModal";
 
 export default function PlaylistScreen() {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
 
   const [filters, setFilters] = useState({});
   const [playlists, setPlaylists] = useState([]);
@@ -18,7 +20,13 @@ export default function PlaylistScreen() {
   // load the lists to the store
   // get the lists from the store and setPlaylist to it
   useEffect(() => {
-    store.loadUserPlaylists();
+    // Guests should see all playlists, logged in users see their own
+    if (auth.guest) {
+      // For guests, do initial search with empty filters to get all playlists
+      // Do nothing
+    } else {
+      store.loadUserPlaylists();
+    }
   }, []);
 
 
@@ -29,7 +37,21 @@ export default function PlaylistScreen() {
 
 
   const handleClear = () => {
-    store.loadUserPlaylists();
+    // Clear the filter fields
+    setFilters({
+      playlistName: '',
+      userName: '',
+      songTitle: '',
+      songArtist: '',
+      songYear: ''
+    });
+    
+    // Guests should load back to empty list, logged in users reload their own
+    if (auth.guest) {
+      setPlaylists([]);
+    } else {
+      store.loadUserPlaylists();
+    }
   }
 
   // Handle searching for playlists by filter
@@ -69,7 +91,7 @@ export default function PlaylistScreen() {
         </Grid>
         <Grid item xs={6}>
           <PlaylistsList playlists={playlists} />
-          <Button onClick={addNewPlaylist}>+ New Playlist</Button>
+          {auth.loggedIn && <Button onClick={addNewPlaylist}>+ New Playlist</Button>}
         </Grid>
       </Grid>
       {modalJSX}
