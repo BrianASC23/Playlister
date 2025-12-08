@@ -279,7 +279,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Updated Spacey Playlist Name\"\r\n}",
+							"raw": "{\r\n    \"playlist\": {\r\n        \"name\": \"Updated Spacey Playlist Name\",\r\n        \"songs\": []\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -308,7 +308,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Updated Any Color You Like\"\r\n}",
+							"raw": "{\r\n    \"playlist\": {\r\n        \"name\": \"Updated Any Color You Like\",\r\n        \"songs\": []\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -420,15 +420,15 @@
 		},
 
 		{
-			"name": "Query Playlists",
+			"name": "Get User Owned",
 			"item": [
 				{
-					"name": "Get Playlists Starting With Specific String",
+					"name": "Load User Playlists",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:4000/store/playlists/startswith/My",
+							"raw": "http://localhost:4000/store/playlistpairs/",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -436,9 +436,306 @@
 							"port": "4000",
 							"path": [
 								"store",
-								"playlists",
-								"startswith",
-								"My"
+								"playlistpairs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Owned Songs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/store/songpairs/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"songpairs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Querying/Filtering",
+			"item": [
+				{
+					"name": "Find Playlists By Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/store/playlist/search?name=Test&ownerName=User",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"playlist",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Test",
+									"description": "Playlist name filter"
+								},
+								{
+									"key": "ownerName",
+									"value": "User",
+									"description": "Owner name filter"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find Songs By Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/store/songs/search?title=Test&artist=Artist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"songs",
+								"search"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Test",
+									"description": "Song title filter"
+								},
+								{
+									"key": "artist",
+									"value": "Artist",
+									"description": "Song artist filter"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Song",
+			"item": [
+				{
+					"name": "Create New Song",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Test Song\",\r\n    \"artist\": \"Test Artist\",\r\n    \"year\": 2024,\r\n    \"youTubeId\": \"testYouTubeId123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/store/song/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update Song",
+			"item": [
+				{
+					"name": "Update Song By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Updated Song Title\",\r\n    \"artist\": \"Updated Artist\",\r\n    \"year\": 2025,\r\n    \"youTubeId\": \"updatedYouTubeId\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/store/song/INSERT_SONG_ID_HERE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"INSERT_SONG_ID_HERE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Song In All Playlists",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"catalogSongId\": \"INSERT_CATALOG_SONG_ID\",\r\n    \"title\": \"Updated Song Title\",\r\n    \"artist\": \"Updated Artist\",\r\n    \"year\": 2025,\r\n    \"youTubeId\": \"updatedYouTubeId\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/store/song/updatePlaylists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"updatePlaylists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Song In Playlists Number",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"operation\": \"increment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/store/song/inPlaylists/INSERT_SONG_ID_HERE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"inPlaylists",
+								"INSERT_SONG_ID_HERE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Song Listeners",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/store/song/listeners/INSERT_SONG_ID_HERE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"listeners",
+								"INSERT_SONG_ID_HERE"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Song",
+			"item": [
+				{
+					"name": "Delete Song By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/store/song/INSERT_SONG_ID_HERE",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"INSERT_SONG_ID_HERE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Song From All Playlists",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"catalogSongId\": \"INSERT_CATALOG_SONG_ID\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/store/song/removeFromPlaylists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"store",
+								"song",
+								"removeFromPlaylists"
 							]
 						}
 					},

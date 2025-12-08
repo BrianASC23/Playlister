@@ -106,17 +106,23 @@ const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
-    loadUserPlaylists,
     updatePlaylistById,
-    findPlaylistsByFilter,
+
+    loadUserPlaylists,
     getSongPairs,
+
+    findPlaylistsByFilter,
+    findSongsByFilter,
+
     createSong,
     updateSongById,
+    deleteSongById,
+
     updateSongInAllPlaylists,
     removeSongFromAllPlaylists,
-    findSongsByFilter,
+
     copyPlaylistById,
-    deleteSongById,
+
     updateInPlaylistsNumber,
     updateSongListeners,
 }

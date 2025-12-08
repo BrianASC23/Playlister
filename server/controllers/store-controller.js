@@ -61,6 +61,12 @@ deletePlaylist = async (req, res) => {
     console.log("delete " + req.params.id);
     Playlist.findById({ _id: req.params.id }, (err, playlist) => {
         console.log("playlist found: " + JSON.stringify(playlist));
+        if (!playlist) {
+            return res.status(404).json({
+                success: false,
+                errorMessage: 'Playlist not found'
+            });
+        }
         if (err) {
             return res.status(404).json({
                 errorMessage: 'Playlist not found!',
@@ -75,7 +81,10 @@ deletePlaylist = async (req, res) => {
                 if (user._id == req.userId) {
                     console.log("correct user!");
                     Playlist.findOneAndDelete({ _id: req.params.id }, () => {
-                        return res.status(200).json({});
+                        return res.status(200).json({
+                            success: true,
+                            message: "Playlist successfully deleted"
+                        });
                     }).catch(err => console.log(err))
                 }
                 else {
@@ -101,11 +110,26 @@ getPlaylistById = async (req, res) => {
         if (err) {
             return res.status(400).json({ success: false, error: err });
         }
+
+        // Check if playlist exists
+        if (!list) {
+            return res.status(404).json({
+                success: false,
+                errorMessage: 'Playlist not found'
+            });
+        }
+
         console.log("Found list: " + JSON.stringify(list));
 
         // DOES THIS LIST BELONG TO THIS USER?
         async function asyncFindUser(list) {
             await User.findOne({ email: list.ownerEmail }, (err, user) => {
+                if(err) {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: "Can't Find User"
+                    })
+                }
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
                 console.log("correct user!");
@@ -275,6 +299,12 @@ updatePlaylist = async (req, res) => {
 
     Playlist.findOne({ _id: req.params.id }, (err, playlist) => {
         console.log("playlist found: " + JSON.stringify(playlist));
+        if (!playlist) {
+            return res.status(404).json({
+                success: false,
+                errorMessage: 'Playlist not found'
+            });
+        }
         if (err) {
             return res.status(404).json({
                 err,
