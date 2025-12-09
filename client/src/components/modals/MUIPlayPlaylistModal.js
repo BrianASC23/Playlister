@@ -176,10 +176,12 @@ export default function MUIPlayPlaylistModal() {
       // Increment listener count when song starts playing (only once per song)
       if (!hasListenCount) {
         const currentSong = store.currentList?.songs?.[store.currentSongIndex];
-        if (currentSong?.catalogSongId) {
-          store.updateSongListeners(currentSong.catalogSongId);
-          setHasListenCount(true);
-        }
+        console.log("WHYYDAYSDYASYDAYS");
+        // if (currentSong?.catalogSongId) {
+        //   console.log("BROOOOOOO");
+        //   store.updateSongListeners(currentSong.catalogSongId);
+        //   setHasListenCount(true);
+        // }
       }
     } else if (playerStatus == 2) {
       // THE VIDEO IS PAUSED
