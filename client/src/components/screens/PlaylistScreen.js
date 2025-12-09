@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import MUIDeleteModal from "../modals/MUIDeleteModal";
 import MUIPlayPlaylistModal from "../modals/MUIPlayPlaylistModal";
+import { loadUserPlaylists } from "../../store/requests";
 
 export default function PlaylistScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -31,10 +32,13 @@ export default function PlaylistScreen() {
 
 
   useEffect(() => {
-    setPlaylists(store.userPlaylists);
-    console.log("User Playlist in Screen", store.userPlaylists);
+    if (auth.guest){
+      setPlaylists([]);
+    } else{
+      setPlaylists(store.userPlaylists);
+      console.log("User Playlist in Screen", store.userPlaylists);
+    }
   }, [store.userPlaylists]);
-
 
   const handleClear = () => {
     // Clear the filter fields
@@ -45,7 +49,7 @@ export default function PlaylistScreen() {
       songArtist: '',
       songYear: ''
     });
-    
+
     // Guests should load back to empty list, logged in users reload their own
     if (auth.guest) {
       setPlaylists([]);

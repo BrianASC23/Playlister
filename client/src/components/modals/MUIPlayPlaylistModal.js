@@ -331,6 +331,7 @@ export default function MUIPlayPlaylistModal() {
                         alignItems: "center",
                         justifyContent: "space-between",
                         color: "black",
+                        "&:hover": { bgcolor: "#1976d2" }
                       }}
                     >
                       <Box

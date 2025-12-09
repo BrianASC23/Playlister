@@ -510,6 +510,7 @@ function GlobalStoreContextProvider(props) {
     const response = await storeRequestSender.loadUserPlaylists();
     if (response.data.success) {
       let playlists = response.data.currentList;
+
       let globalListCounter = response.data.globalListCounter || 0;
       console.log("Loading", playlists);
       storeReducer({
@@ -833,9 +834,24 @@ function GlobalStoreContextProvider(props) {
     let userEmail = auth.user.email;
 
     let song = store.currentList.songs[index];
+    let copiedTitle = song.title + " (Copy)";
+    
+    // Check if a song with the copied name already exists in the playlist
+    const duplicateExists = store.currentList.songs.some(
+      (s) => s.title === copiedTitle && s.artist === song.artist && s.year === song.year
+    );
+
+    if (duplicateExists) {
+      storeReducer({
+        type: GlobalStoreActionType.SHOW_ERROR_MODAL,
+        payload: { errorMessage: 'A copy of this song already exists in the playlist!' }
+      });
+      return;
+    }
+
     // Create a copy of the song
     let copiedSong = {
-      title: song.title + " (Copy)",
+      title: copiedTitle,
       artist: song.artist,
       year: song.year,
       youTubeId: song.youTubeId,

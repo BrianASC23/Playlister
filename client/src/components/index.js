@@ -1,6 +1,5 @@
 import AppBanner from "./layout/AppBanner";
 import EditToolbar from "./layout/EditToolbar";
-import Statusbar from "./layout/Statusbar";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -31,7 +30,6 @@ import SongSearchFilter from "./lists/SongSearchFilter";
 export {
   AppBanner,
   EditToolbar,
-  Statusbar,
   HomeScreen,
   HomeWrapper,
   ListCard,
