@@ -215,7 +215,7 @@ editUser = async (req, res) => {
         const updateFields = {
             firstName: firstName,
             lastName: lastName,
-            password: passwordHash
+            passwordHash: passwordHash
         };
 
         // If avatar is also updated
