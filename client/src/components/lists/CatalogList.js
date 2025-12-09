@@ -17,9 +17,9 @@ export default function CatalogList({ songs, selectedSong, onSelectSong }) {
       const arr = [...songs];
 
       switch (sortBy){
-          case "listener-hi":
-              return arr.sort((a, b) => (a.numListeners || 0) - (b.numListeners || 0));
           case "listener-lo":
+              return arr.sort((a, b) => (a.numListeners || 0) - (b.numListeners || 0));
+          case "listener-hi":
               return arr.sort((a, b) => (b.numListeners || 0) - (a.numListeners || 0));
           case "playlist-hi":
               return arr.sort((a, b) => (a.inPlaylists || 0) - (b.inPlaylists || 0));
