@@ -4,12 +4,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
 
 export default function PlaylistSearchFilters({ onSearch, filters, setFilters, onClear }) {
 
@@ -34,7 +30,7 @@ export default function PlaylistSearchFilters({ onSearch, filters, setFilters, o
             songYear: ''
         };
         setFilters(empty);
-        
+
         // Call the onClear callback to load user's owned playlists
         if (onClear) {
             onClear();

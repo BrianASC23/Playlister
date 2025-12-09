@@ -1,20 +1,12 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { GlobalStoreContext } from "../../store";
-import TextField from "@mui/material/TextField";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UndoIcon from "@mui/icons-material/Undo";
-import RedoIcon from "@mui/icons-material/Redo";
+
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import PauseIcon from "@mui/icons-material/Pause";
 import {
   Typography,
   Grid,
-  Checkbox,
   Modal,
   Box,
   Button,

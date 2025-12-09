@@ -41,7 +41,10 @@ export const updatePlaylistById = (id, playlist) => {
 }
 
 // I think this should be fine because I alr converted filters to a Param String
-export const findPlaylistsByFilter = (filters) => api.get(`/playlist/search?${filters.toString()}`)
+export const findPlaylistsByFilter = (filters) => {
+    const queryString = filters.toString();
+    return api.get(`/playlist/search${queryString ? '?' + queryString : ''}`);
+}
 
 
 // For Song Catalog
@@ -81,7 +84,10 @@ export const removeSongFromAllPlaylists = (catalogSongId) => {
     })
 }
 
-export const findSongsByFilter = (filters) => api.get(`/songs/search?${filters.toString()}`)
+export const findSongsByFilter = (filters) => {
+    const queryString = filters.toString();
+    return api.get(`/songs/search${queryString ? '?' + queryString : ''}`);
+}
 
 export const copyPlaylistById = (playlist) => {
     return api.post(`/playlist/copy/${playlist._id}`, {
