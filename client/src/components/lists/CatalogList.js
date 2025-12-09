@@ -33,9 +33,9 @@ export default function CatalogList({ songs, selectedSong, onSelectSong }) {
               return arr.sort((a, b) => (a.artist || "").localeCompare(b.artist || ""));
           case "artist-za":
               return arr.sort((a, b) => (b.artist || "").localeCompare(a.artist || ""));
-          case "year-hi":
-              return arr.sort((a, b) => (a.year || 0) - (b.year || 0));
           case "year-lo":
+              return arr.sort((a, b) => (a.year || 0) - (b.year || 0));
+          case "year-hi":
               return arr.sort((a, b) => (b.year || 0) - (a.year || 0));
           default:
               return arr;
