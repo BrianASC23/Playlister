@@ -21,9 +21,9 @@ export default function CatalogList({ songs, selectedSong, onSelectSong }) {
               return arr.sort((a, b) => (a.numListeners || 0) - (b.numListeners || 0));
           case "listener-hi":
               return arr.sort((a, b) => (b.numListeners || 0) - (a.numListeners || 0));
-          case "playlist-hi":
-              return arr.sort((a, b) => (a.inPlaylists || 0) - (b.inPlaylists || 0));
           case "playlist-lo":
+              return arr.sort((a, b) => (a.inPlaylists || 0) - (b.inPlaylists || 0));
+          case "playlist-hi":
               return arr.sort((a, b) => (b.inPlaylists || 0) - (a.inPlaylists || 0));
           case "title-az":
               return arr.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
