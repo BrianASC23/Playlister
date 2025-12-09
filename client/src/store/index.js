@@ -259,7 +259,7 @@ function GlobalStoreContextProvider(props) {
       }
       case GlobalStoreActionType.LOAD_USER_SONGS: {
         return setStore({
-          currentModal: store.currentModal,
+          currentModal: CurrentModal.NONE,
           userPlaylists: store.userPlaylists,
           currentList: store.currentList,
           currentSongIndex: store.currentSongIndex,
@@ -965,7 +965,6 @@ function GlobalStoreContextProvider(props) {
           year: updatedSongData.year,
           youTubeId: updatedSongData.youTubeId,
         });
-
         // reload the user songs
         store.getSongByUser();
       }
